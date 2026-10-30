@@ -1,0 +1,75 @@
+{
+  "overlapping_exports": {
+    "files": [
+      "bank_a_feb_jul.csv",
+      "bank_a_jul_sep.csv"
+    ],
+    "overlap": [
+      "2026-07-10",
+      "2026-07-31"
+    ]
+  },
+  "own_account_transfer": {
+    "debit_in": "bank_a",
+    "credit_in": "bank_b",
+    "day_of_month": 3,
+    "paise": 2000000
+  },
+  "real_duplicate_charge": {
+    "bank": "bank_b",
+    "date": "2026-05-18",
+    "ref": "ORD-SIM98231",
+    "paise": 149900
+  },
+  "genuine_second_payment": {
+    "bank": "bank_b",
+    "date": "2026-07-09",
+    "refs": [
+      "ORD-402-1111",
+      "ORD-402-2222"
+    ],
+    "paise": 249900
+  },
+  "bonus_not_repeated": {
+    "bank": "bank_a",
+    "date": "2026-02-14",
+    "paise": 12000000
+  },
+  "large_purchase": {
+    "bank": "bank_a",
+    "date": "2026-06-14",
+    "paise": 8200000
+  },
+  "new_merchant": {
+    "bank": "bank_b",
+    "date": "2026-09-14",
+    "paise": 172000
+  },
+  "date_gap": {
+    "bank": "bank_b",
+    "from": "2026-08-11",
+    "to": "2026-08-20"
+  },
+  "emi": {
+    "bank": "bank_a",
+    "day_of_month": 7,
+    "paise": 1450000
+  },
+  "rent": {
+    "bank": "bank_a",
+    "day_of_month": 1,
+    "paise": 2800000
+  },
+  "subscriptions": {
+    "bank": "bank_b",
+    "merchants": [
+      "SPOTIFY INDIA",
+      "NETFLIX.COM",
+      "APPLE ICLOUD"
+    ]
+  },
+  "irregular_freelance_months_with_none": [
+    "2026-03",
+    "2026-06"
+  ]
+}
