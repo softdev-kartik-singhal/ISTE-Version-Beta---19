@@ -8,12 +8,17 @@ const VERDICT_STYLES = {
   conditional: { pill: 'bg-tertiary-fixed text-tertiary', dot: 'bg-tertiary' },
   risk: { pill: 'bg-tertiary-fixed text-tertiary', dot: 'bg-tertiary' },
 };
-const VERDICT_FILTERS = ['All Verdicts', 'Affordable / Safe', 'Conditional Approval', 'Buffer Risk'];
+const VERDICT_FILTERS = { 'All Verdicts': null, 'Affordable / Safe': 'safe', 'Conditional Approval': 'conditional', 'Buffer Risk': 'risk' };
 
-export default function AuditLedgerTable({ ledger }) {
+export default function AuditLedgerTable({ ledger, olderLoaded, onLoadEarlier }) {
   const [query, setQuery] = useState('');
-  const [verdictFilter, setVerdictFilter] = useState(VERDICT_FILTERS[0]);
-  const visible = ledger.entries.filter((e) => `${e.timestamp} ${e.question} ${e.verdict}`.toLowerCase().includes(query.toLowerCase()));
+  const [verdictFilter, setVerdictFilter] = useState('All Verdicts');
+  const entries = olderLoaded ? [...ledger.entries, ...ledger.older] : ledger.entries;
+  const verdictType = VERDICT_FILTERS[verdictFilter];
+  const visible = entries.filter(
+    (e) =>
+      `${e.timestamp} ${e.question} ${e.verdict}`.toLowerCase().includes(query.toLowerCase()) && (!verdictType || e.verdictType === verdictType),
+  );
 
   return (
     <div className="rounded-xl bg-surface-container-lowest p-space-xl shadow-sm space-y-space-md">
@@ -38,7 +43,7 @@ export default function AuditLedgerTable({ ledger }) {
             value={verdictFilter}
             onChange={(e) => setVerdictFilter(e.target.value)}
           >
-            {VERDICT_FILTERS.map((v) => (
+            {Object.keys(VERDICT_FILTERS).map((v) => (
               <option key={v}>{v}</option>
             ))}
           </select>
@@ -89,8 +94,12 @@ export default function AuditLedgerTable({ ledger }) {
         <span>
           Showing {visible.length} of {ledger.total} immutable prediction logs
         </span>
-        <button className="text-primary hover:underline font-label-md text-label-md inline-flex items-center gap-1">
-          <span>Load earlier records</span>
+        <button
+          className="text-primary hover:underline font-label-md text-label-md inline-flex items-center gap-1 disabled:opacity-50 disabled:no-underline"
+          onClick={onLoadEarlier}
+          disabled={olderLoaded}
+        >
+          <span>{olderLoaded ? 'All available records loaded' : 'Load earlier records'}</span>
           <ChevronDown size={16} />
         </button>
       </div>

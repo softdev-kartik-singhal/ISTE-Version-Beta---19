@@ -6,7 +6,7 @@ import { formatCurrency } from '../../utils/formatCurrency';
 const PRESET_ACTIVE = 'px-3 py-1.5 rounded-lg bg-primary text-on-primary font-label-md text-label-md transition-colors';
 const PRESET_IDLE = 'px-3 py-1.5 rounded-lg bg-surface-container-low text-on-surface font-label-md text-label-md hover:bg-surface-container transition-colors';
 
-export default function AllocationSimulator({ allocation }) {
+export default function AllocationSimulator({ allocation, committed, onExport, onCommit }) {
   const [emergencyPct, setEmergencyPct] = useState(allocation.defaultSplit);
   const goalsPct = 100 - emergencyPct;
   const emergencyAmt = Math.round((allocation.monthlySurplus * emergencyPct) / 100);
@@ -116,11 +116,11 @@ export default function AllocationSimulator({ allocation }) {
           <span>Simulation saves automatically to your personal local profile.</span>
         </div>
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <button className="w-full sm:w-auto px-4 py-2 rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-body-sm font-medium hover:bg-surface-container-low transition-colors shadow-sm" type="button">
+          <button className="w-full sm:w-auto px-4 py-2 rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-body-sm font-medium hover:bg-surface-container-low transition-colors shadow-sm" type="button" onClick={() => onExport({ emergencyPct, emergencyAmt, goalsPct, goalsAmt, eta })}>
             Export Allocation Plan
           </button>
-          <button className="w-full sm:w-auto px-5 py-2 rounded-lg bg-primary-container text-surface-container-lowest font-body-sm text-body-sm font-semibold hover:bg-primary transition-colors shadow-sm flex items-center justify-center gap-1.5" type="button">
-            <span>Commit to Next Month</span>
+          <button className="w-full sm:w-auto px-5 py-2 rounded-lg bg-primary-container text-surface-container-lowest font-body-sm text-body-sm font-semibold hover:bg-primary transition-colors shadow-sm flex items-center justify-center gap-1.5" type="button" onClick={() => onCommit({ emergencyPct, emergencyAmt, goalsAmt })}>
+            <span>{committed ? 'Committed ✓ (click to undo)' : 'Commit to Next Month'}</span>
             <ArrowRight size={16} />
           </button>
         </div>

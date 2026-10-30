@@ -3,7 +3,7 @@ import { CircleCheck, Clock, Copy, CreditCard, EyeOff, Gavel, Info, Store, Tag, 
 import FlagCardShell from './FlagCardShell';
 import { formatCurrency } from '../../utils/formatCurrency';
 
-export default function DuplicateFlagCard({ flag, dimmed }) {
+export default function DuplicateFlagCard({ flag, dimmed, onResolve, onChangeCategory }) {
   const amount = formatCurrency(flag.amount, { decimals: 2 });
   return (
     <FlagCardShell
@@ -21,19 +21,19 @@ export default function DuplicateFlagCard({ flag, dimmed }) {
       }
       actions={
         <>
-          <button className="px-3.5 py-2 rounded-lg bg-tertiary-container text-white font-label-md text-label-md font-semibold hover:bg-tertiary transition-all flex items-center gap-1.5 shadow-sm">
+          <button onClick={() => onResolve('Dispute filed with HDFC Bank for the double debit')} className="px-3.5 py-2 rounded-lg bg-tertiary-container text-white font-label-md text-label-md font-semibold hover:bg-tertiary transition-all flex items-center gap-1.5 shadow-sm">
             <Gavel size={18} /> Dispute / Report Double Debit
           </button>
-          <button className="px-3.5 py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md font-medium hover:bg-surface-container hover:text-primary transition-all">
+          <button onClick={() => onResolve('Confirmed as 2 separate orders')} className="px-3.5 py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md font-medium hover:bg-surface-container hover:text-primary transition-all">
             Not a duplicate (2 separate orders)
           </button>
-          <button className="px-3.5 py-2 rounded-lg bg-surface-container-low text-secondary font-label-md text-label-md font-medium hover:bg-surface-container hover:text-on-surface transition-all flex items-center gap-1">
+          <button onClick={onChangeCategory} className="px-3.5 py-2 rounded-lg bg-surface-container-low text-secondary font-label-md text-label-md font-medium hover:bg-surface-container hover:text-on-surface transition-all flex items-center gap-1">
             <Tag size={16} /> Change category
           </button>
         </>
       }
       aside={
-        <button className="px-3 py-1.5 text-secondary hover:text-on-surface font-label-md text-label-md flex items-center justify-center gap-1">
+        <button onClick={() => onResolve('Dismissed without changes')} className="px-3 py-1.5 text-secondary hover:text-on-surface font-label-md text-label-md flex items-center justify-center gap-1">
           <EyeOff size={16} /> Dismiss
         </button>
       }

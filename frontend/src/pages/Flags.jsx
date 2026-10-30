@@ -1,41 +1,78 @@
-// Flags screen: anomaly summary, filter tabs, the three flag cards and resolved history.
-import { useState } from 'react';
+// Flags screen: anomaly summary, filter tabs, flag cards whose actions resolve them, and resolved history.
+import { useEffect, useState } from 'react';
 import { CheckCheck, HardDrive, ShieldCheck, SlidersHorizontal } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
+import { useToast } from '../hooks/useToast';
 import { getFlags } from '../services/api';
 import DuplicateFlagCard from '../components/flags/DuplicateFlagCard';
 import LargeSpendFlagCard from '../components/flags/LargeSpendFlagCard';
 import NewMerchantFlagCard from '../components/flags/NewMerchantFlagCard';
 import ResolvedFlags from '../components/flags/ResolvedFlags';
+import FormDialog from '../components/ui/FormDialog';
+import Toast from '../components/ui/Toast';
 
 const CARD_COMPONENTS = { duplicate: DuplicateFlagCard, large: LargeSpendFlagCard, 'new-merchant': NewMerchantFlagCard };
+const URGENCY = { duplicate: 0, large: 1, 'new-merchant': 2 };
+const CATEGORIES = ['Groceries & Household', 'Food & Dining', 'Shopping', 'Home & Furniture', 'Tech & Subscriptions', 'Freelance Biz Ops'];
 const TAB_ACTIVE = 'px-3 py-1.5 rounded-md font-label-md text-label-md bg-surface-container-lowest text-on-surface shadow-sm font-semibold transition-all';
 const TAB_IDLE = 'px-3 py-1.5 rounded-md font-label-md text-label-md text-secondary hover:text-on-surface transition-all';
 
 export default function Flags() {
   const data = useApi(getFlags);
+  const [active, setActive] = useState(null);
+  const [resolvedItems, setResolvedItems] = useState([]);
+  const [resolvedCount, setResolvedCount] = useState(0);
   const [filter, setFilter] = useState('all');
-  const [allReviewed, setAllReviewed] = useState(false);
-  if (!data) return null;
+  const [sortBy, setSortBy] = useState('Urgency');
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [categoryFor, setCategoryFor] = useState(null);
+  const [toast, showToast] = useToast();
 
-  const count = (type) => data.flags.filter((f) => f.type === type).length;
+  useEffect(() => {
+    if (data) {
+      setActive(data.flags);
+      setResolvedItems(data.resolved.items);
+      setResolvedCount(data.resolved.count);
+    }
+  }, [data]);
+
+  if (!data || !active) return null;
+
+  // Moves flags from the active list into the resolved history with the chosen resolution.
+  function resolve(flags, resolution) {
+    const ids = flags.map((f) => f.id);
+    setActive(active.filter((f) => !ids.includes(f.id)));
+    setResolvedItems([
+      ...flags.map((f) => ({ id: f.id, icon: f.type, merchant: f.merchant, resolution, category: f.category, amount: f.amount, date: 'Today' })),
+      ...resolvedItems,
+    ]);
+    setResolvedCount(resolvedCount + flags.length);
+    showToast(flags.length === 1 ? `${flags[0].merchant}: ${resolution}` : `${flags.length} flags marked as reviewed`);
+  }
+
+  function markAllReviewed() {
+    if (active.length && window.confirm(`Mark all ${active.length} anomaly flags as intentional and reviewed?`)) {
+      resolve(active, 'Reviewed as intentional');
+    }
+  }
+
+  const count = (type) => active.filter((f) => f.type === type).length;
   const tabs = [
-    { value: 'all', label: `All Flags (${data.flags.length})` },
+    { value: 'all', label: `All Flags (${active.length})` },
     { value: 'duplicate', label: `Duplicates (${count('duplicate')})` },
     { value: 'large', label: `Unusual Amount (${count('large')})` },
     { value: 'new-merchant', label: `New Merchants (${count('new-merchant')})` },
   ];
   const stats = [
-    { label: 'Active Flags', value: data.flags.length, cls: 'bg-surface-container-low', valueCls: 'text-tertiary' },
+    { label: 'Active Flags', value: active.length, cls: 'bg-surface-container-low', valueCls: 'text-tertiary' },
     { label: 'Duplicates', value: count('duplicate'), cls: 'bg-surface-container-low', valueCls: 'text-on-surface' },
     { label: 'Unusual Spend', value: count('large'), cls: 'bg-surface-container-low', valueCls: 'text-on-surface' },
     { label: 'New Merchants', value: count('new-merchant'), cls: 'bg-surface-container-low', valueCls: 'text-on-surface' },
-    { label: 'Resolved (30d)', value: data.resolved.count, cls: 'bg-surface-container-high', valueCls: 'text-primary' },
+    { label: 'Resolved (30d)', value: resolvedCount, cls: 'bg-surface-container-high', valueCls: 'text-primary' },
   ];
-
-  function markAllReviewed() {
-    if (window.confirm(`Mark all ${data.flags.length} anomaly flags as intentional and reviewed?`)) setAllReviewed(true);
-  }
+  const visible = active
+    .filter((flag) => filter === 'all' || flag.type === filter)
+    .sort((a, b) => (sortBy === 'Urgency' ? URGENCY[a.type] - URGENCY[b.type] : b.amount - a.amount));
 
   return (
     <main className="relative pt-16 min-h-screen bg-[#F7F9FC]">
@@ -52,7 +89,9 @@ export default function Flags() {
                 </div>
                 <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">Flags &amp; Anomalies</h1>
                 <p className="font-body-md text-body-md text-secondary">
-                  SmartGullak detected {data.flags.length} transactions needing your review to ensure accurate cashflow models and guardrails.
+                  {active.length
+                    ? `SmartGullak detected ${active.length} transaction${active.length === 1 ? '' : 's'} needing your review to ensure accurate cashflow models and guardrails.`
+                    : 'All caught up — no transactions need your review right now.'}
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-space-xs pt-space-xs lg:pt-0">
@@ -72,16 +111,16 @@ export default function Flags() {
                 <span className="hidden sm:inline">• Rule base: ICICI, HDFC &amp; Kotak accounts</span>
               </div>
               <button
-                className="text-label-sm font-label-md text-primary hover:text-on-primary-fixed-variant transition-colors flex items-center gap-1"
+                className="text-label-sm font-label-md text-primary hover:text-on-primary-fixed-variant transition-colors flex items-center gap-1 disabled:opacity-60"
                 onClick={markAllReviewed}
-                disabled={allReviewed}
+                disabled={!active.length}
               >
-                {allReviewed ? (
-                  'All items reviewed ✓'
-                ) : (
+                {active.length ? (
                   <>
                     <CheckCheck size={16} /> Mark All As Reviewed
                   </>
+                ) : (
+                  'All items reviewed ✓'
                 )}
               </button>
             </div>
@@ -96,25 +135,53 @@ export default function Flags() {
               ))}
             </div>
             <div className="flex items-center gap-space-xs">
-              <span className="font-label-sm text-label-sm text-secondary">Sorted by: Urgency</span>
-              <button className="p-1.5 rounded-md text-secondary hover:bg-surface-container-high transition-colors" title="Filter preferences">
+              <span className="font-label-sm text-label-sm text-secondary">Sorted by: {sortBy}</span>
+              <button
+                className="p-1.5 rounded-md text-secondary hover:bg-surface-container-high transition-colors"
+                title="Switch sort order"
+                onClick={() => setSortBy(sortBy === 'Urgency' ? 'Amount' : 'Urgency')}
+              >
                 <SlidersHorizontal size={18} />
               </button>
             </div>
           </div>
 
           <div className="space-y-space-md">
-            {data.flags
-              .filter((flag) => filter === 'all' || flag.type === filter)
-              .map((flag) => {
-                const Card = CARD_COMPONENTS[flag.type];
-                return <Card key={flag.id} flag={flag} dimmed={allReviewed} />;
-              })}
+            {visible.map((flag) => {
+              const Card = CARD_COMPONENTS[flag.type];
+              return (
+                <Card
+                  key={flag.id}
+                  flag={flag}
+                  onResolve={(resolution) => resolve([flag], resolution)}
+                  onChangeCategory={() => setCategoryFor(flag)}
+                />
+              );
+            })}
+            {visible.length === 0 && (
+              <div className="p-space-xl rounded-xl bg-surface-container-lowest shadow-sm text-center font-body-md text-body-md text-secondary">
+                No open flags here. Resolved items are listed below.
+              </div>
+            )}
           </div>
 
-          <ResolvedFlags resolved={data.resolved} />
+          <ResolvedFlags resolved={{ count: resolvedCount, items: resolvedItems }} open={historyOpen} onToggle={() => setHistoryOpen(!historyOpen)} />
         </div>
       </div>
+      <FormDialog
+        key={categoryFor?.id || 'none'}
+        open={categoryFor !== null}
+        title={`Change category for ${categoryFor?.merchant || ''}`}
+        fields={[{ name: 'category', label: 'New category', options: CATEGORIES }]}
+        initialValues={{ category: CATEGORIES[0] }}
+        submitLabel="Recategorise"
+        onClose={() => setCategoryFor(null)}
+        onSubmit={({ category }) => {
+          resolve([{ ...categoryFor, category }], `Recategorised to ${category}`);
+          setCategoryFor(null);
+        }}
+      />
+      <Toast message={toast} />
     </main>
   );
 }

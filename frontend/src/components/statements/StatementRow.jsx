@@ -1,7 +1,7 @@
 // One uploaded-statement row: file, upload time, period, record count, parse status and actions.
-import { CircleAlert, CircleCheck, CircleX, EllipsisVertical, FileText, LoaderCircle, ReceiptText, RotateCcw, Sheet, Trash2, TriangleAlert } from 'lucide-react';
+import { CircleAlert, CircleCheck, CircleX, FileText, LoaderCircle, ReceiptText, RotateCcw, Sheet, Trash2, TriangleAlert } from 'lucide-react';
 
-export default function StatementRow({ file, onReupload }) {
+export default function StatementRow({ file, onReupload, onDelete, onViewLogs }) {
   const rejected = file.status === 'rejected';
   const processing = file.status === 'processing';
   const FileIcon = rejected ? TriangleAlert : file.type === 'csv' ? Sheet : FileText;
@@ -55,16 +55,16 @@ export default function StatementRow({ file, onReupload }) {
         <div className="flex items-center justify-end gap-1">
           {file.status === 'parsed' && (
             <>
-              <button className="p-1.5 rounded hover:bg-surface-container text-secondary hover:text-on-surface" title="View extraction logs">
+              <button className="p-1.5 rounded hover:bg-surface-container text-secondary hover:text-on-surface" title="View extraction logs" onClick={onViewLogs}>
                 <ReceiptText size={18} />
               </button>
-              <button className="p-1.5 rounded hover:bg-surface-container text-secondary hover:text-on-surface" title="Options">
-                <EllipsisVertical size={18} />
+              <button className="p-1.5 rounded hover:bg-surface-container text-secondary hover:text-error" title="Remove statement" onClick={onDelete}>
+                <Trash2 size={18} />
               </button>
             </>
           )}
           {processing && (
-            <button className="p-1.5 rounded hover:bg-surface-container text-secondary hover:text-on-surface" title="Cancel ingestion">
+            <button className="p-1.5 rounded hover:bg-surface-container text-secondary hover:text-on-surface" title="Cancel ingestion" onClick={onDelete}>
               <CircleX size={18} />
             </button>
           )}
@@ -77,7 +77,7 @@ export default function StatementRow({ file, onReupload }) {
                 <RotateCcw size={16} />
                 <span>Re-upload</span>
               </button>
-              <button className="p-1.5 rounded hover:bg-surface-container text-secondary hover:text-error" title="Delete file">
+              <button className="p-1.5 rounded hover:bg-surface-container text-secondary hover:text-error" title="Delete file" onClick={onDelete}>
                 <Trash2 size={18} />
               </button>
             </>

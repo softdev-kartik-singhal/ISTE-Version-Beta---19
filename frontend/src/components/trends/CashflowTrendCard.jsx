@@ -34,15 +34,15 @@ export default function CashflowTrendCard({ cashflow }) {
       <div className="mt-4 pt-3 flex flex-wrap items-center justify-between text-secondary font-body-sm text-body-sm bg-surface-container-low px-space-md py-2.5 rounded-lg">
         <div className="flex items-center gap-2">
           <Wallet size={18} className="text-primary" />
-          <span className="text-on-surface font-semibold">Total 6M Inflows:</span>
+          <span className="text-on-surface font-semibold">Total {cashflow.months.length}M Inflows:</span>
           <span className="font-currency-sm text-currency-sm text-on-surface">{formatCurrency(cashflow.totalInflow)}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-on-surface font-semibold">Total 6M Outflows:</span>
+          <span className="text-on-surface font-semibold">Total {cashflow.months.length}M Outflows:</span>
           <span className="font-currency-sm text-currency-sm text-on-surface">{formatCurrency(cashflow.totalOutflow)}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-on-surface font-semibold">Net 6M Realized Surplus:</span>
+          <span className="text-on-surface font-semibold">Net {cashflow.months.length}M Realized Surplus:</span>
           <span className="font-currency-sm text-currency-sm text-primary font-bold">{formatCurrency(cashflow.netSurplus)}</span>
         </div>
       </div>

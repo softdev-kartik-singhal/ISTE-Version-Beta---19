@@ -8,16 +8,29 @@ import WaterfallTable from '../components/ask/WaterfallTable';
 import BonusNote from '../components/ask/BonusNote';
 import WhatIfPanel from '../components/ask/WhatIfPanel';
 import IncompleteDataNotice from '../components/ask/IncompleteDataNotice';
+import Toast from '../components/ui/Toast';
+import { useToast } from '../hooks/useToast';
 
 export default function Ask() {
   const location = useLocation();
   const [result, setResult] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [toast, showToast] = useToast();
 
   // A question typed on the Dashboard arrives through router state.
   const initialQuestion = location.state?.question;
   useEffect(() => {
     askQuestion(initialQuestion).then(setResult);
   }, [initialQuestion]);
+
+  function run(question, includeBonus, message) {
+    setBusy(true);
+    askQuestion(question, { includeBonus }).then((r) => {
+      setResult(r);
+      setBusy(false);
+      showToast(message);
+    });
+  }
 
   if (!result) return null;
 
@@ -29,15 +42,23 @@ export default function Ask() {
             initialQuestion={result.question}
             presets={result.presets}
             accounts={result.accounts}
-            onRecalculate={(q) => askQuestion(q).then(setResult)}
+            busy={busy}
+            onAsk={(q) => run(q, result.includeBonus, 'Cashflow matrices re-synchronized against latest bank entries')}
           />
           <VerdictCard verdict={result.verdict} />
           <WaterfallTable waterfall={result.waterfall} />
-          <BonusNote bonus={result.bonus} />
-          <WhatIfPanel whatIf={result.whatIf} />
+          <BonusNote
+            bonus={result.bonus}
+            included={result.includeBonus}
+            onToggle={() =>
+              run(result.question, !result.includeBonus, result.includeBonus ? 'Bonus removed from simulation' : 'Simulation now includes last year’s bonus')
+            }
+          />
+          <WhatIfPanel key={`${result.question}-${result.includeBonus}`} whatIf={result.whatIf} />
           <IncompleteDataNotice checks={result.safeguards} />
         </div>
       </div>
+      <Toast message={toast} />
     </main>
   );
 }

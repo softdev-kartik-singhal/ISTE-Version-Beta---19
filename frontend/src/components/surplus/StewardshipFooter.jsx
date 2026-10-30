@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom';
 import { BadgeCheck, LockKeyhole, Shield, Wallet } from 'lucide-react';
 
-export default function StewardshipFooter() {
+export default function StewardshipFooter({ onMethodology }) {
   return (
     <footer className="mt-space-md p-space-lg bg-surface-container-lowest rounded-xl shadow-sm flex flex-col gap-space-md">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
@@ -37,7 +37,9 @@ export default function StewardshipFooter() {
         <div className="flex items-center gap-4">
           <Link className="hover:text-primary transition-colors" to="/privacy">Privacy Policy</Link>
           <Link className="hover:text-primary transition-colors" to="/track-record">Audit Disclosures</Link>
-          <a className="hover:text-primary transition-colors" href="#">Methodology</a>
+          <button className="hover:text-primary transition-colors" onClick={onMethodology}>
+            Methodology
+          </button>
         </div>
       </div>
     </footer>

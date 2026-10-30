@@ -1,6 +1,11 @@
 // Surplus Plan screen: emergency fund first, common options, and the monthly allocation simulator.
+import { useState } from 'react';
 import { ExternalLink, Gavel, Info, ShieldCheck } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
+import { useToast } from '../hooks/useToast';
+import { downloadCsv } from '../utils/download';
+import { formatCurrency } from '../utils/formatCurrency';
+import Toast from '../components/ui/Toast';
 import { getSurplusPlan } from '../services/api';
 import EmergencyFundStep from '../components/surplus/EmergencyFundStep';
 import OptionCard from '../components/surplus/OptionCard';
@@ -9,7 +14,32 @@ import StewardshipFooter from '../components/surplus/StewardshipFooter';
 
 export default function SurplusPlan() {
   const data = useApi(getSurplusPlan);
+  const [showBreakdown, setShowBreakdown] = useState(false);
+  const [committed, setCommitted] = useState(false);
+  const [toast, showToast] = useToast();
   if (!data) return null;
+
+  function exportPlan(plan) {
+    downloadCsv('smartgullak-allocation-plan.csv', [
+      { bucket: 'Emergency Buffer', percent: plan.emergencyPct, monthly: plan.emergencyAmt, note: `ETA to target: ${plan.eta}` },
+      { bucket: 'Long-term Goals', percent: plan.goalsPct, monthly: plan.goalsAmt, note: `${plan.goalsAmt * 12} per year` },
+    ]);
+    showToast('Allocation plan exported as CSV');
+  }
+
+  function commit(plan) {
+    setCommitted(!committed);
+    showToast(
+      committed
+        ? 'Commitment removed'
+        : `Next month: ${formatCurrency(plan.emergencyAmt)} to emergency buffer, ${formatCurrency(plan.goalsAmt)} to goals`,
+    );
+  }
+
+  function showMethodology() {
+    setShowBreakdown(true);
+    document.getElementById('emergency-fund').scrollIntoView({ behavior: 'smooth' });
+  }
 
   return (
     <main className="w-full pt-16 px-space-lg py-space-lg flex-1 bg-background">
@@ -45,15 +75,18 @@ export default function SurplusPlan() {
                 <strong className="font-semibold text-on-surface">Educational guidance based on your own numbers</strong> — not investment advice.
                 SmartGullak does not recommend specific mutual fund schemes, stocks, or financial products.
               </p>
-              <span className="font-label-sm text-label-sm text-primary font-medium shrink-0 flex items-center gap-1 cursor-pointer hover:underline">
+              <button
+                className="font-label-sm text-label-sm text-primary font-medium shrink-0 flex items-center gap-1 cursor-pointer hover:underline"
+                onClick={() => showToast('Compliance Charter: guidance only, no product recommendations, all maths runs on your own data')}
+              >
                 Compliance Charter <ExternalLink size={14} />
-              </span>
+              </button>
             </div>
           </div>
         </div>
 
         <div className="flex flex-col gap-space-xl">
-          <EmergencyFundStep fund={data.emergencyFund} />
+          <EmergencyFundStep fund={data.emergencyFund} showBreakdown={showBreakdown} onToggleBreakdown={() => setShowBreakdown(!showBreakdown)} />
 
           <section className="flex flex-col gap-space-md">
             <div className="flex flex-col gap-1">
@@ -82,10 +115,11 @@ export default function SurplusPlan() {
             </div>
           </section>
 
-          <AllocationSimulator allocation={data.allocation} />
-          <StewardshipFooter />
+          <AllocationSimulator allocation={data.allocation} committed={committed} onExport={exportPlan} onCommit={commit} />
+          <StewardshipFooter onMethodology={showMethodology} />
         </div>
       </div>
+      <Toast message={toast} />
     </main>
   );
 }

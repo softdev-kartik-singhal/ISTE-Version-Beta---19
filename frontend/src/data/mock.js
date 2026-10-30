@@ -11,9 +11,16 @@ export const session = {
       'https://lh3.googleusercontent.com/aida-public/AB6AXuDgNfhfBwZomXyNpgIqOBqRKUuI8Bqic3vZdBkGnq3N1Q6bZdCiMf5PSWM71KmMYmcXE1acaUnVaXGajb37-WprKCDWzpH_G8Ji7ErPUnKhfHoFqC0IC_jahI-kAHDMMTAUBEhbfO2wUNoRUNK5ebcEPR4-bIQ3M0pX4JGoBFMwK4FLGa5Bdph44lQ5B9B70rjjpUW-EgdQpPl5TxUhb_KZkyEkdwPOiTrFMTrJWWk',
   },
   accountCount: 3,
+  accounts: ['HDFC ••8491', 'ICICI ••4022', 'Kotak ••1190'],
   lastSynced: 'Today, 10:45 AM',
   syncSummary: 'HDFC, ICICI & Kotak synced • 12m ago',
   flagCount: 3,
+};
+
+/* ---------- Auth (demo account for the Log In screen) ---------- */
+export const auth = {
+  email: 'aditya.rao@work.in',
+  password: 'VaultKey#9240',
 };
 
 /* ---------- Dashboard ---------- */
@@ -592,6 +599,7 @@ export const moneyFlow = {
       detail: 'Driven by dual AI tooling seats (Cursor Pro + Claude Pro) and upgraded iCloud tier during freelance sprint cycle.',
       footer: 'Auto-renew active on SBI card',
       action: 'Review subs →',
+      query: 'Netflix',
     },
     {
       label: 'Most Concentrated Outflow',
@@ -605,6 +613,7 @@ export const moneyFlow = {
         'Airport rides and late-night client office commutes dominate transit spend. Negligible public metro or smart transit usage recorded.',
       footer: '16 rides via HDFC Premier',
       action: 'Transit rules →',
+      query: 'Ather',
     },
     {
       label: 'New Statement Counterparties',
@@ -618,6 +627,7 @@ export const moneyFlow = {
         'Zepto registered 4 quick-commerce orders (₹1,840) within 12 days of initial statement appearance. Categorized as recurring lifestyle candidate.',
       footer: 'All 3 auto-categorized correctly',
       action: 'Manage tags →',
+      query: 'Swiggy',
     },
   ],
 };
@@ -643,6 +653,7 @@ export const goals = {
       percentFunded: '66.6',
       monthlyNeeded: 26700,
       horizon: 'March 2025 (1 month remaining)',
+      monthsLeft: 1,
       analysisIcon: 'chart',
       analysis: [
         'At current surplus of ₹24,650, you are ',
@@ -663,6 +674,7 @@ export const goals = {
       percentFunded: '66.7',
       monthlyNeeded: 7500,
       horizon: 'April 2025 (2 months remaining)',
+      monthsLeft: 2,
       analysisIcon: 'verified',
       analysis: [
         'Comfortably covered by ',
@@ -683,6 +695,7 @@ export const goals = {
       percentFunded: '21.0',
       monthlyNeeded: 50000,
       horizon: 'May 2025 (3 months remaining)',
+      monthsLeft: 3,
       analysisIcon: 'siren',
       analysis: [
         'Required ₹50,000/mo exceeds total average liquid surplus (₹24,650). Extending by 6 months brings required allocation down to ',
@@ -703,6 +716,7 @@ export const goals = {
       percentFunded: '45.2',
       monthlyNeeded: 10960,
       horizon: 'July 2025 (5 months remaining)',
+      monthsLeft: 5,
       analysisIcon: 'wallet',
       analysis: [
         'Aligned with anticipated freelance invoice settlements from ',
@@ -1198,5 +1212,90 @@ export const flags = {
         date: '05 Oct',
       },
     ],
+  },
+};
+
+/* ---------- Track Record ---------- */
+export const trackRecord = {
+  version: 'v1.8',
+  integrity: { block: '4,912', entries: 12, merkleRoot: '0x9b41e2...7fa0c3' },
+  kpis: [
+    { label: 'Forecast Accuracy', icon: 'target', value: '75.0%', valueClass: 'text-on-surface', chip: '3 of 4 in range', chipClass: 'bg-surface-container text-primary', note: 'Closed-horizon evaluation' },
+    { label: 'Average Miss Margin', icon: 'down', value: '₹2,100', valueClass: 'text-tertiary', chip: '1 breach total', chipClass: 'bg-tertiary-fixed text-tertiary', note: 'Lower than 1.8% of income pool' },
+    { label: 'Cryptographic State', icon: 'link', value: '12 / 12', valueClass: 'text-on-surface', chip: '0 Breaches', chipClass: 'bg-surface-container-high text-primary', note: 'Merkle-hashed log entries' },
+    { label: 'Learning Delta', icon: 'brain', value: '+16.0%', valueClass: 'text-primary-container', chip: 'Iterative gain', chipClass: 'bg-surface-container-high text-primary', note: 'Post merchant rule corrections' },
+  ],
+  finding: {
+    headline: 'Our last 4 forecasts: the actual result fell inside our range 3 out of 4 times. Average miss: ₹2,100.',
+    detail:
+      'SmartGullak models conservative downside buffers to avoid liquidity crunches. In October 2024, unexpected freelance retainer delay pushed surplus ₹2,100 below the low-water mark; in all other months, actual bank closing balances tracked strictly within predicted typical-to-best intervals.',
+    facts: [
+      { label: 'Conservative Safety Ceiling', value: '₹15,000 / month', valueClass: 'text-on-surface', note: 'Always isolated from spendable cash' },
+      { label: 'Retainer Delay Resilience', value: '14 Days Buffer', valueClass: 'text-primary', note: 'Absorbs freelance payment volatility' },
+    ],
+  },
+  scaleMax: 40000,
+  forecasts: [
+    { month: 'October 2024', query: 'Post-Diwali Freelance Flow', low: 14000, high: 32000, actual: 11900, outcome: 'Out of bounds by ₹2,100', note: 'Freelance invoice delayed by 18 days' },
+    { month: 'September 2024', query: 'Q3 Tech Gadget Purchase', low: 15000, high: 29000, actual: 22400, outcome: 'Optimal Precision (64% Median)', note: 'Bonus payment settled as anticipated' },
+    { month: 'August 2024', query: 'Goa Flight + Stay Expense', low: 10000, high: 24000, actual: 14800, outcome: 'Near Low-Water Mark (+₹4.8k)', note: 'Dining budget exceeded by ₹3,200' },
+    { month: 'July 2024', query: 'Ergonomic Chair Upgrade', low: 12000, high: 28000, actual: 18400, outcome: 'Bullseye Match (48% Median)', note: 'Zero unforecasted line items' },
+  ],
+  ledger: {
+    total: 12,
+    entries: [
+      { timestamp: '24 Oct 2024 • 14:12', question: '₹45,000 for M3 MacBook Air (EMI)', verdict: 'Affordable / Safe', verdictType: 'safe', projected: 18500, actual: 11900, actualClass: 'text-tertiary font-semibold', hash: '0x8f2a...c39e' },
+      { timestamp: '12 Sep 2024 • 09:40', question: '₹18,000 for Sony WH-1000XM5', verdict: 'Affordable / Safe', verdictType: 'safe', projected: 22000, actual: 22400, actualClass: 'text-primary font-semibold', hash: '0x4e11...90ab' },
+      { timestamp: '03 Aug 2024 • 19:15', question: '₹32,000 for Goa Workation & Stay', verdict: 'Conditional Approval', verdictType: 'conditional', projected: 12400, actual: 14800, actualClass: 'text-primary font-semibold', hash: '0x7c88...12fe' },
+      { timestamp: '18 Jul 2024 • 11:05', question: '₹24,000 for Herman Miller Aeron (Pre-owned)', verdict: 'Affordable / Safe', verdictType: 'safe', projected: 19000, actual: 18400, actualClass: 'text-primary font-semibold', hash: '0x1a90...df54' },
+      { timestamp: '02 Jun 2024 • 16:50', question: '₹80,000 for Apple Vision Pro Deposit', verdict: 'Buffer Risk (Avoid)', verdictType: 'risk', projected: -14000, projectedLabel: '₹-14,000', actual: null, actualClass: 'text-secondary font-medium', hash: '0x33e1...bb20' },
+    ],
+    // Returned by "Load earlier records".
+    older: [
+      { timestamp: '21 May 2024 • 10:02', question: '₹12,000 for Annual Gym Membership', verdict: 'Affordable / Safe', verdictType: 'safe', projected: 21000, actual: 20300, actualClass: 'text-primary font-semibold', hash: '0x5d02...a811' },
+      { timestamp: '08 May 2024 • 21:40', question: '₹65,000 for Bali Trip (Dec)', verdict: 'Conditional Approval', verdictType: 'conditional', projected: 4800, actual: 6100, actualClass: 'text-primary font-semibold', hash: '0x2b7c...e9d4' },
+      { timestamp: '19 Apr 2024 • 13:25', question: '₹9,500 for Kindle Scribe', verdict: 'Affordable / Safe', verdictType: 'safe', projected: 24500, actual: 25100, actualClass: 'text-primary font-semibold', hash: '0xc4a9...0b77' },
+    ],
+  },
+  learning: {
+    baseline: 78.0,
+    tuned: 94.2,
+    note: 'Based on 34 manual category reclassifications and bulk merchant rules (e.g., SWIGGY Instamart mapped to Groceries & Household Essentials). The classification engine retrains locally after every 5 resolved flags, preventing phantom expense inflations.',
+    overrides: [
+      { icon: 'basket', merchant: 'Swiggy Instamart', rule: 'Split: 70% Groceries / 30% Impulsive', status: '+14 rules active' },
+      { icon: 'terminal', merchant: 'Stripe Cursor SaaS', rule: 'Auto-tagged Sec. 44ADA Expense', status: 'Tax deductibility logged' },
+      { icon: 'chair', merchant: 'IKEA Furniture', rule: 'Capital Amortization over 24 mo', status: 'Excluded from burn spike' },
+    ],
+  },
+};
+
+/* ---------- Privacy & Data ---------- */
+export const privacy = {
+  auditTrail: 'SG-7729-SEC',
+  hardwareKey: '••3820-FIDO',
+  card: { last4: '4F2A', added: '30 Oct 2026', firmware: 'FIDO2 v2.4' },
+  maskedAccount: 'HDFC ••8491',
+  exportFileName: 'SmartGullak_Transactions_2024.csv',
+};
+
+/* ---------- Landing (public simulator + pricing) ---------- */
+export const landing = {
+  simulator: {
+    defaultAmount: 80000,
+    min: 20000,
+    max: 160000,
+    step: 5000,
+    // Monthly numbers behind the sample decision waterfall.
+    income: 245000,
+    committed: 58200,
+    baseline: 64000,
+    safetyFloor: 25000,
+    freelanceAtRisk: 65000,
+    pendingRefund: 36500,
+    cardKey: '#SG-7741',
+  },
+  plans: {
+    starter: { price: 0 },
+    premium: { price: 99, annual: 999, saving: '16%' },
   },
 };

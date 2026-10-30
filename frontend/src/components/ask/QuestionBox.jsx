@@ -5,17 +5,17 @@ import { Brain, CircleCheck, Network, Zap } from 'lucide-react';
 const PILL_ACTIVE = 'bg-primary-container text-on-primary shadow-sm flex items-center gap-1.5';
 const PILL_IDLE = 'bg-surface hover:bg-surface-container text-secondary hover:text-on-surface';
 
-export default function QuestionBox({ initialQuestion, presets, accounts, onRecalculate }) {
+export default function QuestionBox({ initialQuestion, presets, accounts, busy, onAsk }) {
   const [question, setQuestion] = useState(initialQuestion);
-  const [busy, setBusy] = useState(false);
 
-  function recalculate() {
-    setBusy(true);
-    setTimeout(() => {
-      setBusy(false);
-      onRecalculate(question);
-      alert('Cashflow matrices re-synchronized against latest bank webhook entries.');
-    }, 300);
+  function ask(e) {
+    e.preventDefault();
+    onAsk(question);
+  }
+
+  function pickPreset(preset) {
+    setQuestion(preset);
+    onAsk(preset);
   }
 
   return (
@@ -38,7 +38,7 @@ export default function QuestionBox({ initialQuestion, presets, accounts, onReca
         </div>
       </div>
       <div className="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-space-md">
-        <div className="relative flex flex-col lg:flex-row items-stretch gap-space-sm">
+        <form onSubmit={ask} className="relative flex flex-col lg:flex-row items-stretch gap-space-sm">
           <div className="relative flex-1 flex items-center">
             <Brain size={22} className="absolute left-3.5 text-secondary" />
             <input
@@ -51,14 +51,15 @@ export default function QuestionBox({ initialQuestion, presets, accounts, onReca
           </div>
           <div className="flex items-center gap-space-sm">
             <button
+              type="submit"
+              disabled={busy}
               className={`h-12 px-space-lg rounded-lg bg-primary-container hover:bg-primary text-on-primary font-headline-sm text-body-md font-semibold transition-all flex items-center justify-center gap-2 shadow-sm active:scale-[0.99] ${busy ? 'opacity-75' : ''}`}
-              onClick={recalculate}
             >
               <Zap size={20} />
-              <span>Recalculate</span>
+              <span>{busy ? 'Calculating...' : 'Recalculate'}</span>
             </button>
           </div>
-        </div>
+        </form>
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-space-sm pt-space-xs">
           <div className="flex flex-wrap items-center gap-2">
             {presets.map((preset) => {
@@ -67,7 +68,7 @@ export default function QuestionBox({ initialQuestion, presets, accounts, onReca
                 <button
                   key={preset}
                   className={`px-3 py-1.5 rounded-lg font-label-md text-label-md transition-all ${active ? PILL_ACTIVE : PILL_IDLE}`}
-                  onClick={() => setQuestion(preset)}
+                  onClick={() => pickPreset(preset)}
                 >
                   {active && <CircleCheck size={14} />}
                   <span>{preset}</span>

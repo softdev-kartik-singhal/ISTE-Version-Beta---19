@@ -1,15 +1,14 @@
 // Collapsible "Resolved Flags" section listing recently resolved anomalies.
-import { useState } from 'react';
-import { Archive, ArrowRight, CarTaxiFront, ChevronDown, CircleCheck, Dumbbell } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Archive, ArrowRight, BadgeAlert, CarTaxiFront, ChevronDown, CircleCheck, Copy, Dumbbell, TrendingUp } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatCurrency';
 
-const ICONS = { taxi: CarTaxiFront, fitness: Dumbbell, archive: Archive };
+const ICONS = { taxi: CarTaxiFront, fitness: Dumbbell, archive: Archive, duplicate: Copy, large: TrendingUp, 'new-merchant': BadgeAlert };
 
-export default function ResolvedFlags({ resolved }) {
-  const [open, setOpen] = useState(false);
+export default function ResolvedFlags({ resolved, open, onToggle }) {
   return (
     <div className="rounded-xl bg-surface-container-lowest shadow-sm overflow-hidden">
-      <button className="w-full p-space-lg flex items-center justify-between text-left hover:bg-surface-container-low transition-colors" onClick={() => setOpen(!open)}>
+      <button className="w-full p-space-lg flex items-center justify-between text-left hover:bg-surface-container-low transition-colors" onClick={onToggle}>
         <div className="flex items-center gap-space-sm">
           <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
             <CircleCheck size={22} />
@@ -37,7 +36,7 @@ export default function ResolvedFlags({ resolved }) {
             {resolved.items.map((item) => {
               const Icon = ICONS[item.icon];
               return (
-                <div key={item.merchant} className="p-3 rounded-lg bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+                <div key={item.id || item.merchant} className="p-3 rounded-lg bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
                   <div className="flex items-center gap-space-sm">
                     <Icon size={20} className="text-secondary" />
                     <div>
@@ -56,10 +55,13 @@ export default function ResolvedFlags({ resolved }) {
           </div>
           <div className="pt-2 flex items-center justify-between">
             <span className="font-label-sm text-label-sm text-secondary">Resolutions automatically update the &quot;Can I afford...?&quot; safe ceiling algorithm.</span>
-            <button className="px-4 py-2 rounded-lg bg-surface-container-high text-primary font-label-md text-label-md font-semibold hover:bg-surface-container transition-all flex items-center gap-1">
+            <Link
+              to="/track-record"
+              className="px-4 py-2 rounded-lg bg-surface-container-high text-primary font-label-md text-label-md font-semibold hover:bg-surface-container transition-all flex items-center gap-1"
+            >
               <span>View full resolution history</span>
               <ArrowRight size={16} />
-            </button>
+            </Link>
           </div>
         </div>
       )}

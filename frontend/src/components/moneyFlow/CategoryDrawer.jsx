@@ -42,7 +42,7 @@ export default function CategoryDrawer({ detail, onClose }) {
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <span className="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">What Drove The Change</span>
-            <span className="font-label-sm text-label-sm text-primary cursor-pointer hover:underline">Oct vs Sep</span>
+            <span className="font-label-sm text-label-sm text-primary">{detail.compareLabel}</span>
           </div>
           <div className="flex flex-col gap-2">
             {detail.drivers.map((d, i) => (

@@ -4,7 +4,7 @@ import { BadgeAlert, Check, Clock, Pencil, ReceiptText, Repeat, Sparkles, Termin
 import FlagCardShell from './FlagCardShell';
 import { formatCurrency } from '../../utils/formatCurrency';
 
-export default function NewMerchantFlagCard({ flag, dimmed }) {
+export default function NewMerchantFlagCard({ flag, dimmed, onResolve, onChangeCategory }) {
   const [detectRecurring, setDetectRecurring] = useState(true);
   return (
     <FlagCardShell
@@ -22,18 +22,18 @@ export default function NewMerchantFlagCard({ flag, dimmed }) {
       }
       actions={
         <>
-          <button className="px-3.5 py-2 rounded-lg bg-primary-container text-white font-label-md text-label-md font-semibold hover:bg-primary transition-all flex items-center gap-1.5 shadow-sm">
+          <button onClick={() => onResolve('Added to Subscriptions')} className="px-3.5 py-2 rounded-lg bg-primary-container text-white font-label-md text-label-md font-semibold hover:bg-primary transition-all flex items-center gap-1.5 shadow-sm">
             <Check size={18} /> Looks fine &amp; add to Subscriptions
           </button>
-          <button className="px-3.5 py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md font-medium hover:bg-surface-container hover:text-primary transition-all flex items-center gap-1">
+          <button onClick={onChangeCategory} className="px-3.5 py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md font-medium hover:bg-surface-container hover:text-primary transition-all flex items-center gap-1">
             <Pencil size={16} /> Change category
           </button>
-          <button className="px-3.5 py-2 rounded-lg bg-emerald-50 text-emerald-800 font-label-md text-label-md font-medium hover:bg-emerald-100 transition-all flex items-center gap-1">
+          <button onClick={() => onResolve('Tagged as freelance tax deductible (44ADA)')} className="px-3.5 py-2 rounded-lg bg-emerald-50 text-emerald-800 font-label-md text-label-md font-medium hover:bg-emerald-100 transition-all flex items-center gap-1">
             <ReceiptText size={16} className="text-emerald-700" /> Tag: Freelance Tax Deductible
           </button>
         </>
       }
-      aside={<button className="px-3 py-1.5 text-secondary hover:text-on-surface font-label-sm text-label-sm">Do not predict future debits</button>}
+      aside={<button onClick={() => onResolve('Excluded from future debit predictions')} className="px-3 py-1.5 text-secondary hover:text-on-surface font-label-sm text-label-sm">Do not predict future debits</button>}
     >
       <div className="lg:col-span-5 flex items-start gap-space-sm">
         <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-700 shrink-0">

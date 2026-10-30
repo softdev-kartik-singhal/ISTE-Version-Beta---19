@@ -11,7 +11,7 @@ const TOP_OPTIONS = [
   { value: 10, label: 'Top 10' },
 ];
 
-export default function MoneyFlowHeader({ monthLabel, compare, topN, onCompareChange, onTopNChange }) {
+export default function MoneyFlowHeader({ monthLabel, compare, topN, onCompareChange, onTopNChange, onResetView, onFullscreen }) {
   return (
     <div className="flex flex-col gap-space-md mb-space-lg">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-space-md">
@@ -39,10 +39,10 @@ export default function MoneyFlowHeader({ monthLabel, compare, topN, onCompareCh
           <SegmentedToggle options={COMPARE_OPTIONS} value={compare} onChange={onCompareChange} activeTextClass="text-primary" />
           <SegmentedToggle options={TOP_OPTIONS} value={topN} onChange={onTopNChange} padClass="px-2.5" />
           <div className="flex items-center gap-1">
-            <button className="p-2 rounded-lg bg-surface-container-lowest hover:bg-surface-container-low text-on-surface-variant transition-colors shadow-sm" title="Reset Zoom" type="button">
+            <button className="p-2 rounded-lg bg-surface-container-lowest hover:bg-surface-container-low text-on-surface-variant transition-colors shadow-sm" title="Reset Zoom" type="button" onClick={onResetView}>
               <Scan size={18} />
             </button>
-            <button className="p-2 rounded-lg bg-surface-container-lowest hover:bg-surface-container-low text-on-surface-variant transition-colors shadow-sm" title="Fullscreen" type="button">
+            <button className="p-2 rounded-lg bg-surface-container-lowest hover:bg-surface-container-low text-on-surface-variant transition-colors shadow-sm" title="Fullscreen" type="button" onClick={onFullscreen}>
               <Maximize size={18} />
             </button>
           </div>

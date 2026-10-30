@@ -1,26 +1,52 @@
 // Trends & Surplus screen: summary cards, monthly cashflow chart, category variances and intelligence panel.
+import { useState } from 'react';
 import { Gauge, Info } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
+import { useToast } from '../hooks/useToast';
 import { getTrends } from '../services/api';
+import { downloadCsv } from '../utils/download';
 import TrendsHeader from '../components/trends/TrendsHeader';
 import TrendSummaryCards from '../components/trends/TrendSummaryCards';
 import CashflowTrendCard from '../components/trends/CashflowTrendCard';
 import CategoryTrendsTable from '../components/trends/CategoryTrendsTable';
 import IntelligencePanel from '../components/trends/IntelligencePanel';
+import Toast from '../components/ui/Toast';
+
+// The "Last 3 Months" option keeps only the most recent three months of data.
+function cashflowFor(period, periods, cashflow) {
+  if (period !== periods[1]) return cashflow;
+  const months = cashflow.months.slice(-3);
+  const totalInflow = months.reduce((s, m) => s + m.inflow, 0);
+  const totalOutflow = months.reduce((s, m) => s + m.outflow, 0);
+  return { months, totalInflow, totalOutflow, netSurplus: totalInflow - totalOutflow };
+}
 
 export default function Trends() {
   const data = useApi(getTrends);
+  const [period, setPeriod] = useState(null);
+  const [toast, showToast] = useToast();
   if (!data) return null;
+
+  const selected = period || data.periods[0];
+  const cashflow = cashflowFor(selected, data.periods, data.cashflow);
+
+  function exportTrends() {
+    downloadCsv('smartgullak-trends.csv', [
+      ...cashflow.months.map((m) => ({ type: 'month', name: m.label, inflow: m.inflow, outflow: m.outflow, surplus: m.surplus })),
+      ...data.categories.map((c) => ({ type: 'category', name: c.name, inflow: '', outflow: c.thisMonth, surplus: c.variance })),
+    ]);
+    showToast('Trends exported as CSV');
+  }
 
   return (
     <main className="relative pt-16 min-h-screen bg-[#F7F9FC]">
       <div className="flex flex-col w-full">
         <div className="px-space-xl py-space-lg space-y-space-lg max-w-[1440px] mx-auto w-full">
-          <TrendsHeader periods={data.periods} />
+          <TrendsHeader periods={data.periods} period={selected} onPeriodChange={setPeriod} onExport={exportTrends} />
           <TrendSummaryCards summary={data.summary} />
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
             <div className="lg:col-span-8 space-y-space-lg">
-              <CashflowTrendCard cashflow={data.cashflow} />
+              <CashflowTrendCard cashflow={cashflow} />
               <CategoryTrendsTable categories={data.categories} month={data.categoryMonth} />
             </div>
             <div className="lg:col-span-4 space-y-space-md">
@@ -50,6 +76,7 @@ export default function Trends() {
           </div>
         </div>
       </div>
+      <Toast message={toast} />
     </main>
   );
 }

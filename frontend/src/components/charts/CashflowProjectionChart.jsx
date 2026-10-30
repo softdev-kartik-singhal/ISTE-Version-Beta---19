@@ -1,32 +1,8 @@
 // 8-week balance projection: median line, variance band, runway buffer and labelled cash events.
 import { Area, CartesianGrid, ComposedChart, Line, ReferenceLine, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import ProjectionEventDot from './ProjectionEventDot';
 
 const toLakh = (v) => `₹${(v / 100000).toFixed(1)}L`;
-
-// Dark callout above income events, white callout below expense events (as in the design).
-function EventDot({ cx, cy, payload, index }) {
-  if (!payload.event) return <g key={index} />;
-  const income = payload.eventTone === 'income';
-  const width = payload.event.length * 5.6 + 16;
-  return (
-    <g key={index} transform={`translate(${cx}, ${cy})`}>
-      <circle r="4.5" fill={income ? '#1d4ed8' : '#ba1a1a'} />
-      {income ? (
-        <>
-          <rect fill="#0B2545" height="24" rx="4" width={width} x={-width / 2} y="-36" />
-          <text fill="#FFFFFF" fontFamily="Inter" fontSize="10" fontWeight="500" textAnchor="middle" y="-20">{payload.event}</text>
-          <polygon fill="#0B2545" points="-4,-12 4,-12 0,-7" />
-        </>
-      ) : (
-        <>
-          <rect fill="#ffffff" stroke="#E3E8EF" height="24" rx="4" width={width} x={-width / 2} y="12" />
-          <text fill="#ba1a1a" fontFamily="Inter" fontSize="10" fontWeight="500" textAnchor="middle" y="28">{payload.event}</text>
-          <polygon fill="#ffffff" stroke="#E3E8EF" points="-4,12 4,12 0,7" />
-        </>
-      )}
-    </g>
-  );
-}
 
 export default function CashflowProjectionChart({ weeks, runwayBuffer }) {
   const data = weeks.map((w) => ({ ...w, band: [w.low, w.high] }));
@@ -64,7 +40,7 @@ export default function CashflowProjectionChart({ weeks, runwayBuffer }) {
           strokeWidth={2.5}
           strokeLinecap="round"
           strokeLinejoin="round"
-          dot={EventDot}
+          dot={ProjectionEventDot}
           activeDot={false}
           isAnimationActive={false}
         />

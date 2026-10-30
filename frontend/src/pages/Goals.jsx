@@ -1,17 +1,85 @@
-// Goals screen: portfolio KPIs, goal cards with feasibility, and the "New Goal" dialog.
-import { useState } from 'react';
+// Goals screen: portfolio KPIs, goal cards with feasibility, create/edit dialog, timeline adjustment and export.
+import { useEffect, useState } from 'react';
 import { Plus, Share, ShieldCheck, SlidersHorizontal } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
+import { useToast } from '../hooks/useToast';
 import { getGoals } from '../services/api';
+import { downloadCsv } from '../utils/download';
+import { evaluateGoal, realisticMonths } from '../utils/goalMath';
 import GoalSummaryCards from '../components/goals/GoalSummaryCards';
 import GoalCard from '../components/goals/GoalCard';
 import GoalDialog from '../components/dialogs/GoalDialog';
+import Toast from '../components/ui/Toast';
 import { formatCurrency } from '../utils/formatCurrency';
+
+// Summary numbers follow the goals: totals are recomputed, commitment shifts by how much monthly needs changed.
+function summaryFor(data, goals) {
+  const saved = goals.reduce((s, g) => s + g.saved, 0);
+  const target = goals.reduce((s, g) => s + g.target, 0);
+  const initialMonthly = data.goals.reduce((s, g) => s + g.monthlyNeeded, 0);
+  const monthly = goals.reduce((s, g) => s + g.monthlyNeeded, 0);
+  const initialOnTrack = data.goals.filter((g) => g.status === 'onTrack').length;
+  const onTrack = goals.filter((g) => g.status === 'onTrack').length;
+  return {
+    portfolio: { count: goals.length, fundedPercent: target ? ((saved / target) * 100).toFixed(1) : '0.0', saved, target },
+    commitment: { ...data.summary.commitment, required: data.summary.commitment.required + monthly - initialMonthly },
+    viability: { ...data.summary.viability, solvent: data.summary.viability.solvent + onTrack - initialOnTrack, total: goals.length },
+  };
+}
 
 export default function Goals() {
   const data = useApi(getGoals);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  if (!data) return null;
+  const [goals, setGoals] = useState(null);
+  const [dialog, setDialog] = useState(null); // null | { goal?: existing goal }
+  const [toast, showToast] = useToast();
+
+  useEffect(() => {
+    if (data) setGoals(data.goals);
+  }, [data]);
+
+  if (!data || !goals) return null;
+  const average = data.surplus.average;
+
+  function saveGoal(values) {
+    if (dialog.goal) {
+      setGoals(goals.map((g) => (g.id === dialog.goal.id ? evaluateGoal({ ...g, ...values }, average) : g)));
+      showToast(`Updated "${values.name}"`);
+    } else {
+      const goal = evaluateGoal({ id: `goal-${Date.now()}`, priority: 'Medium', ...values }, average);
+      setGoals([...goals, goal]);
+      showToast(`Goal created: ${formatCurrency(goal.monthlyNeeded)}/mo locked in`);
+    }
+    setDialog(null);
+  }
+
+  // Unreachable goals jump straight to the realistic date; others open the editor on the timeline.
+  function adjust(goal) {
+    if (goal.status !== 'unreachable') return setDialog({ goal });
+    const months = realisticMonths(goal.target - goal.saved, average);
+    setGoals(goals.map((g) => (g.id === goal.id ? evaluateGoal({ ...g, monthsLeft: months }, average) : g)));
+    showToast(`"${goal.name}" moved to a ${months}-month timeline`);
+  }
+
+  function exportGoals() {
+    downloadCsv(
+      'smartgullak-goals.csv',
+      goals.map((g) => ({
+        goal: g.name,
+        category: g.category,
+        target: g.target,
+        saved: g.saved,
+        monthly_needed: g.monthlyNeeded,
+        horizon: g.horizon,
+        status: g.statusLabel,
+      })),
+    );
+    showToast('Goals exported as CSV');
+  }
+
+  const draft = data.draft;
+  const initial = dialog?.goal
+    ? { name: dialog.goal.name, target: dialog.goal.target, monthsLeft: dialog.goal.monthsLeft, category: dialog.goal.category, saved: dialog.goal.saved }
+    : { name: draft.name, target: Number(draft.target.replace(/,/g, '')), monthsLeft: 3, category: draft.classification, saved: Number(draft.seed.replace(/,/g, '')) };
 
   return (
     <main className="w-full pt-16 px-space-lg py-space-lg flex-1 bg-background">
@@ -31,13 +99,16 @@ export default function Goals() {
             </p>
           </div>
           <div className="flex items-center gap-space-sm shrink-0">
-            <button className="px-4 py-2 bg-surface-container-lowest text-on-surface font-label-md text-label-md rounded-lg shadow-sm hover:bg-surface-container-low transition-colors flex items-center gap-1.5 cursor-pointer">
+            <button
+              className="px-4 py-2 bg-surface-container-lowest text-on-surface font-label-md text-label-md rounded-lg shadow-sm hover:bg-surface-container-low transition-colors flex items-center gap-1.5 cursor-pointer"
+              onClick={exportGoals}
+            >
               <Share size={18} className="text-on-surface-variant" />
               <span>Export Goals</span>
             </button>
             <button
               className="px-4 py-2 bg-primary-container text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:bg-primary transition-all flex items-center gap-1.5 cursor-pointer"
-              onClick={() => setDialogOpen(true)}
+              onClick={() => setDialog({})}
             >
               <Plus size={18} />
               <span>New Goal</span>
@@ -45,14 +116,12 @@ export default function Goals() {
           </div>
         </div>
 
-        <GoalSummaryCards summary={data.summary} />
+        <GoalSummaryCards summary={summaryFor(data, goals)} />
 
         <div className="flex items-center justify-between mb-space-md">
           <div className="flex items-center gap-space-sm">
             <h2 className="font-headline-sm text-headline-sm text-on-surface">Capital Milestones</h2>
-            <span className="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
-              {data.goals.length} Scheduled
-            </span>
+            <span className="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">{goals.length} Scheduled</span>
           </div>
           <div className="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
             <SlidersHorizontal size={16} className="text-primary" />
@@ -61,9 +130,11 @@ export default function Goals() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-space-lg mb-space-xl">
-          {data.goals.map((goal) => (
-            <GoalCard key={goal.id} goal={goal} onEdit={() => setDialogOpen(true)} />
-          ))}
+          {[...goals]
+            .sort((a, b) => a.monthsLeft - b.monthsLeft)
+            .map((goal) => (
+              <GoalCard key={goal.id} goal={goal} onEdit={() => setDialog({ goal })} onAdjust={() => adjust(goal)} />
+            ))}
         </div>
 
         <div className="bg-surface-container-low rounded-xl p-space-md flex items-center justify-between gap-space-md">
@@ -80,8 +151,18 @@ export default function Goals() {
           <span className="hidden sm:inline-flex font-label-sm text-label-sm text-outline shrink-0">Revision ID: {data.revisionId}</span>
         </div>
 
-        <GoalDialog open={dialogOpen} onClose={() => setDialogOpen(false)} draft={data.draft} classifications={data.classifications} />
+        <GoalDialog
+          key={dialog ? dialog.goal?.id || 'new' : 'closed'}
+          open={dialog !== null}
+          editing={Boolean(dialog?.goal)}
+          initial={initial}
+          classifications={data.classifications}
+          averageSurplus={average}
+          onClose={() => setDialog(null)}
+          onSave={saveGoal}
+        />
       </div>
+      <Toast message={toast} />
     </main>
   );
 }

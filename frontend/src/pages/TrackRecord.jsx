@@ -1,6 +1,10 @@
 // Track Record screen: forecast accuracy KPIs, range-vs-actual chart, integrity check, audit ledger and learning loop.
+import { useState } from 'react';
 import { Download, ShieldCheck } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
+import { useToast } from '../hooks/useToast';
+import { downloadJson } from '../utils/download';
+import Toast from '../components/ui/Toast';
 import { getTrackRecord } from '../services/api';
 import VerifyLedgerButton from '../components/trackRecord/VerifyLedgerButton';
 import TrackRecordKpis from '../components/trackRecord/TrackRecordKpis';
@@ -11,7 +15,20 @@ import LearningLoop from '../components/trackRecord/LearningLoop';
 
 export default function TrackRecord() {
   const data = useApi(getTrackRecord);
+  const [olderLoaded, setOlderLoaded] = useState(false);
+  const [toast, showToast] = useToast();
   if (!data) return null;
+
+  function exportProof() {
+    const entries = olderLoaded ? [...data.ledger.entries, ...data.ledger.older] : data.ledger.entries;
+    downloadJson('smartgullak-merkle-proof.json', {
+      block: data.integrity.block,
+      merkleRoot: data.integrity.merkleRoot,
+      generatedAt: new Date().toISOString(),
+      leaves: entries.map((e) => ({ timestamp: e.timestamp, question: e.question, verdict: e.verdict, hash: e.hash })),
+    });
+    showToast('Merkle proof exported');
+  }
 
   return (
     <main className="relative pt-16 min-h-screen bg-[#F7F9FC]">
@@ -36,7 +53,10 @@ export default function TrackRecord() {
             </div>
             <div className="flex items-center gap-space-sm self-start md:self-auto">
               <VerifyLedgerButton blockCount={data.integrity.block} />
-              <button className="inline-flex items-center gap-1.5 h-10 px-space-md rounded-lg bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors shadow-sm">
+              <button
+                className="inline-flex items-center gap-1.5 h-10 px-space-md rounded-lg bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors shadow-sm"
+                onClick={exportProof}
+              >
                 <Download size={18} />
                 <span>Export Merkle Proof</span>
               </button>
@@ -71,10 +91,18 @@ export default function TrackRecord() {
 
           <ForecastComparison months={data.forecasts} scaleMax={data.scaleMax} />
           <IntegrityBanner integrity={data.integrity} />
-          <AuditLedgerTable ledger={data.ledger} />
+          <AuditLedgerTable
+            ledger={data.ledger}
+            olderLoaded={olderLoaded}
+            onLoadEarlier={() => {
+              setOlderLoaded(true);
+              showToast(`Loaded ${data.ledger.older.length} earlier records`);
+            }}
+          />
           <LearningLoop learning={data.learning} />
         </div>
       </div>
+      <Toast message={toast} />
     </main>
   );
 }

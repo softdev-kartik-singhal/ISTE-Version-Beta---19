@@ -1,15 +1,23 @@
 // Ask verdict card: headline answer, engine confidence meter and four quick metrics.
 import { Info, Shield } from 'lucide-react';
 
+// Colours per verdict: amber for "only if", green for safe, red for risky.
+const TONES = {
+  caution: { pill: 'bg-amber-100 text-amber-900', icon: 'text-amber-700', label: 'text-amber-800', bar: 'bg-amber-500' },
+  safe: { pill: 'bg-emerald-100 text-emerald-900', icon: 'text-emerald-700', label: 'text-emerald-800', bar: 'bg-emerald-500' },
+  risk: { pill: 'bg-error-container text-on-error-container', icon: 'text-error', label: 'text-error', bar: 'bg-error' },
+};
+
 export default function VerdictCard({ verdict }) {
   const { confidence, metrics } = verdict;
+  const tone = TONES[verdict.tone || 'caution'];
   return (
     <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pb-space-md bg-surface-container-low/40 p-space-md rounded-xl">
         <div className="space-y-2">
           <div className="flex items-center gap-space-sm flex-wrap">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 font-label-md text-label-md font-semibold">
-              <Shield size={16} className="text-amber-700" />
+            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-label-md text-label-md font-semibold ${tone.pill}`}>
+              <Shield size={16} className={tone.icon} />
               <span>{verdict.status}</span>
             </span>
             <span className="font-label-sm text-label-sm text-secondary">{verdict.rule}</span>
@@ -20,11 +28,11 @@ export default function VerdictCard({ verdict }) {
         <div className="lg:w-80 shrink-0 bg-surface-container-lowest p-space-md rounded-lg shadow-sm space-y-2.5">
           <div className="flex items-center justify-between font-label-md text-label-md">
             <span className="text-secondary font-semibold">Engine Confidence</span>
-            <span className="text-amber-800 font-semibold">{confidence.label}</span>
+            <span className={`${tone.label} font-semibold`}>{confidence.label}</span>
           </div>
           <div className="grid grid-cols-3 gap-1.5 h-2.5 w-full">
             {[0, 1, 2].map((i) => (
-              <div key={i} className={`${i < confidence.segments ? 'bg-amber-500' : 'bg-surface-container'} rounded-full`} />
+              <div key={i} className={`${i < confidence.segments ? tone.bar : 'bg-surface-container'} rounded-full`} />
             ))}
           </div>
           <div className="font-label-sm text-label-sm text-secondary space-y-1">

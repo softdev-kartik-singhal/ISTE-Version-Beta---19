@@ -1,40 +1,9 @@
 // Monthly inflow/outflow bars with the net-surplus line and a surplus badge above each month.
 import { Bar, CartesianGrid, ComposedChart, LabelList, Line, ReferenceLine, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import SurplusBadge from './SurplusBadge';
+import SurplusDot from './SurplusDot';
 
 const toK = (v) => (v >= 100000 ? `₹${(v / 100000).toFixed(1)}L` : v === 0 ? '₹0' : `₹${v / 1000}k`);
-const surplusLabel = (v) => `${v < 0 ? '-' : '+'}₹${(Math.abs(v) / 1000).toFixed(1)}k`;
-
-// Badge drawn above the inflow bar: red pill for deficit months, solid blue for the peak, light blue otherwise.
-function SurplusBadge({ x, y, width, index, months }) {
-  const m = months[index];
-  const cx = x + width + 1;
-  if (m.note) {
-    return (
-      <g transform={`translate(${cx - 69}, ${y - 34})`}>
-        <rect fill="#ffdad6" height="24" rx="12" width="138" />
-        <text fill="#93000a" fontSize="10" fontWeight="600" textAnchor="middle" x="69" y="16">{m.note}</text>
-      </g>
-    );
-  }
-  const peak = m.peak;
-  const w = peak ? 70 : 60;
-  return (
-    <g transform={`translate(${cx - w / 2}, ${y - 28})`}>
-      <rect fill={peak ? '#1d4ed8' : '#dce1ff'} height="20" rx="4" width={w} />
-      <text fill={peak ? '#ffffff' : '#0037b0'} fontFamily="IBM Plex Mono" fontSize="11" fontWeight="600" textAnchor="middle" x={w / 2} y="14">
-        {surplusLabel(m.surplus)}
-        {peak ? ' ★' : ''}
-      </text>
-    </g>
-  );
-}
-
-function SurplusDot({ cx, cy, payload, index }) {
-  const deficit = payload.surplus < 0;
-  return (
-    <circle key={index} cx={cx} cy={cy} r={payload.peak ? 6 : 5} fill={deficit ? '#ba1a1a' : payload.peak ? '#1d4ed8' : '#0037b0'} stroke="#ffffff" strokeWidth={payload.peak ? 2.5 : 2} />
-  );
-}
 
 export default function TrendsChart({ months }) {
   const deficitMonth = months.find((m) => m.surplus < 0);

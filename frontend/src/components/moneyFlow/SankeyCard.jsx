@@ -1,4 +1,5 @@
 // Money Flow card holding the column headers, the Sankey diagram and the retained/fixed/variable legend.
+import { forwardRef } from 'react';
 import MoneyFlowSankey from '../charts/MoneyFlowSankey';
 
 const COLUMNS = [
@@ -8,9 +9,9 @@ const COLUMNS = [
   { label: '4. Top Merchants', dot: 'bg-indigo-500' },
 ];
 
-export default function SankeyCard({ flow }) {
+const SankeyCard = forwardRef(function SankeyCard({ flow, onNodeClick }, ref) {
   return (
-    <div className="xl:col-span-8 2xl:col-span-8 flex flex-col bg-surface-container-lowest rounded-xl shadow-sm p-space-md lg:p-space-lg overflow-hidden relative">
+    <div ref={ref} className="xl:col-span-8 2xl:col-span-8 flex flex-col bg-surface-container-lowest rounded-xl shadow-sm p-space-md lg:p-space-lg overflow-hidden relative">
       <div className="grid grid-cols-4 gap-2 mb-4 pb-2 border-b border-surface-container font-label-sm text-label-sm uppercase tracking-wider text-outline">
         {COLUMNS.map((c) => (
           <div key={c.label} className="flex items-center gap-1">
@@ -20,7 +21,7 @@ export default function SankeyCard({ flow }) {
         ))}
       </div>
       <div className="relative w-full h-[620px] select-none">
-        <MoneyFlowSankey nodes={flow.nodes} links={flow.links} />
+        <MoneyFlowSankey nodes={flow.nodes} links={flow.links} onNodeClick={onNodeClick} />
       </div>
       <div className="flex items-center justify-between pt-3 mt-2 border-t border-surface-container font-label-sm text-label-sm text-on-surface-variant flex-wrap gap-2">
         <div className="flex items-center gap-4">
@@ -38,4 +39,6 @@ export default function SankeyCard({ flow }) {
       </div>
     </div>
   );
-}
+});
+
+export default SankeyCard;

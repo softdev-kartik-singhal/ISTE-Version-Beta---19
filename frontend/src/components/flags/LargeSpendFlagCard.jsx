@@ -4,7 +4,7 @@ import FlagCardShell from './FlagCardShell';
 import ProgressBar from '../ui/ProgressBar';
 import { formatCurrency } from '../../utils/formatCurrency';
 
-export default function LargeSpendFlagCard({ flag, dimmed }) {
+export default function LargeSpendFlagCard({ flag, dimmed, onResolve }) {
   const amount = formatCurrency(flag.amount, { decimals: 2 });
   return (
     <FlagCardShell
@@ -23,18 +23,18 @@ export default function LargeSpendFlagCard({ flag, dimmed }) {
       }
       actions={
         <>
-          <button className="px-3.5 py-2 rounded-lg bg-primary-container text-white font-label-md text-label-md font-semibold hover:bg-primary transition-all flex items-center gap-1.5 shadow-sm">
+          <button onClick={() => onResolve('Marked as a planned purchase')} className="px-3.5 py-2 rounded-lg bg-primary-container text-white font-label-md text-label-md font-semibold hover:bg-primary transition-all flex items-center gap-1.5 shadow-sm">
             <Check size={18} /> Looks fine (Planned purchase)
           </button>
-          <button className="px-3.5 py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md font-medium hover:bg-surface-container hover:text-primary transition-all flex items-center gap-1">
+          <button onClick={() => onResolve('Reclassified as one-time capital expense')} className="px-3.5 py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md font-medium hover:bg-surface-container hover:text-primary transition-all flex items-center gap-1">
             <CalendarClock size={16} /> Reclassify as One-time Capital
           </button>
-          <button className="px-3.5 py-2 rounded-lg bg-surface-container-low text-secondary font-label-md text-label-md font-medium hover:bg-surface-container hover:text-on-surface transition-all flex items-center gap-1">
+          <button onClick={() => onResolve('Amortized over a 3-month EMI')} className="px-3.5 py-2 rounded-lg bg-surface-container-low text-secondary font-label-md text-label-md font-medium hover:bg-surface-container hover:text-on-surface transition-all flex items-center gap-1">
             <Columns2 size={16} /> Split to 3-month EMI amortize
           </button>
         </>
       }
-      aside={<button className="px-3 py-1.5 text-secondary hover:text-on-surface font-label-sm text-label-sm">Keep Shopping average unchanged</button>}
+      aside={<button onClick={() => onResolve('Kept out of the Shopping average')} className="px-3 py-1.5 text-secondary hover:text-on-surface font-label-sm text-label-sm">Keep Shopping average unchanged</button>}
     >
       <div className="lg:col-span-5 flex items-start gap-space-sm">
         <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">

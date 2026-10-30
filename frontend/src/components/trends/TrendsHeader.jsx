@@ -1,9 +1,7 @@
 // Trends page title row with the period selector and Export Trends button.
-import { useState } from 'react';
 import { CalendarDays, ChevronDown, Download } from 'lucide-react';
 
-export default function TrendsHeader({ periods }) {
-  const [period, setPeriod] = useState(periods[0]);
+export default function TrendsHeader({ periods, period, onPeriodChange, onExport }) {
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
       <div>
@@ -23,7 +21,7 @@ export default function TrendsHeader({ periods }) {
           <select
             className="appearance-none bg-transparent pl-2 pr-8 py-2 font-label-md text-label-md text-on-surface focus:outline-none cursor-pointer"
             value={period}
-            onChange={(e) => setPeriod(e.target.value)}
+            onChange={(e) => onPeriodChange(e.target.value)}
           >
             {periods.map((p) => (
               <option key={p}>{p}</option>
@@ -31,7 +29,10 @@ export default function TrendsHeader({ periods }) {
           </select>
           <ChevronDown size={18} className="text-secondary absolute right-2 pointer-events-none" />
         </div>
-        <button className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm hover:bg-surface-container transition-colors">
+        <button
+          className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md shadow-sm hover:bg-surface-container transition-colors"
+          onClick={onExport}
+        >
           <Download size={18} className="text-secondary" />
           <span>Export Trends</span>
         </button>

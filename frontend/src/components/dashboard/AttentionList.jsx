@@ -3,11 +3,36 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BellRing } from 'lucide-react';
 import Card from '../ui/Card';
+import FormDialog from '../ui/FormDialog';
+import Toast from '../ui/Toast';
+import { useToast } from '../../hooks/useToast';
 import { iconFor } from '../../utils/icons';
 
 export default function AttentionList({ attention }) {
-  const [dismissed, setDismissed] = useState([]);
-  const items = attention.items.filter((item) => !dismissed.includes(item.id));
+  const [items, setItems] = useState(attention.items);
+  const [dateDialogFor, setDateDialogFor] = useState(null);
+  const [toast, showToast] = useToast();
+
+  function dismiss(id) {
+    setItems(items.filter((item) => item.id !== id));
+    showToast('Alert dismissed');
+  }
+
+  function updateExpectedDate({ date }) {
+    const label = new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+    setItems(
+      items.map((item) =>
+        item.id === dateDialogFor ? { ...item, text: ['', item.text[1], ` invoice #INV-204 now expected on ${label}. Projection updated.`] } : item,
+      ),
+    );
+    setDateDialogFor(null);
+    showToast(`Expected date updated to ${label}`);
+  }
+
+  function secondary(item) {
+    if (item.secondaryAction === 'Dismiss') return dismiss(item.id);
+    setDateDialogFor(item.id);
+  }
 
   return (
     <Card className="p-space-lg flex flex-col justify-between">
@@ -15,9 +40,7 @@ export default function AttentionList({ attention }) {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <h3 className="font-headline-sm text-headline-sm text-on-surface">Needs Your Attention</h3>
-            <span className="px-2 py-0.5 rounded-full bg-tertiary-container text-white font-label-sm text-label-sm">
-              {items.length} items
-            </span>
+            <span className="px-2 py-0.5 rounded-full bg-tertiary-container text-white font-label-sm text-label-sm">{items.length} items</span>
           </div>
           <BellRing size={20} className="text-secondary" />
         </div>
@@ -45,18 +68,14 @@ export default function AttentionList({ attention }) {
                       {item.primaryAction.label}
                     </Link>
                   ) : (
-                    <a className="font-label-md text-label-md text-primary hover:underline" href="#">
+                    <button className="font-label-md text-label-md text-primary hover:underline" onClick={() => showToast('Reminder note sent to Acme Labs')}>
                       {item.primaryAction.label}
-                    </a>
+                    </button>
                   )}
                   {item.secondaryAction && (
                     <>
                       <span className="text-outline-variant">•</span>
-                      <button
-                        className="font-label-md text-label-md text-secondary hover:text-on-surface"
-                        type="button"
-                        onClick={item.secondaryAction === 'Dismiss' ? () => setDismissed([...dismissed, item.id]) : undefined}
-                      >
+                      <button className="font-label-md text-label-md text-secondary hover:text-on-surface" type="button" onClick={() => secondary(item)}>
                         {item.secondaryAction}
                       </button>
                     </>
@@ -71,6 +90,17 @@ export default function AttentionList({ attention }) {
         <span>Audit log synced:</span>
         <span>{attention.auditSync}</span>
       </div>
+      <FormDialog
+        key={dateDialogFor || 'none'}
+        open={dateDialogFor !== null}
+        title="Update expected date"
+        fields={[{ name: 'date', label: 'Expected payment date', type: 'date' }]}
+        initialValues={{ date: '' }}
+        submitLabel="Update"
+        onClose={() => setDateDialogFor(null)}
+        onSubmit={updateExpectedDate}
+      />
+      <Toast message={toast} />
     </Card>
   );
 }

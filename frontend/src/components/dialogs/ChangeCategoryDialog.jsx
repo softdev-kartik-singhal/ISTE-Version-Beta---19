@@ -5,9 +5,11 @@ import Modal from '../ui/Modal';
 import { iconFor } from '../../utils/icons';
 import { formatCurrency } from '../../utils/formatCurrency';
 
-export default function ChangeCategoryDialog({ open, transaction, options, pattern, onClose, onApply }) {
+// similar: other ledger rows from the same merchant, which "Apply to N" also recategorises.
+export default function ChangeCategoryDialog({ open, transaction, options, similar, onClose, onApply }) {
   const [selected, setSelected] = useState(options[0].name);
   if (!transaction) return null;
+  const merchantKey = transaction.shortName.toUpperCase();
 
   return (
     <Modal open={open} onClose={onClose} overlayClass="p-space-md bg-inverse-surface/40 overflow-y-auto">
@@ -70,13 +72,14 @@ export default function ChangeCategoryDialog({ open, transaction, options, patte
             </div>
           </div>
 
+          {similar.length > 0 && (
           <div className="p-space-md rounded-xl bg-surface-container space-y-space-md">
             <div className="flex items-start gap-space-sm">
               <Sparkles size={22} className="text-primary flex-shrink-0 mt-0.5" />
               <div className="space-y-1">
                 <div className="font-headline-sm text-body-md font-semibold text-on-surface">SmartGullak detected recurring merchant pattern</div>
                 <p className="font-body-sm text-body-sm text-secondary leading-relaxed">
-                  This will also update {pattern.matchCount} similar transactions from {pattern.merchantKey}. Select transactions to bulk-apply{' '}
+                  This will also update {similar.length} similar transaction{similar.length === 1 ? '' : 's'} from {merchantKey}. Select transactions to bulk-apply{' '}
                   <span className="font-semibold text-on-surface">{selected}</span> and calibrate future statement auto-classification.
                 </p>
               </div>
@@ -84,22 +87,24 @@ export default function ChangeCategoryDialog({ open, transaction, options, patte
             <div className="pt-space-xs flex items-center justify-between font-label-md text-label-md text-on-surface">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input defaultChecked className="w-4 h-4 rounded text-primary-container focus:ring-0 cursor-pointer" type="checkbox" />
-                <span>Select all {pattern.matchCount} matching transactions</span>
+                <span>Select all {similar.length} matching transactions</span>
               </label>
               <span className="text-secondary font-label-sm text-label-sm">
-                {pattern.matchCount} of {pattern.matchCount} selected
+                {similar.length} of {similar.length} selected
               </span>
             </div>
             <div className="max-h-40 overflow-y-auto rounded-lg bg-surface-container-lowest p-space-xs space-y-1">
-              {pattern.matches.map((m) => (
-                <label key={`${m.date}-${m.amount}`} className="flex items-center justify-between p-2 rounded hover:bg-surface cursor-pointer text-body-sm">
+              {similar.map((m) => (
+                <label key={m.id} className="flex items-center justify-between p-2 rounded hover:bg-surface cursor-pointer text-body-sm">
                   <div className="flex items-center gap-2 min-w-0">
                     <input defaultChecked className="w-3.5 h-3.5 rounded text-primary-container focus:ring-0" type="checkbox" />
                     <span className="text-secondary font-label-sm">{m.date}</span>
                     <span className="truncate font-medium text-on-surface">{m.merchant}</span>
-                    <span className="text-secondary font-label-sm">({m.account})</span>
+                    <span className="text-secondary font-label-sm">
+                      ({m.bank} ••{m.last4})
+                    </span>
                   </div>
-                  <span className="font-currency-sm text-currency-sm font-medium text-on-surface ml-2">{formatCurrency(m.amount, { decimals: 2 })} DR</span>
+                  <span className="font-currency-sm text-currency-sm font-medium text-on-surface ml-2">{formatCurrency(Math.abs(m.amount), { decimals: 2 })} {m.amount < 0 ? 'DR' : 'CR'}</span>
                 </label>
               ))}
             </div>
@@ -107,7 +112,9 @@ export default function ChangeCategoryDialog({ open, transaction, options, patte
               <label className="flex items-start gap-2.5 cursor-pointer">
                 <input defaultChecked className="w-4 h-4 mt-0.5 rounded text-primary-container focus:ring-0 cursor-pointer" type="checkbox" />
                 <div className="space-y-0.5">
-                  <span className="font-label-md text-label-md text-on-surface font-semibold">{pattern.ruleText}</span>
+                  <span className="font-label-md text-label-md text-on-surface font-semibold">
+                    Always apply this rule to future {merchantKey} transactions
+                  </span>
                   <p className="font-label-sm text-label-sm text-secondary">
                     Eliminates repeated manual classification on new monthly statements from all 3 connected banks.
                   </p>
@@ -115,6 +122,7 @@ export default function ChangeCategoryDialog({ open, transaction, options, patte
               </label>
             </div>
           </div>
+          )}
         </div>
 
         <div className="px-space-xl py-space-md bg-surface-container-low flex items-center justify-between">
@@ -128,12 +136,14 @@ export default function ChangeCategoryDialog({ open, transaction, options, patte
             >
               Update This One Only
             </button>
-            <button
-              className="h-10 px-space-lg rounded-lg bg-primary-container text-on-primary font-label-md text-label-md hover:bg-primary transition-all shadow-sm"
-              onClick={() => onApply(selected, pattern.matchCount + 1)}
-            >
-              Apply to {pattern.matchCount + 1} Transactions
-            </button>
+            {similar.length > 0 && (
+              <button
+                className="h-10 px-space-lg rounded-lg bg-primary-container text-on-primary font-label-md text-label-md hover:bg-primary transition-all shadow-sm"
+                onClick={() => onApply(selected, similar.length + 1)}
+              >
+                Apply to {similar.length + 1} Transactions
+              </button>
+            )}
           </div>
         </div>
       </div>

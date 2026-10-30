@@ -9,7 +9,7 @@ const TABS = [
   { value: 'kotak', label: 'Kotak' },
 ];
 
-export default function StatementTable({ files, totalTransactions, institutions, onReupload }) {
+export default function StatementTable({ files, totalTransactions, institutions, onReupload, onDelete, onViewLogs }) {
   const [bank, setBank] = useState('all');
   const visible = bank === 'all' ? files : files.filter((f) => f.bank === bank);
 
@@ -53,7 +53,13 @@ export default function StatementTable({ files, totalTransactions, institutions,
           </thead>
           <tbody className="divide-y-0">
             {visible.map((file) => (
-              <StatementRow key={file.name} file={file} onReupload={onReupload} />
+              <StatementRow
+                key={file.id}
+                file={file}
+                onReupload={() => onReupload(file)}
+                onDelete={() => onDelete(file)}
+                onViewLogs={() => onViewLogs(file)}
+              />
             ))}
           </tbody>
         </table>

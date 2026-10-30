@@ -2,7 +2,7 @@
 import { ArrowRight, PartyPopper } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatCurrency';
 
-export default function BonusNote({ bonus }) {
+export default function BonusNote({ bonus, included, onToggle }) {
   return (
     <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md">
       <div className="flex items-start gap-space-md">
@@ -27,9 +27,9 @@ export default function BonusNote({ bonus }) {
       </div>
       <button
         className="shrink-0 px-space-md py-2.5 rounded-lg bg-surface hover:bg-surface-container-low text-primary font-label-md text-label-md font-semibold transition-all flex items-center gap-2 shadow-sm"
-        onClick={() => alert(bonus.simulationMessage)}
+        onClick={onToggle}
       >
-        <span>Simulate with bonus included</span>
+        <span>{included ? 'Remove bonus from simulation' : 'Simulate with bonus included'}</span>
         <ArrowRight size={16} />
       </button>
     </div>

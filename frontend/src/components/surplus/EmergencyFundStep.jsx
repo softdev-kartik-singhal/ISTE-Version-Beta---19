@@ -1,14 +1,12 @@
 // Surplus Plan Step 1: emergency fund target, "How calculated" breakdown, progress milestones and ETA.
-import { useState } from 'react';
 import { CalendarDays, ChevronDown, Hourglass, SlidersHorizontal } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatCurrency';
 
-export default function EmergencyFundStep({ fund }) {
-  const [showBreakdown, setShowBreakdown] = useState(false);
+export default function EmergencyFundStep({ fund, showBreakdown, onToggleBreakdown }) {
   const percent = Math.round((fund.saved / fund.target) * 100);
 
   return (
-    <section className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-lg relative overflow-hidden">
+    <section id="emergency-fund" className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-lg relative overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
         <div className="flex items-center gap-space-sm">
           <span className="px-2.5 py-1 rounded-full bg-primary-container text-surface-container-lowest font-label-md text-label-md uppercase tracking-wider">Step 1</span>
@@ -27,7 +25,7 @@ export default function EmergencyFundStep({ fund }) {
               <span className="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Target Liquidity Floor</span>
               <button
                 className="font-label-sm text-label-sm text-primary flex items-center gap-1 hover:underline focus:outline-none"
-                onClick={() => setShowBreakdown(!showBreakdown)}
+                onClick={onToggleBreakdown}
               >
                 <SlidersHorizontal size={15} />
                 <span>How calculated</span>

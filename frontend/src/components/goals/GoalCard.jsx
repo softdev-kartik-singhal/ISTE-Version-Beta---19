@@ -1,4 +1,5 @@
 // One goal card: category/priority badges, feasibility pill, progress, analysis note and actions.
+import { Link } from 'react-router-dom';
 import { BadgeCheck, ChartColumn, CircleAlert, CircleCheck, Clock, Siren, Wallet } from 'lucide-react';
 import ProgressBar from '../ui/ProgressBar';
 import RichText from '../ui/RichText';
@@ -39,7 +40,7 @@ const ANALYSIS_ICONS = {
   wallet: <Wallet size={18} className="text-primary mt-0.5 shrink-0" />,
 };
 
-export default function GoalCard({ goal, onEdit }) {
+export default function GoalCard({ goal, onEdit, onAdjust }) {
   const s = STATUS[goal.status];
   const percent = goal.percentFunded;
   const highPriority = goal.priority === 'High';
@@ -95,9 +96,9 @@ export default function GoalCard({ goal, onEdit }) {
               <p className="font-body-sm text-body-sm text-on-surface-variant leading-snug">
                 <RichText parts={goal.analysis} />
               </p>
-              <a className="font-label-sm text-label-sm text-primary font-semibold hover:underline mt-1 inline-flex items-center gap-0.5" href="#">
+              <Link className="font-label-sm text-label-sm text-primary font-semibold hover:underline mt-1 inline-flex items-center gap-0.5" to="/surplus-plan">
                 See the calculation →
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -110,7 +111,9 @@ export default function GoalCard({ goal, onEdit }) {
         >
           Edit Goal
         </button>
-        <button className={`px-3 py-1.5 rounded-lg transition-colors font-label-md text-label-md cursor-pointer ${s.action}`}>{goal.actionLabel}</button>
+        <button className={`px-3 py-1.5 rounded-lg transition-colors font-label-md text-label-md cursor-pointer ${s.action}`} onClick={onAdjust}>
+          {goal.actionLabel}
+        </button>
       </div>
     </div>
   );

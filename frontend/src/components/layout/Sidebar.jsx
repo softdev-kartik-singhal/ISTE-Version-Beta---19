@@ -3,7 +3,12 @@ import {
   ArrowLeftRight, BellRing, ChartLine, CircleHelp, Flag, LayoutDashboard, PiggyBank, ReceiptText, Shield, Sparkles,
   TrendingUp, Wallet,
 } from 'lucide-react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import SidebarLink from './SidebarLink';
+import FormDialog from '../ui/FormDialog';
+import Toast from '../ui/Toast';
+import { useToast } from '../../hooks/useToast';
 
 const SECTIONS = [
   {
@@ -30,13 +35,16 @@ const SECTIONS = [
 ];
 
 export default function Sidebar({ session }) {
+  const [supportOpen, setSupportOpen] = useState(false);
+  const [toast, showToast] = useToast();
+
   return (
     <aside className="fixed left-0 top-0 h-full w-64 bg-[#0B2545] z-50 flex flex-col justify-between border-r border-white/10">
       <div className="flex flex-col">
-        <div className="h-16 px-space-lg flex items-center gap-space-sm border-b border-white/10">
+        <Link to="/dashboard" className="h-16 px-space-lg flex items-center gap-space-sm border-b border-white/10">
           <img alt="SmartGullak Logo" className="h-8 w-auto object-contain" src={session.logoUrl} />
           <span className="font-headline-sm text-headline-sm text-white tracking-tight">SmartGullak</span>
-        </div>
+        </Link>
         <nav className="p-space-md space-y-3 overflow-y-auto">
           {SECTIONS.map((section, i) => (
             <div key={section.title} className={i > 0 ? 'pt-1' : undefined}>
@@ -60,12 +68,31 @@ export default function Sidebar({ session }) {
           </div>
           <p className="mt-1 text-white/60 font-label-sm text-label-sm leading-tight">{session.syncSummary}</p>
         </div>
-        {/* No Support & FAQ screen exists yet, so this link has no route. */}
-        <a className="flex items-center gap-space-sm px-space-md py-space-sm text-white/70 hover:text-white transition-colors font-body-sm text-body-sm" href="#">
+        <button
+          className="w-full flex items-center gap-space-sm px-space-md py-space-sm text-white/70 hover:text-white transition-colors font-body-sm text-body-sm"
+          onClick={() => setSupportOpen(true)}
+        >
           <CircleHelp size={18} />
           <span>Support &amp; FAQ</span>
-        </a>
+        </button>
       </div>
+      <FormDialog
+        key={supportOpen ? 'open' : 'closed'}
+        open={supportOpen}
+        title="Contact Support"
+        fields={[
+          { name: 'topic', label: 'Topic', options: ['Statements & parsing', 'Affordability answers', 'Card & security', 'Other'] },
+          { name: 'message', label: 'How can we help?', placeholder: 'Describe the issue' },
+        ]}
+        initialValues={{ topic: 'Statements & parsing', message: '' }}
+        submitLabel="Send"
+        onClose={() => setSupportOpen(false)}
+        onSubmit={() => {
+          setSupportOpen(false);
+          showToast('Support request sent — we reply within one business day');
+        }}
+      />
+      <Toast message={toast} />
     </aside>
   );
 }
