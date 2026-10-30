@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_blank" name="shell-type"/><title>SmartGullak Authentication</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-variant": "#dae2fd", "primary-fixed": "#dce1ff", "surface-container-lowest": "#ffffff", "tertiary-container": "#a73400", "on-error": "#ffffff", "secondary-fixed-dim": "#b1c7f0", "tertiary-fixed-dim": "#ffb59c", "inverse-surface": "#283044", "inverse-on-surface": "#eef0ff", "background": "#faf8ff", "on-secondary-container": "#465c7f", "on-primary-fixed": "#001551", "surface-container-highest": "#dae2fd", "on-primary-fixed-variant": "#0039b5", "on-tertiary-fixed": "#390c00", "secondary": "#495f82", "on-secondary-fixed": "#001c3b", "outline": "#747686", "error": "#ba1a1a", "on-error-container": "#93000a", "on-surface-variant": "#434655", "on-tertiary": "#ffffff", "outline-variant": "#c4c5d7", "primary": "#0037b0", "surface-tint": "#2151da", "surface-container": "#eaedff", "surface-container-high": "#e2e7ff", "on-background": "#131b2e", "primary-fixed-dim": "#b7c4ff", "surface-container-low": "#f2f3ff", "secondary-fixed": "#d5e3ff", "on-primary-container": "#cad3ff", "on-primary": "#ffffff", "secondary-container": "#bfd5fe", "tertiary": "#7f2500", "surface-dim": "#d2d9f4", "on-tertiary-container": "#ffc9b7", "surface": "#faf8ff", "on-secondary": "#ffffff", "on-tertiary-fixed-variant": "#832700", "on-surface": "#131b2e", "primary-container": "#1d4ed8", "inverse-primary": "#b7c4ff", "tertiary-fixed": "#ffdbcf", "surface-bright": "#faf8ff", "error-container": "#ffdad6", "on-secondary-fixed-variant": "#314769" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-md": "1rem", "space-sm": "0.5rem", "margin": "2rem", "gutter": "1.5rem", "space-lg": "1.5rem", "space-2xl": "3rem", "space-xs": "0.25rem", "space-xl": "2rem" }, "fontFamily": { "currency-hero": [ "IBM Plex Mono" ], "label-md": [ "Inter" ], "display-lg": [ "Inter" ], "body-lg": [ "Inter" ], "body-sm": [ "Inter" ], "currency-sm": [ "IBM Plex Mono" ], "currency-md": [ "IBM Plex Mono" ], "label-sm": [ "Inter" ], "headline-sm": [ "Inter" ], "display-lg-mobile": [ "Inter" ], "headline-md": [ "Inter" ], "headline-lg": [ "Inter" ], "body-md": [ "Inter" ] }, "fontSize": { "currency-hero": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "label-md": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" } ], "display-lg": [ "36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "body-lg": [ "16px", { "lineHeight": "24px", "fontWeight": "400" } ], "body-sm": [ "13px", { "lineHeight": "18px", "fontWeight": "400" } ], "currency-sm": [ "14px", { "lineHeight": "20px", "fontWeight": "500" } ], "currency-md": [ "20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "500" } ], "label-sm": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" } ], "headline-sm": [ "18px", { "lineHeight": "24px", "fontWeight": "600" } ], "display-lg-mobile": [ "28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "headline-md": [ "20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "headline-lg": [ "24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" } ], "body-md": [ "15px", { "lineHeight": "22px", "fontWeight": "400" } ] } } } };</script></head><body class="bg-surface font-body-md text-on-surface antialiased min-h-screen flex flex-col justify-center"><main class="w-full bg-surface"><div class="flex flex-col w-full items-center justify-center py-10 px-4">
+<div class="w-full max-w-md flex flex-col items-center">
+<!-- Institutional Card Container -->
+<div class="w-full bg-surface-container-lowest rounded-xl shadow-xl p-8 sm:p-10 flex flex-col relative overflow-hidden">
+<!-- Subtle Brand Top Accents -->
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary-fixed-dim via-primary to-primary-container"></div>
+<!-- Brand & Title Header -->
+<div class="flex flex-col items-center text-center mb-8">
+<div class="w-14 h-14 rounded-xl bg-surface-container flex items-center justify-center text-primary mb-4 shadow-sm">
+<svg class="w-8 h-8 fill-current text-primary" viewbox="0 0 24 24">
+<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z" style="display:none;"></path>
+<!-- Custom Vault Gullak Icon -->
+<path d="M19 8h-2.18c-.42-2.31-2.43-4-4.82-4-.86 0-1.66.24-2.36.65L9.64 4.65C9.25 4.26 8.62 4.26 8.23 4.65c-.39.39-.39 1.02 0 1.41l.74.74C7.75 7.85 7 9.33 7 11c0 1.02.29 1.97.79 2.78L4.29 17.29a.996.996 0 101.41 1.41l2.87-2.87C9.64 16.52 10.78 17 12 17c2.39 0 4.4-1.69 4.82-4H19c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-7-2c1.65 0 3 1.35 3 3H9c0-1.65 1.35-3 3-3zm0 9c-2.21 0-4-1.79-4-4 0-.58.13-1.12.35-1.62l1.66 1.66c.39.39 1.02.39 1.41 0s.39-1.02 0-1.41L9.76 8.97c.64-.61 1.49-.97 2.24-.97 2.21 0 4 1.79 4 4s-1.79 4-4 4z"></path>
+</svg>
+</div>
+<div class="flex items-center gap-1.5 mb-1.5">
+<span class="font-headline-lg text-headline-lg tracking-tight text-on-surface">SmartGullak</span>
+<span class="bg-surface-container text-on-primary-fixed-variant px-2 py-0.5 rounded text-label-sm font-label-sm uppercase tracking-wider">Vault</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-xs">
+          Sign in to your private financial vault
+        </p>
+</div>
+<!-- Authentication Form -->
+<form class="flex flex-col space-y-5" id="vault-login-form" onsubmit="event.preventDefault();">
+<!-- Email Input -->
+<div class="flex flex-col space-y-1.5">
+<label class="font-label-md text-label-md text-on-surface" for="email">
+            Registered Email
+          </label>
+<div class="relative flex items-center">
+<span class="absolute left-3.5 text-on-surface-variant flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-body-lg">mail</span>
+</span>
+<input autocomplete="email" class="w-full h-11 pl-11 pr-4 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:shadow-[0_0_0_2px_#1d4ed8] transition-all" id="email" name="email" placeholder="aditya.rao@work.in" required="" type="email" value="aditya.rao@work.in"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="flex flex-col space-y-1.5">
+<label class="font-label-md text-label-md text-on-surface flex justify-between items-center" for="password">
+<span>Master Password</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Zero-knowledge proof</span>
+</label>
+<div class="relative flex items-center">
+<span class="absolute left-3.5 text-on-surface-variant flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-body-lg">lock</span>
+</span>
+<input autocomplete="current-password" class="w-full h-11 pl-11 pr-11 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:shadow-[0_0_0_2px_#1d4ed8] transition-all font-mono" id="password" name="password" placeholder="••••••••••••" required="" type="password" value="VaultKey#9240"/>
+<button aria-label="Toggle password visibility" class="absolute right-3 text-on-surface-variant hover:text-on-surface flex items-center justify-center p-1 rounded transition-colors" id="toggle-password" type="button">
+<span class="material-symbols-outlined text-body-lg" id="password-visibility-icon">visibility_off</span>
+</button>
+</div>
+</div>
+<!-- Remember Device & Forgot Password -->
+<div class="flex items-center justify-between pt-0.5">
+<label class="flex items-center space-x-2.5 cursor-pointer select-none">
+<input checked="" class="w-4 h-4 rounded bg-surface-container-low text-primary focus:ring-0 focus:outline-none accent-primary-container cursor-pointer" id="remember" name="remember" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Remember device (30d)</span>
+</label>
+<a class="font-label-md text-label-md text-primary hover:text-on-primary-fixed-variant transition-colors underline-offset-4 hover:underline" href="#">
+            Forgot password?
+          </a>
+</div>
+<!-- Submit Button -->
+<div class="pt-2">
+<button class="w-full h-11 bg-primary-container hover:bg-primary active:bg-on-primary-fixed-variant text-on-primary font-headline-sm text-body-md font-semibold rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2" id="submit-btn" type="submit">
+<span>Log in to SmartGullak</span>
+<span class="material-symbols-outlined text-body-md">arrow_forward</span>
+</button>
+</div>
+</form>
+<!-- Institutional Clarification Badge -->
+<div class="mt-6 p-3.5 bg-surface-container-low rounded-lg flex items-start gap-2.5">
+<span class="material-symbols-outlined text-primary text-body-lg shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">
+          verified_user
+        </span>
+<p class="font-label-sm text-label-sm text-on-surface-variant leading-relaxed">
+          No hardware card needed for login. Physical card authentication is strictly reserved for sensitive exports and account deletion.
+        </p>
+</div>
+</div>
+<!-- Additional Action / Sign Up -->
+<div class="mt-6 text-center">
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+        Don't have a SmartGullak vault yet?
+        <a class="font-label-md text-label-md text-primary font-semibold hover:underline ml-1" href="#">
+          Sign up for early access →
+        </a>
+</p>
+</div>
+<!-- Security & Institutional Compliance Badges -->
+<div class="mt-8 flex flex-col items-center text-center">
+<div class="flex flex-wrap items-center justify-center gap-y-1.5 gap-x-3 text-outline font-label-sm text-label-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-label-md text-secondary">lock</span>
+          256-bit AES Client-side
+        </span>
+<span class="text-surface-dim">•</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-label-md text-secondary">shield_person</span>
+          Zero Data Monetisation
+        </span>
+<span class="text-surface-dim">•</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-label-md text-secondary">account_balance</span>
+          RBI Localization Compliant
+        </span>
+</div>
+<div class="mt-3 flex items-center justify-center gap-4 text-outline font-label-sm text-label-sm">
+<span class="font-currency-sm text-label-sm">ISO/IEC 27001</span>
+<span>•</span>
+<span class="font-currency-sm text-label-sm">SOC 2 Type II</span>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function() {
+    const toggleBtn = document.getElementById('toggle-password');
+    const pwdInput = document.getElementById('password');
+    const icon = document.getElementById('password-visibility-icon');
+
+    if (toggleBtn && pwdInput && icon) {
+      toggleBtn.addEventListener('click', function() {
+        const isPassword = pwdInput.getAttribute('type') === 'password';
+        pwdInput.setAttribute('type', isPassword ? 'text' : 'password');
+        icon.textContent = isPassword ? 'visibility' : 'visibility_off';
+      });
+    }
+
+    const form = document.getElementById('vault-login-form');
+    const submitBtn = document.getElementById('submit-btn');
+    if (form && submitBtn) {
+      form.addEventListener('submit', function() {
+        const originalContent = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `
+          <svg class="animate-spin h-5 w-5 text-white mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+          <span>Authenticating vault...</span>
+        `;
+        setTimeout(function() {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalContent;
+        }, 1200);
+      });
+    }
+  })();
+</script></main><script src="nav.js"></script>
+</body></html>

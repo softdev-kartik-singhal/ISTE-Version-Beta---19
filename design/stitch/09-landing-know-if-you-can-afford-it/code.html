@@ -1,0 +1,639 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><meta content="web_standard" name="shell-type"><title>SmartGullak</title><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "surface-variant": "#dae2fd", "primary-fixed": "#dce1ff", "surface-container-lowest": "#ffffff", "tertiary-container": "#a73400", "on-error": "#ffffff", "secondary-fixed-dim": "#b1c7f0", "tertiary-fixed-dim": "#ffb59c", "inverse-surface": "#283044", "inverse-on-surface": "#eef0ff", "background": "#faf8ff", "on-secondary-container": "#465c7f", "on-primary-fixed": "#001551", "surface-container-highest": "#dae2fd", "on-primary-fixed-variant": "#0039b5", "on-tertiary-fixed": "#390c00", "secondary": "#495f82", "on-secondary-fixed": "#001c3b", "outline": "#747686", "error": "#ba1a1a", "on-error-container": "#93000a", "on-surface-variant": "#434655", "on-tertiary": "#ffffff", "outline-variant": "#c4c5d7", "primary": "#0037b0", "surface-tint": "#2151da", "surface-container": "#eaedff", "surface-container-high": "#e2e7ff", "on-background": "#131b2e", "primary-fixed-dim": "#b7c4ff", "surface-container-low": "#f2f3ff", "secondary-fixed": "#d5e3ff", "on-primary-container": "#cad3ff", "on-primary": "#ffffff", "secondary-container": "#bfd5fe", "tertiary": "#7f2500", "surface-dim": "#d2d9f4", "on-tertiary-container": "#ffc9b7", "surface": "#faf8ff", "on-secondary": "#ffffff", "on-tertiary-fixed-variant": "#832700", "on-surface": "#131b2e", "primary-container": "#1d4ed8", "inverse-primary": "#b7c4ff", "tertiary-fixed": "#ffdbcf", "surface-bright": "#faf8ff", "error-container": "#ffdad6", "on-secondary-fixed-variant": "#314769" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-md": "1rem", "space-sm": "0.5rem", "margin": "2rem", "gutter": "1.5rem", "space-lg": "1.5rem", "space-2xl": "3rem", "space-xs": "0.25rem", "space-xl": "2rem" }, "fontFamily": { "currency-hero": [ "IBM Plex Mono" ], "label-md": [ "Inter" ], "display-lg": [ "Inter" ], "body-lg": [ "Inter" ], "body-sm": [ "Inter" ], "currency-sm": [ "IBM Plex Mono" ], "currency-md": [ "IBM Plex Mono" ], "label-sm": [ "Inter" ], "headline-sm": [ "Inter" ], "display-lg-mobile": [ "Inter" ], "headline-md": [ "Inter" ], "headline-lg": [ "Inter" ], "body-md": [ "Inter" ] }, "fontSize": { "currency-hero": [ "32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "label-md": [ "12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" } ], "display-lg": [ "36px", { "lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "body-lg": [ "16px", { "lineHeight": "24px", "fontWeight": "400" } ], "body-sm": [ "13px", { "lineHeight": "18px", "fontWeight": "400" } ], "currency-sm": [ "14px", { "lineHeight": "20px", "fontWeight": "500" } ], "currency-md": [ "20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "500" } ], "label-sm": [ "11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" } ], "headline-sm": [ "18px", { "lineHeight": "24px", "fontWeight": "600" } ], "display-lg-mobile": [ "28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600" } ], "headline-md": [ "20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" } ], "headline-lg": [ "24px", { "lineHeight": "32px", "letterSpacing": "-0.015em", "fontWeight": "600" } ], "body-md": [ "15px", { "lineHeight": "22px", "fontWeight": "400" } ] } } } };</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between"><a class="flex items-center gap-space-sm" data-path="features" href="#"><div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-on-primary font-headline-md font-bold text-headline-md">₹</div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-tight">SmartGullak</span></div></a><nav class="hidden md:flex items-center gap-space-xs p-1" data-active-classes="bg-surface-container-high text-on-surface font-semibold rounded-lg"><a aria-current="page" class="px-space-md py-space-sm transition-colors bg-surface-container-high text-on-surface font-semibold rounded-lg" data-path="features" href="#">Features</a><a class="px-space-md py-space-sm font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-colors" data-path="how-it-works" href="#">How It Works</a><a class="px-space-md py-space-sm font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-colors" data-path="pricing" href="#pricing">Pricing</a><a class="px-space-md py-space-sm font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-colors" data-path="privacy" href="#">Privacy</a><a class="px-space-md py-space-sm font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-colors" data-path="security" href="#">Security</a></nav><div class="flex items-center gap-space-md"><a class="px-space-md py-space-sm font-label-md text-label-md text-on-surface-variant hover:text-on-surface font-medium transition-colors" data-path="login" href="#">Log In</a><a class="px-space-md py-space-sm font-label-md text-label-md bg-primary-container text-on-primary hover:bg-primary font-semibold rounded-lg transition-all shadow-[0_1px_3px_rgba(15,23,42,0.04)]" data-path="sign-up" href="#">Sign Up / Get Started</a><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-[calc(100vh-16rem)]"><div class="flex flex-col w-full">
+<!-- Interactive Live Simulator State Script -->
+<script>
+    function updateVerdict(val) {
+      const amount = parseInt(val) || 0;
+      const formatted = '₹' + amount.toLocaleString('en-IN');
+      const targetDisplay = document.getElementById('afford-amount-display');
+      const targetInput = document.getElementById('afford-amount-input');
+      const verdictTitle = document.getElementById('verdict-status-title');
+      const verdictDesc = document.getElementById('verdict-status-desc');
+      const confidenceFill = document.getElementById('confidence-fill');
+      const confidenceText = document.getElementById('confidence-score-val');
+      const netResidualEl = document.getElementById('waterfall-residual');
+
+      if (targetDisplay) targetDisplay.innerText = formatted;
+      if (targetInput && targetInput.value !== val) targetInput.value = val;
+
+      const monthlyIncome = 245000;
+      const committedEmi = 58200;
+      const baselineSpend = 64000;
+      const safeBuffer = 25000;
+      const surplus = monthlyIncome - (committedEmi + baselineSpend + safeBuffer);
+      const residual = surplus - amount;
+
+      if (netResidualEl) {
+        netResidualEl.innerText = (residual >= 0 ? '+' : '-') + '₹' + Math.abs(residual).toLocaleString('en-IN');
+        netResidualEl.className = residual >= 0 
+          ? 'font-currency-md text-currency-md text-primary font-semibold' 
+          : 'font-currency-md text-currency-md text-error font-semibold';
+      }
+
+      if (amount <= 60000) {
+        if (verdictTitle) {
+          verdictTitle.innerText = "Safe Purchase: Fully Covered";
+          verdictTitle.className = "font-headline-sm text-headline-sm text-primary font-semibold";
+        }
+        if (verdictDesc) verdictDesc.innerText = "Buffer remains 100% intact even if expected freelance invoices delay by 3 weeks.";
+        if (confidenceFill) confidenceFill.style.width = "96%";
+        if (confidenceText) confidenceText.innerText = "96% High Certainty";
+      } else if (amount <= 110000) {
+        if (verdictTitle) {
+          verdictTitle.innerText = "Conditionally Safe: Typical Income Required";
+          verdictTitle.className = "font-headline-sm text-headline-sm text-on-surface font-semibold";
+        }
+        if (verdictDesc) verdictDesc.innerText = "Comfortable with current pipeline. Requires clearing minimum 1 retainer invoice by Day 15.";
+        if (confidenceFill) confidenceFill.style.width = "84%";
+        if (confidenceText) confidenceText.innerText = "84% Safe Margin";
+      } else {
+        if (verdictTitle) {
+          verdictTitle.innerText = "High Strain: Tight Cashflow Impact";
+          verdictTitle.className = "font-headline-sm text-headline-sm text-error font-semibold";
+        }
+        if (verdictDesc) verdictDesc.innerText = "Draws heavily on emergency reserve. Recommend staggering over 3 milestone installments.";
+        if (confidenceFill) confidenceFill.style.width = "48%";
+        if (confidenceText) confidenceText.innerText = "48% Elevated Strain";
+      }
+    }
+  </script>
+<!-- Section 1: Hero Section -->
+<section class="relative overflow-hidden px-6 lg:px-12 py-space-2xl bg-surface">
+<!-- Subtle Ambient Radial Glow -->
+<div class="absolute -top-32 left-1/2 -translate-x-1/2 w-[720px] h-[400px] bg-gradient-to-b from-primary-fixed/40 via-surface-container-high/30 to-transparent blur-3xl pointer-events-none rounded-full"></div>
+<div class="max-w-7xl mx-auto flex flex-col items-center text-center relative z-10">
+<!-- Pill Badge -->
+<div class="inline-flex items-center gap-space-sm px-space-md py-1.5 rounded-full bg-surface-container-high shadow-sm mb-space-lg">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-md text-label-md text-primary font-semibold tracking-wide uppercase">
+          Private Decision Intelligence for Salaried + Freelancers
+        </span>
+</div>
+<!-- Main Headline -->
+<h1 class="max-w-4xl font-display-lg text-display-lg lg:text-[44px] lg:leading-[52px] font-bold text-on-surface tracking-tight mb-space-md">
+        Know if you can afford it — <br class="hidden sm:inline">
+<span class="text-primary-container">before you spend</span>
+</h1>
+<!-- Subline -->
+<p class="max-w-2xl font-body-lg text-body-lg text-on-surface-variant mb-space-xl">
+        SmartGullak combines all your bank statements and shows every step of its answer. 
+        No black boxes, no credit card pushes, zero data monetisation.
+      </p>
+<!-- CTA Group -->
+<div class="flex flex-col sm:flex-row items-center gap-space-md mb-space-lg w-full sm:w-auto">
+<a class="w-full sm:w-auto px-space-xl py-3 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-headline-sm text-headline-sm font-semibold transition-all shadow-md flex items-center justify-center gap-space-sm" data-path="sign-up" href="#">
+<span class="">Try the Cashflow Engine</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</a>
+<a class="w-full sm:w-auto px-space-lg py-3 rounded-lg bg-surface-container-high hover:bg-surface-variant text-on-surface font-headline-sm text-headline-sm font-medium transition-all shadow-sm flex items-center justify-center gap-space-sm" href="#waterfall-demo">
+<span class="material-symbols-outlined text-primary text-[20px]">play_circle</span>
+<span class="">See Sample Decision Waterfall</span>
+</a>
+</div>
+<!-- Security Guarantee Pill -->
+<div class="flex items-center gap-space-sm px-space-md py-space-xs rounded-full bg-surface-container-low text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-[18px]">verified</span>
+<span class="font-label-sm text-label-sm font-medium">Zero bank credentials required. We ingest statements offline.</span>
+</div>
+</div>
+</section>
+<!-- Section 2: Hero Product Showcase Frame -->
+<section class="px-6 lg:px-12 -mt-4 pb-space-2xl bg-surface" id="waterfall-demo">
+<div class="max-w-6xl mx-auto">
+<!-- Main Glassmorphic FinTech Dashboard Enclosure -->
+<div class="rounded-xl bg-surface-container-lowest shadow-xl overflow-hidden">
+<!-- App Top Utility Ribbon -->
+<div class="px-6 py-3.5 bg-surface-container-low flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded-full bg-outline-variant inline-block"></span>
+<span class="w-3 h-3 rounded-full bg-outline-variant inline-block"></span>
+<span class="w-3 h-3 rounded-full bg-outline-variant inline-block"></span>
+</div>
+<div class="h-4 w-px bg-outline-variant/40"></div>
+<div class="flex items-center gap-space-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">terminal</span>
+<span class="font-currency-sm text-currency-sm font-mono text-xs">local_vault_instance://v4.2.production</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm">
+<span class="px-2.5 py-1 rounded bg-surface-container text-primary font-label-sm text-label-sm font-semibold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+              3 Bank Feeds Synced
+            </span>
+<span class="px-2.5 py-1 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm">
+              Updated 8 mins ago
+            </span>
+</div>
+</div>
+<!-- Dashboard Workspace Body -->
+<div class="p-6 lg:p-10 space-y-8 bg-surface-container-lowest">
+<!-- Affordability Prompt Search Bar with Interactive Slider -->
+<div class="p-6 rounded-xl bg-surface-container-low space-y-4">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold">Active Capital Inquest</span>
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface">Can I afford an <span class="font-currency-md text-currency-md text-primary-container" id="afford-amount-display">₹80,000</span> phone next month?</h3>
+</div>
+<div class="flex items-center gap-space-sm">
+<span class="font-label-md text-label-md text-on-surface-variant">Adjust Purchase Size:</span>
+<input class="accent-primary cursor-pointer w-32 sm:w-44 h-2 bg-surface-container-high rounded-lg appearance-none" id="afford-amount-input" max="160000" min="20000" oninput="updateVerdict(this.value)" step="5000" type="range" value="80000">
+</div>
+</div>
+<!-- Verdict Card Result Banner -->
+<div class="p-5 rounded-lg bg-surface-container flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm">
+<div class="flex items-start gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-primary-container text-on-primary flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[24px]">verified_user</span>
+</div>
+<div>
+<div class="flex items-center gap-space-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold" id="verdict-status-title">
+                      Conditionally Safe: Typical Income Required
+                    </span>
+<span class="px-2 py-0.5 rounded bg-surface-container-highest text-primary font-label-sm text-label-sm font-bold">
+                      VERDICT 09-B
+                    </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1" id="verdict-status-desc">
+                    Comfortable with current pipeline. Requires clearing minimum 1 retainer invoice by Day 15.
+                  </p>
+</div>
+</div>
+<!-- Confidence Visualizer -->
+<div class="w-full md:w-56 shrink-0 bg-surface-container-lowest p-3 rounded-lg shadow-sm">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Confidence Rating</span>
+<span class="font-label-md text-label-md font-bold text-primary" id="confidence-score-val">84% Safe Margin</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container-high overflow-hidden">
+<div class="h-full bg-primary-container rounded-full transition-all duration-300" id="confidence-fill" style="width: 84%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Step-by-Step Transparent Waterfall Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Left Panel: 4-Step Breakdown Table -->
+<div class="lg:col-span-8 space-y-4">
+<div class="flex items-center justify-between">
+<h4 class="font-headline-sm text-headline-sm font-semibold text-on-surface flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[22px]">account_tree</span>
+                  Transparent Decision Waterfall
+                </h4>
+<span class="font-label-sm text-label-sm text-secondary">30-Day Forward Forecast</span>
+</div>
+<div class="rounded-xl bg-surface-container-low p-4 space-y-3">
+<!-- Waterfall Step 1 -->
+<div class="p-3.5 rounded-lg bg-surface-container-lowest flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-space-md">
+<span class="w-6 h-6 rounded-full bg-surface-container text-primary font-label-sm text-label-sm font-bold flex items-center justify-center">1</span>
+<div>
+<p class="font-body-md text-body-md font-medium text-on-surface">Base Net Income Projection</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Salaried (₹1.80L) + P50 Freelance Retainers (₹65k)</p>
+</div>
+</div>
+<span class="font-currency-md text-currency-md text-primary font-semibold">+₹2,45,000</span>
+</div>
+<!-- Waterfall Step 2 -->
+<div class="p-3.5 rounded-lg bg-surface-container-lowest flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-space-md">
+<span class="w-6 h-6 rounded-full bg-surface-container text-secondary font-label-sm text-label-sm font-bold flex items-center justify-center">2</span>
+<div>
+<p class="font-body-md text-body-md font-medium text-on-surface">Committed Non-Negotiables</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Home EMI, SIP Mutual Funds, Term Health Cover</p>
+</div>
+</div>
+<span class="font-currency-md text-currency-md text-on-surface-variant font-medium">-₹58,200</span>
+</div>
+<!-- Waterfall Step 3 -->
+<div class="p-3.5 rounded-lg bg-surface-container-lowest flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-space-md">
+<span class="w-6 h-6 rounded-full bg-surface-container text-secondary font-label-sm text-label-sm font-bold flex items-center justify-center">3</span>
+<div>
+<p class="font-body-md text-body-md font-medium text-on-surface">Baseline Living &amp; Floating UPI Spend</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Calibrated from 90 days trailing transaction medians</p>
+</div>
+</div>
+<span class="font-currency-md text-currency-md text-on-surface-variant font-medium">-₹64,000</span>
+</div>
+<!-- Waterfall Step 4 -->
+<div class="p-3.5 rounded-lg bg-surface-container-lowest flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-space-md">
+<span class="w-6 h-6 rounded-full bg-surface-container text-secondary font-label-sm text-label-sm font-bold flex items-center justify-center">4</span>
+<div>
+<p class="font-body-md text-body-md font-medium text-on-surface">Statutory Safe Emergency Floor</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Untouchable liquid capital rule enforced by system</p>
+</div>
+</div>
+<span class="font-currency-md text-currency-md text-on-surface-variant font-medium">-₹25,000</span>
+</div>
+<!-- Residual Net -->
+<div class="p-4 rounded-lg bg-surface-container-high flex items-center justify-between">
+<div>
+<span class="font-label-md text-label-md uppercase tracking-wider text-secondary font-bold">Unencumbered Discretionary Capital</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Post-purchase balance remaining in liquid accounts</p>
+</div>
+<span class="font-currency-md text-currency-md text-primary font-semibold" id="waterfall-residual">+₹17,800</span>
+</div>
+</div>
+</div>
+<!-- Right Panel: Stress Matrix & Verified Inputs -->
+<div class="lg:col-span-4 space-y-4">
+<h4 class="font-headline-sm text-headline-sm font-semibold text-on-surface flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[22px]">tune</span>
+                Scenario Simulation
+              </h4>
+<div class="rounded-xl bg-surface-container-low p-5 space-y-4">
+<div class="space-y-3">
+<div class="flex items-center justify-between text-body-sm">
+<span class="text-on-surface font-medium">Worst Case (No Freelance Pay)</span>
+<span class="font-currency-sm text-currency-sm text-error font-semibold">-₹47,200 (Deficit)</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-error h-full rounded-full" style="width: 25%"></div>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex items-center justify-between text-body-sm">
+<span class="text-on-surface font-medium">Median Baseline (Expected)</span>
+<span class="font-currency-sm text-currency-sm text-primary font-semibold">+₹17,800 (Safe)</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 78%"></div>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex items-center justify-between text-body-sm">
+<span class="text-on-surface font-medium">Bonus Scenario (+Pending GST Ref)</span>
+<span class="font-currency-sm text-currency-sm text-primary font-semibold">+₹54,300 (Abundant)</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary-container h-full rounded-full" style="width: 95%"></div>
+</div>
+</div>
+<div class="pt-3 border-t border-surface-container-high/60">
+<div class="flex items-center gap-space-sm p-3 rounded-lg bg-surface-container-lowest text-on-surface-variant">
+<span class="material-symbols-outlined text-primary text-[20px]">nfc</span>
+<span class="font-label-sm text-label-sm leading-relaxed">
+                      Physical Card Key <strong>#SG-7741</strong> bound. Simulation operates strictly in-memory.
+                    </span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: 3 Core Benefit Points Grid -->
+<section class="px-6 lg:px-12 py-space-2xl bg-surface-container-low">
+<div class="max-w-7xl mx-auto space-y-12">
+<div class="max-w-3xl">
+<span class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider">System Architecture</span>
+<h2 class="font-headline-lg text-headline-lg lg:text-display-lg lg:leading-tight font-bold text-on-surface mt-1">
+          Designed for complex earners who refuse vague budgeting advice
+        </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2">
+          Generic apps classify spends after money is gone. SmartGullak orchestrates multi-stream inflows to give deterministic answers in advance.
+        </p>
+</div>
+<!-- 3 Columns -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Benefit Card 1 -->
+<div class="rounded-xl bg-surface-container-lowest p-8 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div>
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined text-[28px]">account_balance</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface mb-3">
+              All accounts in one place
+            </h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              Drop your HDFC, ICICI, or Kotak PDFs and CSVs. We auto-normalize UPI spends, freelance retainers, and hidden subscriptions into one unified, de-duplicated ledger.
+            </p>
+</div>
+<div class="mt-8 pt-4 flex items-center gap-space-sm text-secondary font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">file_download_done</span>
+<span class="">Supports 32+ Indian Bank formats</span>
+</div>
+</div>
+<!-- Benefit Card 2 -->
+<div class="rounded-xl bg-surface-container-lowest p-8 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div>
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined text-[28px]">query_stats</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface mb-3">
+              Every answer explained
+            </h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              We never give a flat yes or no without mathematical proof. View step-by-step cashflow waterfalls across worst-case, median, and bonus scenarios before committing money.
+            </p>
+</div>
+<div class="mt-8 pt-4 flex items-center gap-space-sm text-secondary font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">calculate</span>
+<span class="">Deterministic mathematical models</span>
+</div>
+</div>
+<!-- Benefit Card 3 -->
+<div class="rounded-xl bg-surface-container-lowest p-8 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+<div>
+<div class="w-12 h-12 rounded-lg bg-surface-container flex items-center justify-center text-primary mb-6">
+<span class="material-symbols-outlined text-[28px]">contactless</span>
+</div>
+<h3 class="font-headline-md text-headline-md font-semibold text-on-surface mb-3">
+              Your data protected by card + password
+            </h3>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+              Hardware-grade security. Sensitive operations like exporting or purging history require physical SmartGullak NFC card verification. Raw statements are permanently destroyed after parsing.
+            </p>
+</div>
+<div class="mt-8 pt-4 flex items-center gap-space-sm text-secondary font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">save_as</span>
+<span class="">Zero cloud residual storage</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 4: Interactive Proof / Contrast Matrix -->
+<section class="px-6 lg:px-12 py-space-2xl bg-surface">
+<div class="max-w-7xl mx-auto">
+<div class="text-center max-w-3xl mx-auto mb-space-xl">
+<span class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider">The SmartGullak Difference</span>
+<h2 class="font-headline-lg text-headline-lg lg:text-display-lg font-bold text-on-surface mt-1">
+          Why traditional budget apps fail variable earners
+        </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2">
+          Most personal finance utilities are ad-funded pipelines built to sell credit lines. We built a mathematical decision terminal.
+        </p>
+</div>
+<!-- Comparison Matrix Card -->
+<div class="rounded-xl bg-surface-container-lowest shadow-md overflow-hidden">
+<div class="grid grid-cols-1 md:grid-cols-12 divide-y md:divide-y-0 md:divide-x divide-surface-container-high">
+<!-- Column 1: Feature Row Labels -->
+<div class="md:col-span-4 p-6 lg:p-8 bg-surface-container-low space-y-6">
+<div class="font-headline-sm text-headline-sm font-bold text-on-surface">Fundamental Tenet</div>
+<ul class="space-y-8 font-body-md text-body-md text-on-surface-variant">
+<li class="h-10 flex items-center font-medium">Answering "Can I afford this?"</li>
+<li class="h-10 flex items-center font-medium">Handling Freelance / Inconsistent Pay</li>
+<li class="h-10 flex items-center font-medium">Data Storage &amp; Credential Sharing</li>
+<li class="h-10 flex items-center font-medium">Revenue Model</li>
+<li class="h-10 flex items-center font-medium">Authorization Security</li>
+</ul>
+</div>
+<!-- Column 2: Typical Consumer Budgeting App -->
+<div class="md:col-span-4 p-6 lg:p-8 space-y-6 bg-surface-container-lowest">
+<div class="font-headline-sm text-headline-sm font-semibold text-secondary flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-outline">cancel</span>
+              Typical Budgeting App
+            </div>
+<ul class="space-y-8 font-body-sm text-body-sm text-on-surface-variant">
+<li class="h-10 flex items-center">Retrospective pie chart showing where money already went.</li>
+<li class="h-10 flex items-center">Assumes rigid fixed salaries; flags dips as budget failures.</li>
+<li class="h-10 flex items-center">Demands SMS scraper access and persistent netbanking tokens.</li>
+<li class="h-10 flex items-center">Upselling high-interest personal loans and credit cards.</li>
+<li class="h-10 flex items-center">Weak SMS OTPs or basic 4-digit mobile PIN.</li>
+</ul>
+</div>
+<!-- Column 3: SmartGullak -->
+<div class="md:col-span-4 p-6 lg:p-8 space-y-6 bg-surface-container">
+<div class="font-headline-sm text-headline-sm font-bold text-primary flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+              SmartGullak Engine
+            </div>
+<ul class="space-y-8 font-body-sm text-body-sm text-on-surface font-medium">
+<li class="h-10 flex items-center">Deterministic forward waterfall based on liquidity cycles.</li>
+<li class="h-10 flex items-center">Stochastic P10/P50/P90 modeling tailored for mixed income.</li>
+<li class="h-10 flex items-center">100% credential-free. Offline statement parsing and immediate shred.</li>
+<li class="h-10 flex items-center">Clean annual software licensing. Absolute zero data monetization.</li>
+<li class="h-10 flex items-center">Dual-factor hardware NFC Smart Card tap + passphrase.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 5: Hardware NFC Card Teaser Section -->
+<section class="px-6 lg:px-12 py-space-2xl bg-surface-container-low">
+<div class="max-w-7xl mx-auto rounded-xl bg-inverse-surface text-inverse-on-surface p-8 lg:p-14 overflow-hidden relative shadow-xl">
+<!-- Background Ambient Elements -->
+<div class="absolute -right-20 -bottom-20 w-96 h-96 bg-primary-container/20 rounded-full blur-3xl pointer-events-none"></div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+<!-- Left Explanatory Text -->
+<div class="lg:col-span-7 space-y-6">
+<div class="inline-flex items-center gap-space-xs px-3 py-1 rounded-full bg-white/10 text-primary-fixed font-label-md text-label-md font-semibold">
+<span class="material-symbols-outlined text-[16px]">lock</span>
+            Hardware-Keyed Personal Finance
+          </div>
+<h2 class="font-display-lg text-display-lg font-bold text-white tracking-tight">
+            The SmartGullak NFC Card.<br>
+            Physical sovereignty over your financial decisions.
+          </h2>
+<p class="font-body-lg text-body-lg text-inverse-on-surface/80 leading-relaxed max-w-xl">
+            Software passwords can be compromised. With SmartGullak, critical operations — decrypting income vaults, releasing scenario reports, or wiping local logs — require touching your physical NFC key to your device.
+          </p>
+<div class="flex flex-wrap items-center gap-6 pt-2">
+<div class="flex items-center gap-space-sm text-inverse-on-surface/90">
+<span class="material-symbols-outlined text-primary-fixed text-[22px]">contactless</span>
+<span class="font-label-md text-label-md font-medium">Standard NTAG424 DNA Crypto</span>
+</div>
+<div class="flex items-center gap-space-sm text-inverse-on-surface/90">
+<span class="material-symbols-outlined text-primary-fixed text-[22px]">devices</span>
+<span class="font-label-md text-label-md font-medium">Works with iPhone &amp; Android</span>
+</div>
+</div>
+</div>
+<!-- Right Realistic Card Graphic Preview -->
+<div class="lg:col-span-5 flex justify-center">
+<div class="w-full max-w-sm aspect-[1.586/1] rounded-xl bg-gradient-to-tr from-[#001551] via-[#0037b0] to-[#1d4ed8] p-6 shadow-2xl flex flex-col justify-between text-white relative border border-white/20">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm font-bold tracking-tight">SmartGullak</span>
+<span class="px-1.5 py-0.5 rounded text-[10px] bg-white/20 font-mono tracking-widest uppercase">VAULT</span>
+</div>
+<span class="material-symbols-outlined text-[28px] opacity-80">contactless</span>
+</div>
+<div class="space-y-1">
+<div class="font-currency-md text-currency-md font-mono tracking-widest text-white/90">•••• •••• •••• 7741</div>
+<p class="text-[11px] text-white/70 font-mono">ED25519 SECURE ENCLAVE HARDWARE KEY</p>
+</div>
+<div class="flex items-end justify-between text-xs">
+<div>
+<p class="text-[10px] text-white/60 uppercase tracking-wider">Vault Holder</p>
+<p class="font-medium tracking-wide">PRIVATE SOVEREIGN ID</p>
+</div>
+<span class="material-symbols-outlined text-[24px] text-white/80">security</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 6: Bottom High-Conversion CTA Banner -->
+<section class="px-6 lg:px-12 py-space-2xl bg-surface-container-low" id="pricing">
+<div class="max-w-7xl mx-auto space-y-12">
+<div class="text-center max-w-3xl mx-auto">
+<span class="font-label-md text-label-md text-primary font-bold uppercase tracking-wider">TRANSPARENT, UNCOMPROMISED PRICING</span>
+<h2 class="font-headline-lg text-headline-lg lg:text-display-lg font-bold text-on-surface mt-1">
+          Simple, honest pricing for complete financial clarity
+        </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2">
+          No hidden charges, zero loan ads, no data monetization. Just deterministic math to answer what you can afford.
+        </p>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto items-stretch">
+<!-- Plan 1: Starter / Free -->
+<div class="rounded-xl bg-surface-container-lowest p-8 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow border border-surface-container-high/60">
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<span class="px-3 py-1 rounded-full bg-surface-container text-secondary font-label-md text-label-md font-semibold">Starter / Basic</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Zero Commitment</span>
+</div>
+<div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-currency-hero text-currency-hero font-bold text-on-surface">₹0</span>
+<span class="font-body-md text-body-md text-on-surface-variant font-medium">/ forever</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 leading-relaxed">
+                Essential liquidity tracking and deterministic affordability answers for individuals.
+              </p>
+</div>
+<div class="h-px w-full bg-surface-container-high"></div>
+<ul class="space-y-3 font-body-sm text-body-sm text-on-surface">
+<li class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span class="">Up to 2 bank accounts</span>
+</li>
+<li class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span class="">Real-time dashboard and trends</span>
+</li>
+<li class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span class="">"Can I afford it?" answers</span>
+</li>
+<li class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span class="">Local in-memory statement parsing</span>
+</li>
+</ul>
+</div>
+<div class="pt-8 mt-6 border-t border-surface-container-high/60">
+<a class="w-full py-3 rounded-lg bg-surface-container-high hover:bg-surface-variant text-on-surface font-headline-sm text-headline-sm font-semibold transition-all shadow-sm flex items-center justify-center gap-space-sm" data-path="sign-up" href="#">
+<span class="">Get Started Free</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+</div>
+
+<!-- Plan 2: Premium (Recommended) -->
+<div class="rounded-xl bg-surface-container-lowest p-8 shadow-md flex flex-col justify-between hover:shadow-xl transition-shadow border-2 border-primary relative">
+<div class="absolute -top-3.5 right-6">
+<span class="px-3 py-1 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm font-bold tracking-wide uppercase shadow-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">star</span>
+              Most Popular
+            </span>
+</div>
+<div class="space-y-6">
+<div class="flex items-center justify-between">
+<span class="px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-md text-label-md font-semibold">Premium</span>
+<span class="font-label-sm text-label-sm text-primary font-medium">14-day free trial</span>
+</div>
+<div>
+<div class="flex items-baseline gap-1.5">
+<span class="font-currency-hero text-currency-hero font-bold text-primary">₹99</span>
+<span class="font-body-md text-body-md text-on-surface-variant font-medium">/ per month</span>
+</div>
+<p class="font-label-sm text-label-sm text-secondary mt-0.5">or billed annually at ₹999/yr (save 16%)</p>
+<p class="font-body-md text-body-md text-on-surface-variant mt-2 leading-relaxed">
+                Complete multi-stream financial sovereignty with scenario simulations, flow mapping, and unlimited accounts.
+              </p>
+</div>
+<div class="h-px w-full bg-surface-container-high"></div>
+<ul class="space-y-3 font-body-sm text-body-sm text-on-surface">
+<li class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span class="">Unlimited bank accounts &amp; credit lines</span>
+</li>
+<li class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span class="">What-if scenarios &amp; forward cashflow simulations</span>
+</li>
+<li class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span class="">Goals tracker with feasibility scoring</span>
+</li>
+<li class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span class="">Money flow analysis (node &amp; link / Sankey view)</span>
+</li>
+<li class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span class="">Forecast track record &amp; precision audit</span>
+</li>
+<li class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span class="">Full data export (CSV &amp; JSON)</span>
+</li>
+<li class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span class="">SmartGullak Hardware Key compatibility</span>
+</li>
+</ul>
+</div>
+<div class="pt-8 mt-6 border-t border-surface-container-high/60">
+<a class="w-full py-3 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-headline-sm text-headline-sm font-semibold transition-all shadow-md flex items-center justify-center gap-space-sm" data-path="sign-up" href="#">
+<span class="">Start 14-Day Free Trial</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+
+<!-- Prominent Trust Line -->
+<div class="max-w-3xl mx-auto rounded-xl bg-surface-container p-4 flex flex-col sm:flex-row items-center justify-center gap-space-sm text-center sm:text-left">
+<span class="material-symbols-outlined text-primary text-[24px]">shield</span>
+<p class="font-body-sm text-body-sm text-on-surface font-medium">
+          We never sell your data. Your statements stay private. <span class="text-on-surface-variant font-normal">Local in-memory parsing with zero third-party ads or data broker syndication.</span>
+        </p>
+</div>
+
+<!-- Institutional Licensing Callout -->
+<div class="text-center pt-2">
+<p class="font-label-sm text-label-sm text-on-surface-variant">
+          For banks and employers: license SmartGullak's explainable affordability engine — 
+          <a class="text-primary hover:underline font-semibold" data-path="privacy" href="#">Contact us</a>.
+        </p>
+</div>
+</div>
+</section><section class="px-6 lg:px-12 py-space-2xl bg-surface">
+<div class="max-w-5xl mx-auto rounded-xl bg-surface-container-high p-8 lg:p-14 text-center space-y-6 shadow-sm">
+<div class="w-12 h-12 rounded-xl bg-primary-container text-on-primary flex items-center justify-center mx-auto shadow-md">
+<span class="font-headline-md text-headline-md font-bold">₹</span>
+</div>
+<h2 class="font-display-lg text-display-lg font-bold text-on-surface max-w-2xl mx-auto">
+        Make major financial decisions with mathematical certainty
+      </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mx-auto">
+        No bank logins needed. Drop your statements, calibrate your real liquidity, and never second-guess a high-ticket expense again.
+      </p>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-space-md pt-2">
+<a class="w-full sm:w-auto px-space-xl py-3 rounded-lg bg-primary-container hover:bg-primary text-on-primary font-headline-sm text-headline-sm font-semibold transition-all shadow-md" data-path="sign-up" href="#">
+          Get Started for Free
+        </a>
+<a class="w-full sm:w-auto px-space-lg py-3 rounded-lg bg-surface-container-lowest hover:bg-surface text-on-surface font-headline-sm text-headline-sm font-medium transition-all shadow-sm" data-path="login" href="#">
+          Log In to Existing Vault
+        </a>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant pt-2">
+        Free 14-day evaluation with instant offline PDF parsing. No payment card requested.
+      </p>
+</div>
+</section>
+</div></main><footer class="w-full bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="max-w-7xl mx-auto px-6 lg:px-12 py-space-2xl"><div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-space-lg pb-space-xl"><div class="max-w-md"><div class="flex items-center gap-space-sm mb-space-sm"><div class="w-6 h-6 rounded bg-primary-container flex items-center justify-center text-on-primary font-headline-sm text-label-md font-bold">₹</div><span class="font-headline-sm text-headline-sm text-on-surface font-bold">SmartGullak</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">Intelligent multi-stream cashflow orchestration and disciplined savings architecture for modern salaried and freelance earners.</p></div><div class="flex flex-wrap items-center gap-space-lg"><div class="flex items-center gap-space-sm text-on-surface-variant"><span class="material-symbols-outlined text-primary text-[20px]">verified_user</span><span class="font-label-sm text-label-sm">256-Bit Bank-Grade Encryption</span></div><div class="flex items-center gap-space-sm text-on-surface-variant"><span class="material-symbols-outlined text-primary text-[20px]">lock</span><span class="font-label-sm text-label-sm">RBI Account Aggregator Compliant</span></div><div class="flex items-center gap-space-sm text-on-surface-variant"><span class="material-symbols-outlined text-primary text-[20px]">shield</span><span class="font-label-sm text-label-sm">Zero Data Selling Policy</span></div></div></div><div class="pt-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md"><p class="font-body-sm text-body-sm text-on-surface-variant">© 2025 SmartGullak Technologies Pvt. Ltd. All rights reserved. Registered with financial regulatory frameworks.</p><div class="flex items-center gap-space-md"><a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="privacy" href="#">Privacy Policy</a><a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="security" href="#">Security Disclosures</a><a class="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" data-path="features" href="#">Terms of Service</a></div></div></div></footer>
+
+</body></html>

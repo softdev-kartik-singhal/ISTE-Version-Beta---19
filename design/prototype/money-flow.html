@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-primary-fixed-variant":"#0039b5","on-error":"#ffffff","tertiary-container":"#a73400","tertiary-fixed-dim":"#ffb59c","primary-fixed-dim":"#b7c4ff","surface-container-highest":"#dae2fd","tertiary":"#7f2500","surface-container-low":"#f2f3ff","on-error-container":"#93000a","surface-variant":"#dae2fd","inverse-surface":"#283044","inverse-primary":"#b7c4ff","secondary-container":"#bfd5fe","on-tertiary-fixed":"#390c00","primary-container":"#1d4ed8","surface-bright":"#faf8ff","surface-container-high":"#e2e7ff","on-surface":"#131b2e","surface-container":"#eaedff","secondary-fixed":"#d5e3ff","on-secondary-container":"#465c7f","on-primary-fixed":"#001551","error-container":"#ffdad6","surface-container-lowest":"#ffffff","error":"#ba1a1a","surface":"#faf8ff","secondary":"#495f82","on-secondary":"#ffffff","surface-tint":"#2151da","outline-variant":"#c4c5d7","surface-dim":"#d2d9f4","on-surface-variant":"#434655","on-secondary-fixed-variant":"#314769","background":"#faf8ff","outline":"#747686","on-primary":"#ffffff","on-tertiary-container":"#ffc9b7","tertiary-fixed":"#ffdbcf","on-tertiary-fixed-variant":"#832700","on-secondary-fixed":"#001c3b","primary-fixed":"#dce1ff","secondary-fixed-dim":"#b1c7f0","primary":"#0037b0","inverse-on-surface":"#eef0ff","on-tertiary":"#ffffff","on-primary-container":"#cad3ff","on-background":"#131b2e"},borderRadius:{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},spacing:{"space-lg":"1.5rem","margin":"2rem","space-2xl":"3rem","space-xs":"0.25rem","gutter":"1.5rem","space-md":"1rem","space-xl":"2rem","space-sm":"0.5rem"},fontFamily:{"body-sm":["Inter"],"currency-sm":["IBM Plex Mono"],"display-lg-mobile":["Inter"],"label-sm":["Inter"],"headline-md":["Inter"],"headline-lg":["Inter"],"currency-hero":["IBM Plex Mono"],"label-md":["Inter"],"display-lg":["Inter"],"headline-sm":["Inter"],"body-md":["Inter"],"currency-md":["IBM Plex Mono"],"body-lg":["Inter"]},fontSize:{"body-sm":["13px",{"lineHeight":"18px","fontWeight":"400"}],"currency-sm":["14px",{"lineHeight":"20px","fontWeight":"500"}],"display-lg-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"600"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.02em","fontWeight":"500"}],"headline-md":["20px",{"lineHeight":"28px","letterSpacing":"-0.01em","fontWeight":"600"}],"headline-lg":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"600"}],"currency-hero":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"600"}],"display-lg":["36px",{"lineHeight":"44px","letterSpacing":"-0.02em","fontWeight":"600"}],"headline-sm":["18px",{"lineHeight":"24px","fontWeight":"600"}],"body-md":["15px",{"lineHeight":"22px","fontWeight":"400"}],"currency-md":["20px",{"lineHeight":"28px","letterSpacing":"-0.01em","fontWeight":"500"}],"body-lg":["16px",{"lineHeight":"24px","fontWeight":"400"}]}}}};</script></head><body class="bg-background font-body-md text-on-surface antialiased"><aside class="fixed left-0 top-0 h-full w-64 bg-on-background z-50 flex flex-col justify-between select-none shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="flex flex-col flex-1 overflow-y-auto"><div class="h-16 px-space-md flex items-center gap-space-sm"><div class="w-9 h-9 rounded-lg bg-primary-container flex items-center justify-center text-on-primary shadow-sm"><span class="material-symbols-outlined text-[20px]">savings</span></div><div class="flex flex-col"><span class="font-headline-sm text-headline-sm text-surface-container-lowest tracking-tight">SmartGullak</span><span class="font-label-sm text-label-sm text-surface-dim uppercase tracking-wider">Multi-Stream Wealth</span></div></div><div class="px-space-md pt-space-md"><p class="px-space-sm font-label-sm text-label-sm uppercase text-surface-dim font-semibold tracking-wider mb-space-xs">Insights</p><nav class="flex flex-col gap-1" data-active-classes="bg-primary-container text-surface-container-lowest font-semibold rounded-lg shadow-sm"><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-surface-dim hover:bg-inverse-surface hover:text-surface-container-lowest transition-colors" data-path="dashboard" href="#"><span class="material-symbols-outlined text-[19px]">grid_view</span><span class="font-body-sm text-body-sm">Dashboard</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-surface-dim hover:bg-inverse-surface hover:text-surface-container-lowest transition-colors" data-path="ask" href="#"><span class="material-symbols-outlined text-[19px]">psychology_alt</span><span class="font-body-sm text-body-sm">Ask</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-surface-dim hover:bg-inverse-surface hover:text-surface-container-lowest transition-colors" data-path="trends-and-surplus" href="#"><span class="material-symbols-outlined text-[19px]">trending_up</span><span class="font-body-sm text-body-sm">Trends &amp; Surplus</span></a><a aria-current="page" class="flex items-center gap-space-sm px-space-sm py-2 transition-colors bg-primary-container text-surface-container-lowest font-semibold rounded-lg shadow-sm" data-path="money-flow" href="#"><span class="material-symbols-outlined text-[19px]">account_balance_wallet</span><span class="font-body-sm text-body-sm">Money Flow</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-surface-dim hover:bg-inverse-surface hover:text-surface-container-lowest transition-colors" data-path="goals" href="#"><span class="material-symbols-outlined text-[19px]">flag</span><span class="font-body-sm text-body-sm">Goals</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-surface-dim hover:bg-inverse-surface hover:text-surface-container-lowest transition-colors" data-path="surplus-plan" href="#"><span class="material-symbols-outlined text-[19px]">rule_folder</span><span class="font-body-sm text-body-sm">Surplus Plan</span></a></nav></div><div class="px-space-md pt-space-lg"><p class="px-space-sm font-label-sm text-label-sm uppercase text-surface-dim font-semibold tracking-wider mb-space-xs">Data</p><nav class="flex flex-col gap-1" data-active-classes="bg-primary-container text-surface-container-lowest font-semibold rounded-lg shadow-sm"><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-surface-dim hover:bg-inverse-surface hover:text-surface-container-lowest transition-colors" data-path="statements" href="#"><span class="material-symbols-outlined text-[19px]">receipt_long</span><span class="font-body-sm text-body-sm">Statements</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-surface-dim hover:bg-inverse-surface hover:text-surface-container-lowest transition-colors" data-path="transactions" href="#"><span class="material-symbols-outlined text-[19px]">swap_horiz</span><span class="font-body-sm text-body-sm">Transactions</span></a><a class="flex items-center justify-between px-space-sm py-2 rounded-lg text-surface-dim hover:bg-inverse-surface hover:text-surface-container-lowest transition-colors" data-path="flags" href="#"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-[19px]">notifications_active</span><span class="font-body-sm text-body-sm">Flags</span></div><span class="px-1.5 py-0.5 rounded-full bg-error text-on-error font-label-sm text-[10px] font-bold leading-none">3</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-surface-dim hover:bg-inverse-surface hover:text-surface-container-lowest transition-colors" data-path="track-record" href="#"><span class="material-symbols-outlined text-[19px]">history</span><span class="font-body-sm text-body-sm">Track Record</span></a><a class="flex items-center gap-space-sm px-space-sm py-2 rounded-lg text-surface-dim hover:bg-inverse-surface hover:text-surface-container-lowest transition-colors" data-path="privacy-and-data" href="#"><span class="material-symbols-outlined text-[19px]">lock</span><span class="font-body-sm text-body-sm">Privacy &amp; Data</span></a></nav></div></div><div class="p-space-md bg-inverse-surface/40 flex flex-col gap-space-sm"><div class="p-space-sm rounded-lg bg-inverse-surface/80 flex items-start gap-space-xs"><span class="w-2 h-2 rounded-full bg-primary-fixed-dim mt-1.5 shrink-0"></span><div class="flex flex-col"><span class="font-label-md text-label-md text-surface-container-lowest">Connected</span><span class="font-label-sm text-label-sm text-surface-dim leading-snug">HDFC, ICICI &amp; Kotak synced</span></div></div><a class="flex items-center gap-space-sm px-space-sm py-1.5 rounded-lg text-surface-dim hover:bg-inverse-surface hover:text-surface-container-lowest transition-colors" data-path="support-and-faq" href="#"><span class="material-symbols-outlined text-[18px]">contact_support</span><span class="font-body-sm text-body-sm">Support &amp; FAQ</span></a></div></aside><div class="pl-64 flex flex-col min-h-screen"><header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 px-space-lg flex items-center justify-between"><div class="flex items-center gap-space-md flex-1 max-w-xl"><div class="relative w-full max-w-sm"><div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="material-symbols-outlined text-outline text-[18px]">search</span></div><input class="w-full pl-9 pr-4 py-2 bg-surface-container-low rounded-lg font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary-container transition-all" placeholder="Search transactions, cashflow rules... ⌘K" type="text"/><div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none"><span class="px-1.5 py-0.5 rounded bg-surface-container font-currency-sm text-[10px] text-on-surface-variant uppercase">⌘K</span></div></div><div class="hidden md:flex items-center gap-space-xs px-3 py-1.5 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md cursor-pointer hover:bg-surface-container-highest transition-colors"><span class="material-symbols-outlined text-[16px] text-primary">account_balance</span><span>All accounts (3)</span><span class="material-symbols-outlined text-[14px] text-outline">expand_more</span></div></div><div class="flex items-center gap-space-md"><div class="hidden lg:flex items-center gap-1.5 text-on-surface-variant font-label-sm text-label-sm"><span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span><span>Last synced: Today, 10:45 AM</span></div><button class="relative p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-error"></span></button><div class="flex items-center gap-space-sm pl-space-xs"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div><div class="flex flex-col text-left"><span class="font-label-md text-label-md text-on-surface leading-tight">Aditya Rao</span><span class="font-label-sm text-label-sm text-on-surface-variant leading-tight">Salaried + Freelance</span></div></div></div></header><main class="w-full pt-16 px-space-lg py-space-lg flex-1 bg-background"><div class="flex flex-col w-full">
+<!-- PAGE HEADER & CONTROL SUITE -->
+<div class="flex flex-col gap-space-md mb-space-lg">
+<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-space-md">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-space-sm flex-wrap">
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Money Flow</h1>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm uppercase tracking-wider font-semibold">
+            Sankey Cashflow Engine
+          </span>
+<div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">info</span>
+<span>Own-account transfers excluded</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-2xl">
+          Visualizing path of capital from inflow origin to account depository, expenditure category, and merchant terminal.
+        </p>
+</div>
+<!-- Quick Action Controls -->
+<div class="flex items-center gap-space-sm flex-wrap">
+<!-- Month Dropdown -->
+<div class="relative inline-flex items-center bg-surface-container-lowest rounded-lg shadow-sm px-3 py-2 cursor-pointer hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px] text-primary mr-2">calendar_today</span>
+<span class="font-label-md text-label-md text-on-surface">October 2024 (Current)</span>
+<span class="material-symbols-outlined text-[16px] text-outline ml-2">expand_more</span>
+</div>
+<!-- Comparison Pill Toggle -->
+<div class="inline-flex items-center p-0.5 rounded-lg bg-surface-container-high">
+<button class="px-3 py-1.5 rounded-md font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all" type="button">
+            Prev Month
+          </button>
+<button class="px-3 py-1.5 rounded-md bg-surface-container-lowest text-primary font-semibold shadow-sm text-label-md transition-all" type="button">
+            3-Mo Average
+          </button>
+</div>
+<!-- Merchants Count Toggle -->
+<div class="inline-flex items-center p-0.5 rounded-lg bg-surface-container-high">
+<button class="px-2.5 py-1.5 rounded-md bg-surface-container-lowest text-on-surface font-semibold shadow-sm text-label-md transition-all" type="button">
+            Top 5
+          </button>
+<button class="px-2.5 py-1.5 rounded-md font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all" type="button">
+            Top 10
+          </button>
+</div>
+<!-- View Controls -->
+<div class="flex items-center gap-1">
+<button class="p-2 rounded-lg bg-surface-container-lowest hover:bg-surface-container-low text-on-surface-variant transition-colors shadow-sm" title="Reset Zoom" type="button">
+<span class="material-symbols-outlined text-[18px]">fit_screen</span>
+</button>
+<button class="p-2 rounded-lg bg-surface-container-lowest hover:bg-surface-container-low text-on-surface-variant transition-colors shadow-sm" title="Fullscreen" type="button">
+<span class="material-symbols-outlined text-[18px]">fullscreen</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- MAIN INTERACTIVE WORKSPACE (Sankey Diagram & Drawer) -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-space-lg mb-space-lg items-start">
+<!-- LEFT/CENTER WORKSPACE: SANKEY FLOW DIAGRAM (approx 68%-70%) -->
+<div class="xl:col-span-8 2xl:col-span-8 flex flex-col bg-surface-container-lowest rounded-xl shadow-sm p-space-md lg:p-space-lg overflow-hidden relative">
+<!-- Diagram Column Headers -->
+<div class="grid grid-cols-4 gap-2 mb-4 pb-2 border-b border-surface-container font-label-sm text-label-sm uppercase tracking-wider text-outline">
+<div class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
+<span>1. Inflow Sources</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span>2. Depositories</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+<span>3. Categories</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+<span>4. Top Merchants</span>
+</div>
+</div>
+<!-- Flowchart Interactive Canvas -->
+<div class="relative w-full h-[620px] select-none">
+<!-- SVG Curved Connector Ribbons Layer -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none z-0" preserveaspectratio="none" viewbox="0 0 1000 620">
+<defs>
+<!-- Inflow -> Depository Gradients -->
+<lineargradient id="grad-salary-hdfc" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#0d9488" stop-opacity="0.45"></stop>
+<stop offset="100%" stop-color="#1d4ed8" stop-opacity="0.4"></stop>
+</lineargradient>
+<lineargradient id="grad-freelance-hdfc" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#0284c7" stop-opacity="0.4"></stop>
+<stop offset="100%" stop-color="#1d4ed8" stop-opacity="0.4"></stop>
+</lineargradient>
+<lineargradient id="grad-freelance-sbi" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#0284c7" stop-opacity="0.4"></stop>
+<stop offset="100%" stop-color="#4f46e5" stop-opacity="0.4"></stop>
+</lineargradient>
+<lineargradient id="grad-interest-sbi" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#64748b" stop-opacity="0.4"></stop>
+<stop offset="100%" stop-color="#4f46e5" stop-opacity="0.4"></stop>
+</lineargradient>
+<!-- Depository -> Category Gradients -->
+<lineargradient id="grad-hdfc-surplus" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#059669" stop-opacity="0.4"></stop>
+</lineargradient>
+<lineargradient id="grad-hdfc-rent" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#4338ca" stop-opacity="0.4"></stop>
+</lineargradient>
+<lineargradient id="grad-hdfc-food" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.35"></stop>
+<stop offset="100%" stop-color="#d97706" stop-opacity="0.6"></stop>
+</lineargradient>
+<lineargradient id="grad-sbi-food" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#4f46e5" stop-opacity="0.35"></stop>
+<stop offset="100%" stop-color="#d97706" stop-opacity="0.6"></stop>
+</lineargradient>
+<lineargradient id="grad-hdfc-transit" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#0891b2" stop-opacity="0.4"></stop>
+</lineargradient>
+<lineargradient id="grad-hdfc-shopping" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#1d4ed8" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#7c3aed" stop-opacity="0.4"></stop>
+</lineargradient>
+<lineargradient id="grad-sbi-utility" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#4f46e5" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#0284c7" stop-opacity="0.4"></stop>
+</lineargradient>
+<lineargradient id="grad-sbi-saas" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#4f46e5" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#e11d48" stop-opacity="0.4"></stop>
+</lineargradient>
+<!-- Food -> Merchants Highlighted Ribbons -->
+<lineargradient id="grad-food-swiggy" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#d97706" stop-opacity="0.65"></stop>
+<stop offset="100%" stop-color="#f59e0b" stop-opacity="0.5"></stop>
+</lineargradient>
+<lineargradient id="grad-food-zepto" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#d97706" stop-opacity="0.5"></stop>
+<stop offset="100%" stop-color="#f59e0b" stop-opacity="0.4"></stop>
+</lineargradient>
+<lineargradient id="grad-food-cafes" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#d97706" stop-opacity="0.45"></stop>
+<stop offset="100%" stop-color="#f59e0b" stop-opacity="0.35"></stop>
+</lineargradient>
+<!-- Other Category -> Merchants Ribbons -->
+<lineargradient id="grad-shop-amazon" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#7c3aed" stop-opacity="0.4"></stop>
+<stop offset="100%" stop-color="#a855f7" stop-opacity="0.35"></stop>
+</lineargradient>
+<lineargradient id="grad-shop-myntra" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#7c3aed" stop-opacity="0.35"></stop>
+<stop offset="100%" stop-color="#a855f7" stop-opacity="0.3"></stop>
+</lineargradient>
+<lineargradient id="grad-transit-uber" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#0891b2" stop-opacity="0.4"></stop>
+<stop offset="100%" stop-color="#06b6d4" stop-opacity="0.35"></stop>
+</lineargradient>
+<lineargradient id="grad-transit-blusmart" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#0891b2" stop-opacity="0.35"></stop>
+<stop offset="100%" stop-color="#06b6d4" stop-opacity="0.3"></stop>
+</lineargradient>
+<lineargradient id="grad-saas-cursor" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#e11d48" stop-opacity="0.4"></stop>
+<stop offset="100%" stop-color="#fb7185" stop-opacity="0.3"></stop>
+</lineargradient>
+</defs>
+<!-- Links: Column 1 to Column 2 -->
+<!-- Salary -> HDFC -->
+<path d="M 180 80 C 220 80, 240 140, 280 140 L 280 230 C 240 230, 220 170, 180 170 Z" fill="url(#grad-salary-hdfc)"></path>
+<!-- Freelance -> HDFC -->
+<path d="M 180 280 C 220 280, 240 230, 280 230 L 280 260 C 240 260, 220 310, 180 310 Z" fill="url(#grad-freelance-hdfc)"></path>
+<!-- Freelance -> SBI -->
+<path d="M 180 315 C 220 315, 240 430, 280 430 L 280 470 C 240 470, 220 350, 180 350 Z" fill="url(#grad-freelance-sbi)"></path>
+<!-- Interest -> SBI -->
+<path d="M 180 500 C 220 500, 240 475, 280 475 L 280 490 C 240 490, 220 515, 180 515 Z" fill="url(#grad-interest-sbi)"></path>
+<!-- Links: Column 2 to Column 3 -->
+<!-- HDFC -> Surplus Buffer -->
+<path d="M 430 145 C 480 145, 500 70, 550 70 L 550 175 C 500 175, 480 215, 430 215 Z" fill="url(#grad-hdfc-surplus)"></path>
+<!-- HDFC -> Rent -->
+<path d="M 430 215 C 480 215, 500 205, 550 205 L 550 240 C 500 240, 480 235, 430 235 Z" fill="url(#grad-hdfc-rent)"></path>
+<!-- HDFC -> Food (Glowing path) -->
+<path d="M 430 235 C 475 235, 505 268, 550 268 L 550 288 C 505 288, 475 245, 430 245 Z" fill="url(#grad-food-swiggy)"></path>
+<!-- SBI -> Food -->
+<path d="M 430 430 C 475 430, 505 290, 550 290 L 550 298 C 505 298, 475 440, 430 440 Z" fill="url(#grad-food-zepto)"></path>
+<!-- HDFC -> Transit -->
+<path d="M 430 245 C 480 245, 500 330, 550 330 L 550 350 C 500 350, 480 255, 430 255 Z" fill="url(#grad-hdfc-transit)"></path>
+<!-- HDFC -> Shopping -->
+<path d="M 430 255 C 480 255, 500 380, 550 380 L 550 400 C 500 400, 480 265, 430 265 Z" fill="url(#grad-hdfc-shopping)"></path>
+<!-- SBI -> SaaS -->
+<path d="M 430 445 C 480 445, 500 435, 550 435 L 550 450 C 500 450, 480 455, 430 455 Z" fill="url(#grad-sbi-saas)"></path>
+<!-- SBI -> Utility -->
+<path d="M 430 460 C 480 460, 500 480, 550 480 L 550 500 C 500 500, 480 475, 430 475 Z" fill="url(#grad-sbi-utility)"></path>
+<!-- Links: Column 3 to Column 4 (Selected Category: Food expanded) -->
+<!-- Food -> Swiggy -->
+<path d="M 700 270 C 740 270, 760 190, 800 190 L 800 215 C 760 215, 740 282, 700 282 Z" fill="url(#grad-food-swiggy)"></path>
+<!-- Food -> Zepto -->
+<path d="M 700 282 C 740 282, 760 230, 800 230 L 800 248 C 760 248, 740 292, 700 292 Z" fill="url(#grad-food-zepto)"></path>
+<!-- Food -> Cafes -->
+<path d="M 700 292 C 740 292, 760 265, 800 265 L 800 280 C 760 280, 740 300, 700 300 Z" fill="url(#grad-food-cafes)"></path>
+<!-- Transit -> Uber -->
+<path d="M 700 330 C 740 330, 760 305, 800 305 L 800 325 C 760 325, 740 342, 700 342 Z" fill="url(#grad-transit-uber)"></path>
+<!-- Transit -> BluSmart -->
+<path d="M 700 342 C 740 342, 760 342, 800 342 L 800 358 C 760 358, 740 350, 700 350 Z" fill="url(#grad-transit-blusmart)"></path>
+<!-- Shopping -> Amazon -->
+<path d="M 700 380 C 740 380, 760 380, 800 380 L 800 405 C 760 405, 740 392, 700 392 Z" fill="url(#grad-shop-amazon)"></path>
+<!-- Shopping -> Myntra -->
+<path d="M 700 392 C 740 392, 760 420, 800 420 L 800 435 C 760 435, 740 402, 700 402 Z" fill="url(#grad-shop-myntra)"></path>
+<!-- SaaS -> Cursor -->
+<path d="M 700 438 C 740 438, 760 455, 800 455 L 800 475 C 760 475, 740 450, 700 450 Z" fill="url(#grad-saas-cursor)"></path>
+</svg>
+<!-- Node Elements Overlay (Positioned Absolutely matching ribbons) -->
+<div class="relative w-full h-full z-10 grid grid-cols-4 gap-4 pointer-events-none">
+<!-- COLUMN 1: INFLOW SOURCES -->
+<div class="flex flex-col justify-start gap-4 pt-1 pointer-events-auto">
+<!-- Salary Node -->
+<div class="p-3 bg-surface-container-lowest rounded-lg border-l-4 border-teal-600 shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline">Active Source</span>
+<span class="text-[11px] font-semibold text-teal-700 bg-teal-50 px-1.5 py-0.5 rounded">72.2%</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface mt-1 leading-tight">Salary – Acme Corp</div>
+<div class="font-currency-md text-currency-md text-on-surface font-semibold tracking-tight mt-0.5">₹1,80,000</div>
+</div>
+<!-- Freelance Retainer -->
+<div class="p-3 bg-surface-container-lowest rounded-lg border-l-4 border-sky-600 shadow-sm hover:shadow-md transition-shadow cursor-pointer mt-8">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline">Variable</span>
+<span class="text-[11px] font-semibold text-sky-700 bg-sky-50 px-1.5 py-0.5 rounded">26.1%</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface mt-1 leading-tight">Freelance Retainer</div>
+<div class="font-currency-md text-currency-md text-on-surface font-semibold tracking-tight mt-0.5">₹65,000</div>
+</div>
+<!-- Passive / Dividends -->
+<div class="p-3 bg-surface-container-lowest rounded-lg border-l-4 border-slate-500 shadow-sm hover:shadow-md transition-shadow cursor-pointer mt-12">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline">Passive</span>
+<span class="text-[11px] font-semibold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">1.7%</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface mt-1 leading-tight">Interest &amp; Dividends</div>
+<div class="font-currency-md text-currency-md text-on-surface font-semibold tracking-tight mt-0.5">₹4,200</div>
+</div>
+<!-- Total Inflow Footnote -->
+<div class="mt-auto p-2 bg-surface-container-low rounded-lg text-center">
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase">Total Gross Inflow</div>
+<div class="font-currency-md text-currency-md text-primary font-bold">₹2,49,200</div>
+</div>
+</div>
+<!-- COLUMN 2: ACCOUNTS / DEPOSITORIES -->
+<div class="flex flex-col justify-start gap-4 pt-16 pointer-events-auto">
+<!-- HDFC Salary -->
+<div class="p-3 bg-surface-container-lowest rounded-lg border-l-4 border-primary-container shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-primary font-semibold">Primary A/c</span>
+<span class="font-label-sm text-label-sm text-outline font-currency-sm">••8491</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface mt-1 leading-tight">HDFC Salary A/c</div>
+<div class="font-currency-md text-currency-md text-on-surface font-semibold mt-0.5">₹1,95,000</div>
+<div class="font-label-sm text-label-sm text-outline mt-1">78.3% of capital routed</div>
+</div>
+<!-- SBI Savings -->
+<div class="p-3 bg-surface-container-lowest rounded-lg border-l-4 border-indigo-600 shadow-sm hover:shadow-md transition-shadow cursor-pointer mt-24">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-indigo-700 font-semibold">Secondary</span>
+<span class="font-label-sm text-label-sm text-outline font-currency-sm">••2104</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface mt-1 leading-tight">SBI Savings A/c</div>
+<div class="font-currency-md text-currency-md text-on-surface font-semibold mt-0.5">₹54,200</div>
+<div class="font-label-sm text-label-sm text-outline mt-1">21.7% of capital routed</div>
+</div>
+<div class="mt-auto px-2 py-1 text-center font-label-sm text-label-sm text-outline">
+              Transfers HDFC ⇄ SBI excluded
+            </div>
+</div>
+<!-- COLUMN 3: CATEGORIES -->
+<div class="flex flex-col justify-start gap-2 pt-0 pointer-events-auto">
+<!-- Surplus Buffer (Large Green) -->
+<div class="p-2.5 bg-surface-container-lowest rounded-lg border-l-4 border-emerald-600 shadow-sm hover:shadow-md transition-all cursor-pointer">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-emerald-800 font-semibold truncate">Wealth Buffer / Surplus</span>
+<span class="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-1 py-0.5 rounded">72.5%</span>
+</div>
+<div class="font-currency-sm text-currency-sm text-on-surface font-semibold mt-0.5">₹1,80,683</div>
+</div>
+<!-- Rent & Housing -->
+<div class="p-2 bg-surface-container-lowest rounded-lg border-l-4 border-indigo-700 shadow-sm hover:shadow-md transition-all cursor-pointer">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">Rent &amp; Housing</span>
+<span class="font-currency-sm text-[12px] text-outline">₹28,000</span>
+</div>
+</div>
+<!-- Food & Dining (SELECTED HIGHLIGHT STATE) -->
+<div class="p-2.5 bg-amber-50/70 rounded-lg border-2 border-amber-500 shadow-md ring-2 ring-amber-400/40 transition-all cursor-pointer scale-[1.02] relative">
+<span class="absolute -top-2 right-2 px-1.5 py-0.2 bg-amber-600 text-white rounded text-[10px] font-bold uppercase tracking-wider">
+                Selected
+              </span>
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-amber-900 font-bold">Food &amp; Dining</span>
+<span class="font-currency-sm text-currency-sm text-amber-950 font-bold">₹8,240</span>
+</div>
+<div class="flex items-center justify-between mt-1 text-[11px] text-amber-800 font-medium">
+<span>3.3% Inflow</span>
+<span class="font-semibold text-amber-700">+34% vs med</span>
+</div>
+</div>
+<!-- Travel & Transit -->
+<div class="p-2 bg-surface-container-lowest rounded-lg border-l-4 border-cyan-600 shadow-sm hover:shadow-md transition-all cursor-pointer">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">Travel &amp; Transit</span>
+<span class="font-currency-sm text-[12px] text-outline">₹9,200</span>
+</div>
+</div>
+<!-- Discretionary Shopping -->
+<div class="p-2 bg-surface-container-lowest rounded-lg border-l-4 border-violet-600 shadow-sm hover:shadow-md transition-all cursor-pointer">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">Shopping</span>
+<span class="font-currency-sm text-[12px] text-outline">₹8,120</span>
+</div>
+</div>
+<!-- Subscriptions & SaaS -->
+<div class="p-2 bg-surface-container-lowest rounded-lg border-l-4 border-rose-600 shadow-sm hover:shadow-md transition-all cursor-pointer">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold truncate">SaaS &amp; Subs</span>
+<span class="font-currency-sm text-[12px] text-outline">₹1,547</span>
+</div>
+</div>
+<!-- Utility Bills -->
+<div class="p-2 bg-surface-container-lowest rounded-lg border-l-4 border-sky-600 shadow-sm hover:shadow-md transition-all cursor-pointer">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">Utility Bills</span>
+<span class="font-currency-sm text-[12px] text-outline">₹3,450</span>
+</div>
+</div>
+</div>
+<!-- COLUMN 4: TOP MERCHANTS -->
+<div class="flex flex-col justify-start gap-1.5 pt-16 pointer-events-auto">
+<!-- Swiggy (Food) -->
+<div class="p-2 rounded-lg bg-amber-50/80 border border-amber-300 shadow-sm hover:bg-amber-100 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-amber-950 truncate">Swiggy</span>
+<span class="font-currency-sm text-currency-sm font-bold text-amber-900">₹4,820</span>
+</div>
+<span class="font-label-sm text-[10px] text-amber-800">58.5% of Food</span>
+</div>
+<!-- Zepto (Food) -->
+<div class="p-2 rounded-lg bg-amber-50/80 border border-amber-300 shadow-sm hover:bg-amber-100 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-amber-950 truncate">Zepto</span>
+<span class="font-currency-sm text-currency-sm font-bold text-amber-900">₹1,840</span>
+</div>
+<span class="font-label-sm text-[10px] text-amber-800">22.3% of Food</span>
+</div>
+<!-- Starbucks / Cafes (Food) -->
+<div class="p-2 rounded-lg bg-amber-50/60 border border-amber-200 shadow-sm hover:bg-amber-100 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-amber-900 truncate">Cafes &amp; Starbucks</span>
+<span class="font-currency-sm text-currency-sm font-semibold text-amber-900">₹1,580</span>
+</div>
+</div>
+<!-- Uber (Transit) -->
+<div class="p-2 rounded-lg bg-cyan-50/80 border border-cyan-300 shadow-sm hover:bg-cyan-100 transition-colors mt-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-cyan-950 truncate">Uber India</span>
+<span class="font-currency-sm text-currency-sm font-semibold text-cyan-900">₹6,400</span>
+</div>
+</div>
+<!-- BluSmart (Transit) -->
+<div class="p-2 rounded-lg bg-cyan-50/60 border border-cyan-200 shadow-sm hover:bg-cyan-100 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-cyan-900 truncate">BluSmart</span>
+<span class="font-currency-sm text-currency-sm font-semibold text-cyan-900">₹2,800</span>
+</div>
+</div>
+<!-- Amazon (Shopping) -->
+<div class="p-2 rounded-lg bg-violet-50/80 border border-violet-300 shadow-sm hover:bg-violet-100 transition-colors mt-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-violet-950 truncate">Amazon India</span>
+<span class="font-currency-sm text-currency-sm font-semibold text-violet-900">₹5,120</span>
+</div>
+</div>
+<!-- Myntra (Shopping) -->
+<div class="p-2 rounded-lg bg-violet-50/60 border border-violet-200 shadow-sm hover:bg-violet-100 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-violet-900 truncate">Myntra</span>
+<span class="font-currency-sm text-currency-sm font-semibold text-violet-900">₹3,000</span>
+</div>
+</div>
+<!-- Cursor Pro (SaaS) -->
+<div class="p-2 rounded-lg bg-rose-50/80 border border-rose-300 shadow-sm hover:bg-rose-100 transition-colors mt-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm font-semibold text-rose-950 truncate">Cursor Pro</span>
+<span class="font-currency-sm text-currency-sm font-semibold text-rose-900">₹1,650</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sankey Bottom Legend / Status Bar -->
+<div class="flex items-center justify-between pt-3 mt-2 border-t border-surface-container font-label-sm text-label-sm text-on-surface-variant flex-wrap gap-2">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Wealth Retained (72.5%)</span>
+<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span> Committed / Fixed (11.2%)</span>
+<span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Discretionary Variable (16.3%)</span>
+</div>
+<div class="font-currency-sm text-[12px] text-outline">
+          Rendered via SmartGullak Directed Graph v2.4
+        </div>
+</div>
+</div>
+<!-- RIGHT WORKSPACE: SELECTED NODE DETAIL DRAWER (approx 30%-32%) -->
+<div class="xl:col-span-4 2xl:col-span-4 flex flex-col gap-space-md">
+<!-- Drawer Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container p-space-md flex flex-col gap-space-md">
+<!-- Drawer Header -->
+<div class="flex items-center justify-between pb-3 border-b border-surface-container">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded bg-amber-500 shadow-sm"></span>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Food &amp; Dining</h2>
+<span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 font-label-sm text-[10px] font-bold">Category</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Connected: HDFC (81%), SBI (19%)</span>
+</div>
+</div>
+<button class="p-1 rounded-lg text-outline hover:text-on-surface hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Core Metrics Row -->
+<div class="p-3.5 bg-amber-50/50 rounded-xl border border-amber-200 flex flex-col gap-1">
+<div class="flex items-baseline justify-between">
+<span class="font-currency-hero text-currency-hero text-on-surface font-bold tracking-tight">₹8,240</span>
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-amber-200/80 text-amber-900 font-label-md text-label-md font-semibold">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+              +34% vs 3-mo med
+            </span>
+</div>
+<div class="flex items-center justify-between font-label-md text-label-md text-on-surface-variant">
+<span>27% of non-housing monthly spend</span>
+<span class="font-currency-sm text-[12px] text-outline">3-Mo Median: ₹6,150</span>
+</div>
+</div>
+<!-- Section: What Drove The Change -->
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">What Drove The Change</span>
+<span class="font-label-sm text-label-sm text-primary cursor-pointer hover:underline">Oct vs Sep</span>
+</div>
+<div class="flex flex-col gap-2">
+<!-- Item 1: Swiggy -->
+<div class="p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded bg-amber-500/20 text-amber-900 flex items-center justify-center font-bold text-xs">1</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Swiggy Delivery</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="font-currency-sm text-currency-sm text-error font-bold">+₹1,900</span>
+<span class="px-1.5 py-0.2 bg-amber-200 text-amber-900 rounded font-label-sm text-[10px] font-bold">68% of increase</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-[12px] pl-8">
+                14 orders logged. 73% concentrated on Fri–Sun late night sessions.
+              </p>
+</div>
+<!-- Item 2: Zepto -->
+<div class="p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded bg-amber-500/20 text-amber-900 flex items-center justify-center font-bold text-xs">2</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Zepto Quick Grocery</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="font-currency-sm text-currency-sm text-error font-bold">+₹620</span>
+<span class="px-1.5 py-0.2 bg-surface-container-highest text-on-surface-variant rounded font-label-sm text-[10px] font-semibold">New this month</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-[12px] pl-8">
+                4 quick orders for snacking &amp; kitchen supplies during sprint week.
+              </p>
+</div>
+<!-- Item 3: Blue Tokai -->
+<div class="p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded bg-amber-500/20 text-amber-900 flex items-center justify-center font-bold text-xs">3</div>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Blue Tokai / Cafes</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="font-currency-sm text-currency-sm text-on-surface font-semibold">+₹180</span>
+<span class="px-1.5 py-0.2 bg-surface-container-highest text-on-surface-variant rounded font-label-sm text-[10px]">Slight uptick</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-[12px] pl-8">
+                3 in-person cafe visits for client freelance discussions.
+              </p>
+</div>
+</div>
+</div>
+<!-- Section: Concentration Analysis -->
+<div class="flex flex-col gap-2 pt-1 border-t border-surface-container">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="uppercase tracking-wider text-outline font-semibold">Concentration Analysis</span>
+<span class="text-amber-800 font-semibold">Top 3 = 81%</span>
+</div>
+<!-- Segmented Progress Bar -->
+<div class="w-full h-3 rounded-full bg-surface-container flex overflow-hidden">
+<div class="h-full bg-amber-600 hover:opacity-90 transition-opacity" style="width: 58.5%;" title="Swiggy 58.5%"></div>
+<div class="h-full bg-amber-400 hover:opacity-90 transition-opacity" style="width: 22.3%;" title="Zepto 22.3%"></div>
+<div class="h-full bg-amber-200 hover:opacity-90 transition-opacity" style="width: 19.2%;" title="Others 19.2%"></div>
+</div>
+<div class="flex items-center justify-between text-[11px] font-currency-sm text-on-surface-variant px-1">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-600"></span> Swiggy 58.5%</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span> Zepto 22.3%</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-200"></span> Others 19.2%</span>
+</div>
+<div class="p-2.5 rounded-lg bg-surface-container-low text-on-surface text-[12px] flex items-start gap-2 mt-1">
+<span class="material-symbols-outlined text-[16px] text-amber-700 shrink-0 mt-0.5">tips_and_updates</span>
+<span>High vendor stickiness on delivery apps during late freelance work sessions. Switching 4 weekend orders to home prep recovers ~₹1,400 monthly.</span>
+</div>
+</div>
+<!-- Section: Trailing 6-Month Trajectory -->
+<div class="flex flex-col gap-2 pt-1 border-t border-surface-container">
+<div class="flex items-center justify-between font-label-sm text-label-sm">
+<span class="uppercase tracking-wider text-outline font-semibold">6-Month Trajectory</span>
+<span class="font-currency-sm text-outline">Range: ₹6.1k - ₹8.24k</span>
+</div>
+<!-- Inline Bar Visualization -->
+<div class="grid grid-cols-6 gap-2 pt-3 items-end h-24">
+<!-- May -->
+<div class="flex flex-col items-center gap-1 h-full justify-end">
+<span class="text-[10px] font-currency-sm text-outline">6.1k</span>
+<div class="w-full bg-surface-container-highest rounded-t hover:bg-amber-300 transition-colors" style="height: 60%;"></div>
+<span class="text-[10px] font-label-sm text-outline">May</span>
+</div>
+<!-- Jun -->
+<div class="flex flex-col items-center gap-1 h-full justify-end">
+<span class="text-[10px] font-currency-sm text-outline">6.4k</span>
+<div class="w-full bg-surface-container-highest rounded-t hover:bg-amber-300 transition-colors" style="height: 64%;"></div>
+<span class="text-[10px] font-label-sm text-outline">Jun</span>
+</div>
+<!-- Jul -->
+<div class="flex flex-col items-center gap-1 h-full justify-end">
+<span class="text-[10px] font-currency-sm text-outline">6.2k</span>
+<div class="w-full bg-surface-container-highest rounded-t hover:bg-amber-300 transition-colors" style="height: 62%;"></div>
+<span class="text-[10px] font-label-sm text-outline">Jul</span>
+</div>
+<!-- Aug -->
+<div class="flex flex-col items-center gap-1 h-full justify-end">
+<span class="text-[10px] font-currency-sm text-outline">6.8k</span>
+<div class="w-full bg-surface-container-highest rounded-t hover:bg-amber-300 transition-colors" style="height: 68%;"></div>
+<span class="text-[10px] font-label-sm text-outline">Aug</span>
+</div>
+<!-- Sep -->
+<div class="flex flex-col items-center gap-1 h-full justify-end">
+<span class="text-[10px] font-currency-sm text-outline">6.15k</span>
+<div class="w-full bg-surface-container-highest rounded-t hover:bg-amber-300 transition-colors" style="height: 61%;"></div>
+<span class="text-[10px] font-label-sm text-outline">Sep</span>
+</div>
+<!-- Oct (Peak) -->
+<div class="flex flex-col items-center gap-1 h-full justify-end">
+<span class="text-[10px] font-currency-sm text-amber-800 font-bold">8.24k</span>
+<div class="w-full bg-amber-500 rounded-t shadow-sm" style="height: 100%;"></div>
+<span class="text-[10px] font-label-sm text-amber-900 font-bold">Oct</span>
+</div>
+</div>
+</div>
+<!-- Action Footer -->
+<a class="mt-1 flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary font-semibold font-label-md text-label-md transition-colors text-center shadow-sm" data-path="transactions" href="#">
+<span>View all 19 transactions in Food</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+<!-- BOTTOM INSIGHTS ROW (3 Strategic Insight Cards) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+<!-- CARD 1: Biggest Growing Category -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container p-space-md flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Biggest Growing Category</span>
+<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">trending_up</span>
+            +72.1% Spike
+          </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Subscriptions &amp; SaaS</h3>
+<div class="flex items-baseline gap-2">
+<span class="font-currency-md text-currency-md font-bold text-on-surface">₹1,547</span>
+<span class="font-label-sm text-label-sm text-outline">vs ₹899 median</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-relaxed">
+          Driven by dual AI tooling seats (Cursor Pro + Claude Pro) and upgraded iCloud tier during freelance sprint cycle.
+        </p>
+</div>
+<div class="pt-3 mt-4 border-t border-surface-container flex items-center justify-between text-[12px]">
+<span class="text-on-surface-variant font-medium">Auto-renew active on SBI card</span>
+<span class="text-primary font-semibold cursor-pointer hover:underline">Review subs →</span>
+</div>
+</div>
+<!-- CARD 2: Most Concentrated Category -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container p-space-md flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">Most Concentrated Outflow</span>
+<span class="px-2 py-0.5 rounded-full bg-cyan-100 text-cyan-900 font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">pie_chart</span>
+            91% Single-Merchant
+          </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">Travel &amp; Transit</h3>
+<div class="flex items-baseline gap-2">
+<span class="font-currency-md text-currency-md font-bold text-on-surface">₹8,370</span>
+<span class="font-label-sm text-label-sm text-outline">of ₹9,200 via Uber</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-relaxed">
+          Airport rides and late-night client office commutes dominate transit spend. Negligible public metro or smart transit usage recorded.
+        </p>
+</div>
+<div class="pt-3 mt-4 border-t border-surface-container flex items-center justify-between text-[12px]">
+<span class="text-on-surface-variant font-medium">16 rides via HDFC Premier</span>
+<span class="text-primary font-semibold cursor-pointer hover:underline">Transit rules →</span>
+</div>
+</div>
+<!-- CARD 3: New Merchants This Month -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container p-space-md flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline font-semibold">New Statement Counterparties</span>
+<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">fiber_new</span>
+            3 New Entities
+          </span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface truncate">Zepto, Perplexity AI, Decathlon</h3>
+<div class="flex items-baseline gap-2">
+<span class="font-currency-md text-currency-md font-bold text-on-surface">₹3,940</span>
+<span class="font-label-sm text-label-sm text-outline">total first-time outflow</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-relaxed">
+          Zepto registered 4 quick-commerce orders (₹1,840) within 12 days of initial statement appearance. Categorized as recurring lifestyle candidate.
+        </p>
+</div>
+<div class="pt-3 mt-4 border-t border-surface-container flex items-center justify-between text-[12px]">
+<span class="text-on-surface-variant font-medium">All 3 auto-categorized correctly</span>
+<span class="text-primary font-semibold cursor-pointer hover:underline">Manage tags →</span>
+</div>
+</div>
+</div>
+<!-- Interactive JavaScript for Node Switching / Micro-interactions -->
+<script>
+    (function initMoneyFlow() {
+      // Highlight category simulation and tab active styling handler
+      const categoryNodes = document.querySelectorAll('[data-category-target]');
+      categoryNodes.forEach(node => {
+        node.addEventListener('click', () => {
+          // Future expanded category drawer toggling
+        });
+      });
+    })();
+  </script>
+</div></main></div><script src="nav.js"></script>
+</body></html>

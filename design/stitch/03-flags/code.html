@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-primary-fixed-variant":"#0039b5","inverse-on-surface":"#eef0ff","secondary-container":"#bfd5fe","surface-container-highest":"#dae2fd","surface-bright":"#faf8ff","secondary":"#495f82","outline":"#747686","error-container":"#ffdad6","secondary-fixed":"#d5e3ff","surface-container-high":"#e2e7ff","primary":"#0037b0","on-secondary-fixed":"#001c3b","on-error-container":"#93000a","surface-container":"#eaedff","on-tertiary":"#ffffff","on-secondary":"#ffffff","on-primary-container":"#cad3ff","primary-fixed-dim":"#b7c4ff","on-error":"#ffffff","on-secondary-container":"#465c7f","tertiary-container":"#a73400","surface-tint":"#2151da","surface-container-low":"#f2f3ff","primary-fixed":"#dce1ff","on-tertiary-fixed-variant":"#832700","inverse-primary":"#b7c4ff","surface":"#faf8ff","on-background":"#131b2e","primary-container":"#1d4ed8","error":"#ba1a1a","on-primary":"#ffffff","on-surface":"#131b2e","on-tertiary-fixed":"#390c00","tertiary-fixed-dim":"#ffb59c","on-primary-fixed":"#001551","tertiary-fixed":"#ffdbcf","inverse-surface":"#283044","tertiary":"#7f2500","surface-container-lowest":"#ffffff","surface-variant":"#dae2fd","on-tertiary-container":"#ffc9b7","background":"#faf8ff","outline-variant":"#c4c5d7","on-secondary-fixed-variant":"#314769","surface-dim":"#d2d9f4","on-surface-variant":"#434655","secondary-fixed-dim":"#b1c7f0"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-2xl":"3rem","margin":"2rem","space-lg":"1.5rem","gutter":"1.5rem","space-sm":"0.5rem","space-xs":"0.25rem","space-xl":"2rem","space-md":"1rem"},"fontFamily":{"body-sm":["Inter"],"headline-lg":["Inter"],"currency-md":["IBM Plex Mono"],"headline-md":["Inter"],"display-lg-mobile":["Inter"],"body-lg":["Inter"],"currency-sm":["IBM Plex Mono"],"display-lg":["Inter"],"label-sm":["Inter"],"label-md":["Inter"],"headline-sm":["Inter"],"currency-hero":["IBM Plex Mono"],"body-md":["Inter"]},"fontSize":{"body-sm":["13px",{"lineHeight":"18px","fontWeight":"400"}],"headline-lg":["24px",{"lineHeight":"32px","letterSpacing":"-0.015em","fontWeight":"600"}],"currency-md":["20px",{"lineHeight":"28px","letterSpacing":"-0.01em","fontWeight":"500"}],"headline-md":["20px",{"lineHeight":"28px","letterSpacing":"-0.01em","fontWeight":"600"}],"display-lg-mobile":["28px",{"lineHeight":"36px","letterSpacing":"-0.02em","fontWeight":"600"}],"body-lg":["16px",{"lineHeight":"24px","fontWeight":"400"}],"currency-sm":["14px",{"lineHeight":"20px","fontWeight":"500"}],"display-lg":["36px",{"lineHeight":"44px","letterSpacing":"-0.02em","fontWeight":"600"}],"label-sm":["11px",{"lineHeight":"14px","letterSpacing":"0.02em","fontWeight":"500"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.04em","fontWeight":"600"}],"headline-sm":["18px",{"lineHeight":"24px","fontWeight":"600"}],"currency-hero":["32px",{"lineHeight":"40px","letterSpacing":"-0.02em","fontWeight":"600"}],"body-md":["15px",{"lineHeight":"22px","fontWeight":"400"}]}}}}</script></head><body class="bg-surface font-body-md text-body-md text-on-surface"><aside class="fixed left-0 top-0 h-full w-64 bg-[#0B2545] z-50 flex flex-col justify-between border-r border-white/10"><div class="flex flex-col"><div class="h-16 px-space-lg flex items-center gap-space-sm border-b border-white/10"><img alt="SmartGullak Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VxIHlhxB9_-WKTB4vlgdq2-xHstkdoOW2-HsBJGZADGFdWILiT9v3PW_IeFipT_oaLyL28gZu16HDPTdESmPMk6hDzqogrQa0igI0JUw5iVQvf0dLeRwaM5EMz1iDSApTDdI-Pup8cunn12j4uCHtUhG7__QiUnvB8_SvHKHTgXTDGPItxpGGtGrqLCXuqyHIVXKsZiZiX3-mlmlJT2XdUJSfY8Q_Pkz2dc1xr-fk"/><span class="font-headline-sm text-headline-sm text-white tracking-tight">SmartGullak</span></div><nav class="p-space-md space-y-space-xs" data-active-classes="bg-primary-container text-white font-semibold"><a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-all" data-path="dashboard" href="#"><span class="font-body-md text-body-md">Dashboard</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-all" data-path="statements" href="#"><span class="font-body-md text-body-md">Statements</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-all" data-path="transactions" href="#"><span class="font-body-md text-body-md">Transactions</span></a><a aria-current="page" class="flex items-center justify-between px-space-md py-space-sm rounded-lg transition-all bg-primary-container text-white font-semibold" data-path="flags" href="#"><span class="font-body-md text-body-md">Flags</span><span class="px-2 py-0.5 rounded-full bg-tertiary-container text-white font-label-sm text-label-sm">3</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-all" data-path="ask" href="#"><span class="font-body-md text-body-md">Ask ("Can I afford...?")</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-all" data-path="track-record" href="#"><span class="font-body-md text-body-md">Track Record</span></a><a class="flex items-center justify-between px-space-md py-space-sm rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-all" data-path="privacy" href="#"><span class="font-body-md text-body-md">Privacy</span></a></nav></div><div class="p-space-md border-t border-white/10 space-y-space-sm"><div class="p-space-sm rounded-lg bg-white/5 border border-white/10"><div class="flex items-center gap-1.5 text-emerald-400 font-label-md text-label-md"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span><span>Connected</span></div><p class="mt-1 text-white/60 font-label-sm text-label-sm leading-tight">HDFC, ICICI &amp; Kotak synced • 12m ago</p></div><a class="flex items-center px-space-md py-space-sm text-white/70 hover:text-white transition-colors font-body-sm text-body-sm" data-path="support" href="#"><span>Support &amp; FAQ</span></a></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface-container-lowest border-b border-[#E3E8EF] z-40 px-space-xl flex items-center justify-between shadow-[0_1px_3px_rgba(15,23,42,0.03)]"><div class="flex items-center gap-space-md"><div class="relative flex items-center"><span class="material-symbols-outlined absolute left-3 text-secondary text-[20px]">search</span><input class="h-10 pl-10 pr-12 w-72 rounded-lg border border-[#E3E8EF] bg-surface font-body-sm text-body-sm text-on-surface placeholder:text-secondary focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container" placeholder="Search transactions, cashflow rules..." type="text"/><kbd class="absolute right-2.5 px-1.5 py-0.5 rounded bg-surface-container border border-outline-variant font-currency-sm text-label-sm text-secondary">⌘K</kbd></div><div class="flex items-center bg-surface border border-[#E3E8EF] rounded-lg px-space-sm py-1.5 gap-2 cursor-pointer hover:bg-surface-container-low transition-colors"><span class="material-symbols-outlined text-primary text-[18px]">account_balance</span><span class="font-label-md text-label-md text-on-surface">All accounts (3)</span><span class="material-symbols-outlined text-secondary text-[16px]">expand_more</span></div></div><div class="flex items-center gap-space-lg"><div class="flex items-center gap-1.5 font-label-md text-label-md text-secondary"><span class="material-symbols-outlined text-[16px]">schedule</span><span>Last synced: Today, 10:45 AM</span></div><button class="relative p-2 rounded-lg text-secondary hover:bg-surface-container hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-error ring-2 ring-surface-container-lowest"></span></button><div class="h-6 w-px bg-outline-variant"></div><div class="flex items-center gap-space-sm"><img alt="Profile" class="w-8 h-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgNfhfBwZomXyNpgIqOBqRKUuI8Bqic3vZdBkGnq3N1Q6bZdCiMf5PSWM71KmMYmcXE1acaUnVaXGajb37-WprKCDWzpH_G8Ji7ErPUnKhfHoFqC0IC_jahI-kAHDMMTAUBEhbfO2wUNoRUNK5ebcEPR4-bIQ3M0pX4JGoBFMwK4FLGa5Bdph44lQ5B9B70rjjpUW-EgdQpPl5TxUhb_KZkyEkdwPOiTrFMTrJWWk"/><div class="flex flex-col text-left"><span class="font-label-md text-label-md text-on-surface font-semibold leading-tight">Aditya Rao</span><span class="font-label-sm text-label-sm text-secondary leading-tight">Salaried + Freelance</span></div></div></div></header><main class="relative pt-16 min-h-screen bg-[#F7F9FC]"><div class="flex flex-col w-full">
+<div class="w-full max-w-7xl mx-auto px-space-md md:px-space-xl py-space-lg space-y-space-lg">
+<!-- Top Visual Summary Banner -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-lg shadow-sm">
+<div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="space-y-space-xs max-w-2xl">
+<div class="flex items-center gap-space-xs">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-tertiary-container/10 text-tertiary font-label-md text-label-md">
+<span class="material-symbols-outlined text-[14px]">shield_with_heart</span>
+              Automated Guardrail Engine
+            </span>
+<span class="text-secondary font-label-sm text-label-sm">• Real-time Ledger Audit</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Flags &amp; Anomalies</h1>
+<p class="font-body-md text-body-md text-secondary">
+            SmartGullak detected 3 transactions needing your review to ensure accurate cashflow models and guardrails.
+          </p>
+</div>
+<div class="flex flex-wrap items-center gap-space-xs pt-space-xs lg:pt-0">
+<div class="px-3 py-2 rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary">Active Flags</span>
+<span class="font-currency-md text-currency-md font-semibold text-tertiary">3</span>
+</div>
+<div class="px-3 py-2 rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary">Duplicates</span>
+<span class="font-currency-md text-currency-md font-semibold text-on-surface">1</span>
+</div>
+<div class="px-3 py-2 rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary">Unusual Spend</span>
+<span class="font-currency-md text-currency-md font-semibold text-on-surface">1</span>
+</div>
+<div class="px-3 py-2 rounded-lg bg-surface-container-low flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary">New Merchants</span>
+<span class="font-currency-md text-currency-md font-semibold text-on-surface">1</span>
+</div>
+<div class="px-3 py-2 rounded-lg bg-surface-container-high flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary">Resolved (30d)</span>
+<span class="font-currency-md text-currency-md font-semibold text-primary">18</span>
+</div>
+</div>
+</div>
+<!-- Linear Micro Sparkline Decorator -->
+<div class="mt-space-md pt-space-sm flex items-center justify-between text-secondary">
+<div class="flex items-center gap-space-sm text-label-sm font-label-sm">
+<span class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[16px]">sync_saved_locally</span>
+            Continuous 99.8% ML Classification Confidence
+          </span>
+<span class="hidden sm:inline">• Rule base: ICICI, HDFC &amp; Kotak accounts</span>
+</div>
+<button class="text-label-sm font-label-md text-primary hover:text-on-primary-fixed-variant transition-colors flex items-center gap-1" id="quickDismissAll">
+<span class="material-symbols-outlined text-[16px]">done_all</span>
+          Mark All As Reviewed
+        </button>
+</div>
+</div>
+<!-- Filter Quick Tabs & Controller Bar -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-1.5 p-1 bg-surface-container-low rounded-lg" id="filterTabGroup">
+<button class="filter-btn active-tab px-3 py-1.5 rounded-md font-label-md text-label-md bg-surface-container-lowest text-on-surface shadow-sm font-semibold transition-all" data-filter="all">
+          All Flags (3)
+        </button>
+<button class="filter-btn px-3 py-1.5 rounded-md font-label-md text-label-md text-secondary hover:text-on-surface transition-all" data-filter="duplicate">
+          Duplicates (1)
+        </button>
+<button class="filter-btn px-3 py-1.5 rounded-md font-label-md text-label-md text-secondary hover:text-on-surface transition-all" data-filter="large">
+          Unusual Amount (1)
+        </button>
+<button class="filter-btn px-3 py-1.5 rounded-md font-label-md text-label-md text-secondary hover:text-on-surface transition-all" data-filter="new-merchant">
+          New Merchants (1)
+        </button>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="font-label-sm text-label-sm text-secondary">Sorted by: Urgency</span>
+<button class="p-1.5 rounded-md text-secondary hover:bg-surface-container-high transition-colors" title="Filter preferences">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+</div>
+</div>
+<!-- ACTIVE FLAGGED TRANSACTION CARDS LIST -->
+<div class="space-y-space-md" id="cardsContainer">
+<!-- CARD 1: POSSIBLE DUPLICATE -->
+<article class="flag-card group bg-surface-container-lowest rounded-xl shadow-sm transition-all hover:shadow-md overflow-hidden" data-category="duplicate">
+<!-- Top alert accent bar -->
+<div class="h-1 w-full bg-tertiary-container"></div>
+<div class="p-space-lg space-y-space-md">
+<!-- Header Row -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-xs">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 font-label-md text-label-md font-semibold">
+<span class="material-symbols-outlined text-[16px] text-amber-700">copy_all</span>
+                Possible duplicate
+              </span>
+<span class="font-label-sm text-label-sm text-secondary">Detected via HDFC Netbanking SMS &amp; Webhook</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-error-container text-on-error-container font-label-sm text-label-sm font-semibold">
+                Urgent Attention
+              </span>
+</div>
+</div>
+<!-- Plain-words reason -->
+<div class="p-3 bg-surface-container-low rounded-lg flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-tertiary text-[20px] shrink-0 mt-0.5">info</span>
+<p class="font-body-md text-body-md text-on-surface font-medium leading-snug">
+              Same merchant and amount <span class="font-currency-sm font-semibold text-on-surface">₹1,499.00</span> debited within 4 minutes on HDFC Bank.
+            </p>
+</div>
+<!-- Transaction details block with Twin comparison -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md">
+<!-- Left Info Panel -->
+<div class="lg:col-span-5 flex items-start gap-space-sm">
+<div class="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600 shrink-0">
+<span class="material-symbols-outlined text-[26px]">storefront</span>
+</div>
+<div class="space-y-0.5 min-w-0">
+<h2 class="font-headline-sm text-headline-sm text-on-surface truncate">Swiggy Instamart</h2>
+<div class="flex items-center gap-1.5 text-secondary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[15px]">credit_card</span>
+<span>HDFC Bank ••8491 (Debit Card)</span>
+</div>
+<div class="flex items-center gap-1.5 text-secondary font-label-sm text-label-sm pt-1">
+<span class="inline-block w-2 h-2 rounded-full bg-secondary"></span>
+<span>Groceries &amp; Household</span>
+<span class="text-outline-variant">•</span>
+<span>Order #SIM-98231</span>
+</div>
+</div>
+</div>
+<!-- Right: Side-by-side / Twin Comparison Block -->
+<div class="lg:col-span-7 bg-surface-container-low rounded-lg p-space-sm space-y-space-xs">
+<div class="font-label-sm text-label-sm text-secondary uppercase tracking-wider font-semibold">
+                Timeline Comparison of Twin Debits
+              </div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-xs">
+<!-- Txn 1: Legitimate / Settled -->
+<div class="p-2.5 rounded-md bg-surface-container-lowest shadow-xs flex flex-col justify-between">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-sm text-label-sm text-secondary">Original Txn #1</span>
+<span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 font-label-sm text-label-sm font-semibold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]">check_circle</span> Settled
+                    </span>
+</div>
+<div class="font-currency-md text-currency-md font-semibold text-on-surface">₹1,499.00 <span class="text-label-sm text-secondary">DR</span></div>
+<div class="font-label-sm text-label-sm text-secondary mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 18 Oct 2024, 08:42 PM
+                  </div>
+</div>
+<!-- Txn 2: Suspected Double Charge -->
+<div class="p-2.5 rounded-md bg-tertiary-fixed/40 flex flex-col justify-between">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-sm text-label-sm text-tertiary font-semibold">Flagged Duplicate #2</span>
+<span class="px-1.5 py-0.5 rounded bg-tertiary-container text-white font-label-sm text-label-sm font-semibold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]">warning</span> Potential Ghost
+                    </span>
+</div>
+<div class="font-currency-md text-currency-md font-semibold text-tertiary">₹1,499.00 <span class="text-label-sm text-tertiary">DR</span></div>
+<div class="font-label-sm text-label-sm text-tertiary mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 18 Oct 2024, 08:46 PM (+4m)
+                  </div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Action Rhythm -->
+<div class="pt-space-sm flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex flex-wrap items-center gap-space-xs">
+<button class="px-3.5 py-2 rounded-lg bg-tertiary-container text-white font-label-md text-label-md font-semibold hover:bg-tertiary transition-all flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">gavel</span>
+                Dispute / Report Double Debit
+              </button>
+<button class="px-3.5 py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md font-medium hover:bg-surface-container hover:text-primary transition-all">
+                Not a duplicate (2 separate orders)
+              </button>
+<button class="px-3.5 py-2 rounded-lg bg-surface-container-low text-secondary font-label-md text-label-md font-medium hover:bg-surface-container hover:text-on-surface transition-all flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">label</span>
+                Change category
+              </button>
+</div>
+<button class="px-3 py-1.5 text-secondary hover:text-on-surface font-label-md text-label-md flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[16px]">visibility_off</span>
+              Dismiss
+            </button>
+</div>
+</div>
+</article>
+<!-- CARD 2: UNUSUALLY LARGE SPEND -->
+<article class="flag-card group bg-surface-container-lowest rounded-xl shadow-sm transition-all hover:shadow-md overflow-hidden" data-category="large">
+<!-- Top alert accent bar -->
+<div class="h-1 w-full bg-primary-container"></div>
+<div class="p-space-lg space-y-space-md">
+<!-- Header Row -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-xs">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-50 text-blue-800 font-label-md text-label-md font-semibold">
+<span class="material-symbols-outlined text-[16px] text-blue-700">trending_up</span>
+                Unusually large spend
+              </span>
+<span class="font-label-sm text-label-sm text-secondary">ICICI Bank Card Transaction Notification</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold">
+                Budget Impact
+              </span>
+</div>
+</div>
+<!-- Plain-words reason -->
+<div class="p-3 bg-surface-container-low rounded-lg flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5">insights</span>
+<p class="font-body-md text-body-md text-on-surface font-medium leading-snug">
+<span class="font-currency-sm font-semibold text-primary">₹18,400.00</span> is <span class="font-semibold text-error">4.2× your usual Shopping spend</span> (typical category monthly average: ₹4,380.00).
+            </p>
+</div>
+<!-- Transaction details block -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md">
+<div class="lg:col-span-5 flex items-start gap-space-sm">
+<div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+<span class="material-symbols-outlined text-[26px]">chair</span>
+</div>
+<div class="space-y-0.5 min-w-0">
+<h2 class="font-headline-sm text-headline-sm text-on-surface truncate">IKEA India Online</h2>
+<div class="flex items-center gap-1.5 text-secondary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[15px]">credit_card</span>
+<span>ICICI Bank Coral Credit Card ••4022</span>
+</div>
+<div class="flex items-center gap-1.5 text-secondary font-label-sm text-label-sm pt-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+<span>16 Oct 2024, 02:15 PM</span>
+<span class="text-outline-variant">•</span>
+<span>Home &amp; Furniture / Shopping</span>
+</div>
+</div>
+</div>
+<!-- Middle/Right context: Cashflow safe ceiling gauge -->
+<div class="lg:col-span-7 bg-surface-container-low rounded-lg p-space-sm flex flex-col justify-between">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider font-semibold">
+                  Affordability &amp; Runway Impact
+                </span>
+<span class="font-currency-md text-currency-md font-semibold text-on-surface">
+                  ₹18,400.00 <span class="text-label-sm text-secondary">DR</span>
+</span>
+</div>
+<!-- Contextual Insight Chip & Mini Progress Bar -->
+<div class="space-y-1.5 my-1">
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-secondary">October Safe Ceiling Remaining</span>
+<span class="font-currency-sm font-medium text-primary">₹43,200 (Reduced from ₹61,600)</span>
+</div>
+<div class="w-full h-2 rounded-full bg-surface-container overflow-hidden">
+<div class="h-full bg-primary-container rounded-full" style="width: 71%;"></div>
+</div>
+</div>
+<p class="font-label-sm text-label-sm text-secondary flex items-center gap-1 pt-1">
+<span class="material-symbols-outlined text-[15px] text-emerald-600">verified</span>
+                Absorbed in liquid cash buffer. Freelance retainer due in 9 days will replenish runway.
+              </p>
+</div>
+</div>
+<!-- Plain language action buttons -->
+<div class="pt-space-sm flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex flex-wrap items-center gap-space-xs">
+<button class="px-3.5 py-2 rounded-lg bg-primary-container text-white font-label-md text-label-md font-semibold hover:bg-primary transition-all flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">check</span>
+                Looks fine (Planned purchase)
+              </button>
+<button class="px-3.5 py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md font-medium hover:bg-surface-container hover:text-primary transition-all flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">edit_calendar</span>
+                Reclassify as One-time Capital
+              </button>
+<button class="px-3.5 py-2 rounded-lg bg-surface-container-low text-secondary font-label-md text-label-md font-medium hover:bg-surface-container hover:text-on-surface transition-all flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">splitscreen</span>
+                Split to 3-month EMI amortize
+              </button>
+</div>
+<button class="px-3 py-1.5 text-secondary hover:text-on-surface font-label-sm text-label-sm">
+              Keep Shopping average unchanged
+            </button>
+</div>
+</div>
+</article>
+<!-- CARD 3: NEW MERCHANT -->
+<article class="flag-card group bg-surface-container-lowest rounded-xl shadow-sm transition-all hover:shadow-md overflow-hidden" data-category="new-merchant">
+<!-- Top alert accent bar -->
+<div class="h-1 w-full bg-secondary"></div>
+<div class="p-space-lg space-y-space-md">
+<!-- Header Row -->
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-xs">
+<div class="flex items-center gap-space-xs flex-wrap">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 text-slate-800 font-label-md text-label-md font-semibold">
+<span class="material-symbols-outlined text-[16px] text-slate-700">new_releases</span>
+                New merchant
+              </span>
+<span class="font-label-sm text-label-sm text-secondary">Foreign inward billing via Kotak Mahindra</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-surface-container text-secondary font-label-sm text-label-sm">
+                Recurring Subscription Candidate
+              </span>
+</div>
+</div>
+<!-- Plain-words reason -->
+<div class="p-3 bg-surface-container-low rounded-lg flex items-start gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[20px] shrink-0 mt-0.5">auto_awesome</span>
+<p class="font-body-md text-body-md text-on-surface font-medium leading-snug">
+              First time transacting with <strong class="text-on-surface font-semibold">‘Stripe * Cursor AI’</strong>. Auto-assigned to <span class="font-semibold text-primary">Tech &amp; Subscriptions</span>.
+            </p>
+</div>
+<!-- Transaction details block -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md">
+<div class="lg:col-span-5 flex items-start gap-space-sm">
+<div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center text-purple-700 shrink-0">
+<span class="material-symbols-outlined text-[26px]">terminal</span>
+</div>
+<div class="space-y-0.5 min-w-0">
+<div class="flex items-center gap-1.5">
+<h2 class="font-headline-sm text-headline-sm text-on-surface truncate">Stripe * Cursor AI San Francisco</h2>
+</div>
+<div class="flex items-center gap-1.5 text-secondary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[15px]">account_balance_wallet</span>
+<span>Kotak Mahindra ••1190</span>
+</div>
+<div class="flex items-center gap-1.5 text-secondary font-label-sm text-label-sm pt-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+<span>14 Oct 2024, 11:30 PM</span>
+<span class="text-outline-variant">•</span>
+<span class="text-primary font-medium">USD $20.00 @ ₹83.45</span>
+</div>
+</div>
+</div>
+<!-- Right context card: Subscription Rule Builder Trigger -->
+<div class="lg:col-span-7 bg-surface-container-low rounded-lg p-space-sm space-y-space-xs">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider font-semibold">
+                  Rule &amp; Tax Deduction Engine
+                </span>
+<span class="font-currency-md text-currency-md font-semibold text-on-surface">
+                  ₹1,720.00 <span class="text-label-sm text-secondary">DR</span>
+</span>
+</div>
+<div class="p-2.5 rounded-md bg-surface-container-lowest flex items-center justify-between gap-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">repeat</span>
+<div class="text-left">
+<div class="font-label-md text-label-md text-on-surface font-semibold">Detect monthly SaaS recurrence?</div>
+<div class="font-label-sm text-label-sm text-secondary">Forecast ₹1,720 debit on the 14th of each month.</div>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</label>
+</div>
+<div class="flex items-center justify-between pt-1">
+<span class="font-label-sm text-label-sm text-secondary">Cross-currency markup included (+₹51 GST)</span>
+<span class="font-label-sm text-label-sm text-emerald-700 font-medium">Eligible 44ADA Business Expense</span>
+</div>
+</div>
+</div>
+<!-- Plain language action buttons -->
+<div class="pt-space-sm flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex flex-wrap items-center gap-space-xs">
+<button class="px-3.5 py-2 rounded-lg bg-primary-container text-white font-label-md text-label-md font-semibold hover:bg-primary transition-all flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">check</span>
+                Looks fine &amp; add to Subscriptions
+              </button>
+<button class="px-3.5 py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md font-medium hover:bg-surface-container hover:text-primary transition-all flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+                Change category
+              </button>
+<button class="px-3.5 py-2 rounded-lg bg-emerald-50 text-emerald-800 font-label-md text-label-md font-medium hover:bg-emerald-100 transition-all flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-emerald-700">receipt_long</span>
+                Tag: Freelance Tax Deductible
+              </button>
+</div>
+<button class="px-3 py-1.5 text-secondary hover:text-on-surface font-label-sm text-label-sm">
+              Do not predict future debits
+            </button>
+</div>
+</div>
+</article>
+</div>
+<!-- COLLAPSIBLE RESOLVED FLAGS SECTION -->
+<div class="rounded-xl bg-surface-container-lowest shadow-sm overflow-hidden">
+<!-- Section Header / Accordion trigger -->
+<button class="w-full p-space-lg flex items-center justify-between text-left hover:bg-surface-container-low transition-colors" id="accordionToggle">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600">
+<span class="material-symbols-outlined text-[22px]">check_circle</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Resolved Flags</h2>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold">
+                18 items resolved this month
+              </span>
+</div>
+<p class="font-body-sm text-body-sm text-secondary">
+              All 18 resolved flags have calibrated your future cashflow models and category classification rules.
+            </p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md text-primary hidden sm:inline font-medium">Show history</span>
+<span class="material-symbols-outlined text-secondary transition-transform duration-200" id="accordionChevron">
+            expand_more
+          </span>
+</div>
+</button>
+<!-- Accordion Content Container -->
+<div class="hidden px-space-lg pb-space-lg space-y-space-md" id="accordionContent">
+<!-- Quick Ledger of Recent Resolutions -->
+<div class="space-y-space-xs">
+<!-- Resolved Item 1 -->
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary text-[20px]">local_taxi</span>
+<div>
+<span class="font-label-md text-label-md font-semibold text-on-surface">Uber India</span>
+<span class="text-secondary text-label-sm font-label-sm"> • Verified as intentional multi-city trip</span>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<span class="px-2 py-0.5 rounded bg-surface-container text-secondary font-label-sm text-label-sm">Travel &amp; Commute</span>
+<span class="font-currency-sm font-semibold text-on-surface">₹840.00 DR</span>
+<span class="text-secondary font-label-sm text-label-sm">12 Oct</span>
+</div>
+</div>
+<!-- Resolved Item 2 -->
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary text-[20px]">fitness_center</span>
+<div>
+<span class="font-label-md text-label-md font-semibold text-on-surface">Cult.fit Healthcare</span>
+<span class="text-secondary text-label-sm font-label-sm"> • Marked as Annual Fitness Pass (12-month amortized)</span>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<span class="px-2 py-0.5 rounded bg-surface-container text-secondary font-label-sm text-label-sm">Health &amp; Wellness</span>
+<span class="font-currency-sm font-semibold text-on-surface">₹14,500.00 DR</span>
+<span class="text-secondary font-label-sm text-label-sm">09 Oct</span>
+</div>
+</div>
+<!-- Resolved Item 3 -->
+<div class="p-3 rounded-lg bg-surface-container-low flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary text-[20px]">inventory_2</span>
+<div>
+<span class="font-label-md text-label-md font-semibold text-on-surface">Amazon Seller Services</span>
+<span class="text-secondary text-label-sm font-label-sm"> • Corrected from Shopping to Office Equipment</span>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<span class="px-2 py-0.5 rounded bg-surface-container text-secondary font-label-sm text-label-sm">Freelance Biz Ops</span>
+<span class="font-currency-sm font-semibold text-on-surface">₹2,100.00 DR</span>
+<span class="text-secondary font-label-sm text-label-sm">05 Oct</span>
+</div>
+</div>
+</div>
+<!-- Full history link row -->
+<div class="pt-2 flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary">
+            Resolutions automatically update the "Can I afford...?" safe ceiling algorithm.
+          </span>
+<button class="px-4 py-2 rounded-lg bg-surface-container-high text-primary font-label-md text-label-md font-semibold hover:bg-surface-container transition-all flex items-center gap-1">
+<span>View full resolution history</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // Tab Filter micro-interactions
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.flag-card');
+
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterButtons.forEach(b => {
+        b.classList.remove('bg-surface-container-lowest', 'text-on-surface', 'shadow-sm', 'font-semibold');
+        b.classList.add('text-secondary');
+      });
+      btn.classList.add('bg-surface-container-lowest', 'text-on-surface', 'shadow-sm', 'font-semibold');
+      btn.classList.remove('text-secondary');
+
+      const filter = btn.getAttribute('data-filter');
+      cards.forEach(card => {
+        if (filter === 'all' || card.getAttribute('data-category') === filter) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // Accordion Toggle for Resolved flags
+  const accordionToggle = document.getElementById('accordionToggle');
+  const accordionContent = document.getElementById('accordionContent');
+  const accordionChevron = document.getElementById('accordionChevron');
+
+  if (accordionToggle && accordionContent && accordionChevron) {
+    accordionToggle.addEventListener('click', () => {
+      const isHidden = accordionContent.classList.contains('hidden');
+      if (isHidden) {
+        accordionContent.classList.remove('hidden');
+        accordionChevron.classList.add('rotate-180');
+      } else {
+        accordionContent.classList.add('hidden');
+        accordionChevron.classList.remove('rotate-180');
+      }
+    });
+  }
+
+  // Quick Dismiss / Review feedback
+  const quickDismiss = document.getElementById('quickDismissAll');
+  if (quickDismiss) {
+    quickDismiss.addEventListener('click', () => {
+      const confirmed = confirm('Mark all 3 anomaly flags as intentional and reviewed?');
+      if (confirmed) {
+        cards.forEach(card => {
+          card.style.opacity = '0.4';
+          card.style.pointerEvents = 'none';
+        });
+        quickDismiss.innerText = 'All items reviewed ✓';
+      }
+    });
+  }
+</script></main></div></body></html>
