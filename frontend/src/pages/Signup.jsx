@@ -1,7 +1,8 @@
 // Sign Up screen: two-step stepper — create account, then register the NFC security card.
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Ban, BadgeCheck, ClipboardCheck, Shield, Wallet } from 'lucide-react';
+import { Ban, BadgeCheck, ClipboardCheck, Shield } from 'lucide-react';
+import logo from '../assets/smartgullak-logo.png';
 import AccountStep from '../components/signup/AccountStep';
 import CardRegistrationStep from '../components/signup/CardRegistrationStep';
 import { signup } from '../services/api';
@@ -32,9 +33,7 @@ export default function Signup() {
             <div className="w-full max-w-xl bg-surface-container-lowest rounded-xl shadow-xl p-6 sm:p-10 flex flex-col transition-all duration-300">
               <div className="flex flex-col items-center text-center mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-primary-container text-on-primary flex items-center justify-center shadow-md">
-                    <Wallet size={24} />
-                  </div>
+                  <img src={logo} alt="SmartGullak" width="40" height="40" className="w-10 h-10 rounded-lg shadow-md" />
                   <div className="flex flex-col text-left">
                     <span className="font-headline-md text-headline-md tracking-tight text-on-surface font-semibold">SmartGullak</span>
                     <div className="flex items-center gap-1.5 mt-0.5">

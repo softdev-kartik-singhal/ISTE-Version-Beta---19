@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS uploaded_files (
     file_hash      TEXT NOT NULL,          -- sha256: the same file twice by the SAME user is rejected
     file_name      TEXT,                   -- display name only, long digit runs masked
     file_type      TEXT,                   -- 'csv' or 'pdf'
+    is_demo        INTEGER NOT NULL DEFAULT 0,  -- 1 = one of the bundled sample statements (never mixed with the user's own)
     duplicate_paise INTEGER NOT NULL DEFAULT 0,  -- total value of rows skipped as already imported
     row_count      INTEGER NOT NULL,
     new_rows       INTEGER NOT NULL,

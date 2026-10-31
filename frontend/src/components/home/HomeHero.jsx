@@ -32,7 +32,7 @@ export default function HomeHero({ name, hero }) {
           <AskInline example={hero.quickQuestions[1] || hero.defaultQuestion} chips={hero.quickQuestions.slice(0, 3)} />
           {stale && (
             <p className="flex flex-wrap items-center gap-1.5 text-[13px] text-blue-100">
-              <CalendarClock size={15} aria-hidden="true" /> Statements end {hero.asOf}.
+              <CalendarClock size={15} aria-hidden="true" /> Statements end {hero.asOf}{hero.ageDays > 7 ? ` (${hero.ageDays} days ago, so these numbers are as of then)` : ''}.
               <Link to="/statements" className="font-semibold text-white underline underline-offset-2 hover:no-underline">Upload {hero.uploadMonth}</Link>
             </p>
           )}

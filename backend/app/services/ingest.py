@@ -65,18 +65,23 @@ def insert_rows(conn, account_id, file_id, rows, categorizer):
     return added, skipped_paise
 
 
-def ingest(conn, user_id, filename, data):
-    """Import one uploaded file. Raises StatementRejected or FileAlreadyUploaded; the raw bytes are never saved."""
+def ingest(conn, user_id, filename, data, is_demo=False, replace_samples=False):
+    """Import one uploaded file. Raises StatementRejected or FileAlreadyUploaded; the raw bytes are never saved.
+    is_demo marks the bundled sample statements so they can be told apart from the user's own.
+    replace_samples: if this file covers the same account and dates as the sample statements, drop the samples first."""
     digest = file_hash(data)
     if conn.execute("SELECT 1 FROM uploaded_files WHERE user_id = ? AND file_hash = ?", (user_id, digest)).fetchone():
         raise FileAlreadyUploaded("This exact file was already uploaded.")
     statement = parse_statement(filename, data)
     try:
-        account_id = get_or_create_account(conn, user_id, statement.bank, statement.last4)
         dates = [r.txn_date for r in statement.rows]
+        removed = 0
+        if replace_samples and not is_demo and overlaps_samples(conn, user_id, statement.bank, statement.last4, min(dates), max(dates)):
+            removed = remove_demo_statements(conn, user_id)  # in the same transaction: a failure below restores them
+        account_id = get_or_create_account(conn, user_id, statement.bank, statement.last4)
         file_id = conn.execute(
-            "INSERT INTO uploaded_files (user_id, account_id, file_hash, row_count, new_rows, duplicate_rows, first_date, last_date)"
-            " VALUES (?, ?, ?, ?, 0, 0, ?, ?)", (user_id, account_id, digest, len(statement.rows), min(dates), max(dates))).lastrowid
+            "INSERT INTO uploaded_files (user_id, account_id, file_hash, row_count, new_rows, duplicate_rows, first_date, last_date, is_demo)"
+            " VALUES (?, ?, ?, ?, 0, 0, ?, ?, ?)", (user_id, account_id, digest, len(statement.rows), min(dates), max(dates), int(is_demo))).lastrowid
         added, skipped_paise = insert_rows(conn, account_id, file_id, statement.rows, Categorizer(conn, user_id))
         skipped = len(statement.rows) - added
         conn.execute("UPDATE uploaded_files SET new_rows = ?, duplicate_rows = ?, duplicate_paise = ?, file_name = ?, file_type = ?"
@@ -93,7 +98,33 @@ def ingest(conn, user_id, filename, data):
         raise
     return {"fileId": file_id, "bank": statement.bank, "last4": statement.last4, "rows": len(statement.rows),
             "newRows": added, "duplicateRows": skipped, "transfersMatched": transfers,
-            "firstDate": min(dates), "lastDate": max(dates)}
+            "firstDate": min(dates), "lastDate": max(dates), "demoRemoved": removed}
+
+
+def overlaps_samples(conn, user_id, bank, last4, first, last):
+    """True if a sample statement of this same account covers any of these dates. A file that only continues a
+    sample account (the next month) does not overlap, so it is simply added."""
+    return conn.execute(
+        "SELECT 1 FROM uploaded_files f JOIN accounts a ON a.id = f.account_id"
+        " WHERE f.user_id = ? AND f.is_demo = 1 AND a.bank = ? AND a.last4 = ? AND f.first_date <= ? AND f.last_date >= ?",
+        (user_id, bank, last4, last, first)).fetchone() is not None
+
+
+def remove_demo_statements(conn, user_id):
+    """Drop the bundled sample statements (and what came only from them) so they never mix with the user's own.
+    The sample accounts use the same bank and last 4 as a real HDFC/Kotak account, so left in place the two sets
+    would overlap without matching row for row and every salary and bill would be counted twice.
+    Returns how many files were removed. The caller commits."""
+    ids = [r["id"] for r in conn.execute("SELECT id FROM uploaded_files WHERE user_id = ? AND is_demo = 1", (user_id,))]
+    for file_id in ids:
+        conn.execute("DELETE FROM transactions WHERE file_id = ?", (file_id,))
+        conn.execute("DELETE FROM uploaded_files WHERE id = ?", (file_id,))
+    if ids:
+        conn.execute("DELETE FROM accounts WHERE user_id = ? AND type != 'cash' AND id NOT IN (SELECT account_id FROM uploaded_files)", (user_id,))
+        conn.execute("UPDATE transactions SET kind = 'normal' WHERE kind = 'transfer' AND account_id IN"
+                     " (SELECT id FROM accounts WHERE user_id = ?)", (user_id,))  # transfer pairs are matched again on import
+        conn.execute("DELETE FROM forecast_log WHERE user_id = ?", (user_id,))      # it was logged from the sample data
+    return len(ids)
 
 
 def has_statements(conn, user_id):

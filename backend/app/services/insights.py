@@ -250,10 +250,29 @@ def spending_split(ledger, month):
             "flexiblePaise": sum(totals.values()) - fixed, "categories": cats}
 
 
+def partial_summary(ledger, inp, top_n=6):
+    """What we can honestly say with less than one complete calendar month (a one-month PDF that starts mid-month,
+    a Cash wallet): plain totals over the days the data covers. No forecast, no "usual month", nothing estimated."""
+    if not ledger:
+        return None
+    spent = defaultdict(int)
+    for r in ledger:
+        if r["amount_paise"] < 0:
+            spent[r["category"]] += -r["amount_paise"]
+    first, last = ledger[0]["txn_date"], ledger[-1]["txn_date"]  # the ledger is ordered by date
+    inflow = sum(r["amount_paise"] for r in ledger if r["amount_paise"] > 0)
+    outflow = sum(spent.values())
+    return {"firstDate": first, "lastDate": last, "days": (date.fromisoformat(last) - date.fromisoformat(first)).days + 1,
+            "transactions": len(ledger), "inflowPaise": inflow, "outflowPaise": outflow, "surplusPaise": inflow - outflow,
+            "cashPaise": inp.start_cash,
+            "categories": [{"name": n, "amountPaise": a} for n, a in sorted(spent.items(), key=lambda kv: -kv[1])[:top_n]]}
+
+
 def dashboard(ledger, inp):
     """GET /api/dashboard payload."""
     if not inp.history_months:
-        return {"insufficientHistory": True, "monthsAvailable": 0, "asOf": inp.as_of.isoformat()}
+        return {"insufficientHistory": True, "monthsAvailable": 0, "asOf": inp.as_of.isoformat(),
+                "partial": partial_summary(ledger, inp)}
     series = monthly_series(ledger, inp)
     # "Last month" = the calendar month before the statements' current month, never the current month itself.
     by_month = {m["month"]: m for m in series}

@@ -21,6 +21,6 @@ def ensure_demo_data(conn, user_id):
         return
     for path in sorted((config.DEMO_DIR / config.DEMO_DATASET).glob("*.csv")):
         try:
-            ingest(conn, user_id, path.name, path.read_bytes())
+            ingest(conn, user_id, path.name, path.read_bytes(), is_demo=True)
         except FileAlreadyUploaded:
             pass

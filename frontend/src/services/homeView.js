@@ -43,6 +43,7 @@ export function toHome(d, t, f) {
     asOfIso: d.asOf,
     asOf: date(d.asOf).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
     uploadMonth: nextMonthLabel(tm.month),
+    ageDays: Math.max(0, Math.round((Date.now() - date(d.asOf).getTime()) / 86400000)), // how old the newest statement row is, today
     ...suggestions(d.planningSurplusPaise),
   };
 

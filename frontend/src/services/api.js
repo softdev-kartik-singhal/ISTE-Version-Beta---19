@@ -204,7 +204,7 @@ async function notReady(message) {
 // Home: everything the Home page shows, shaped by homeView.js.
 export async function getHome() {
   const d = await request('/api/dashboard');
-  if (d.insufficientHistory) return notReady('Home needs at least one complete month of statements.');
+  if (d.insufficientHistory) return d.partial ? { partial: d.partial } : notReady('Home needs at least one complete month of statements.');
   const [trends, flags] = await Promise.all([request('/api/trends'), request('/api/flags')]);
   return toHome(d, trends, flags);
 }

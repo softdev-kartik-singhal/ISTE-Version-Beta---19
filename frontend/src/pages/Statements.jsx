@@ -41,7 +41,9 @@ export default function Statements() {
       setUploading((u) => [row, ...u]);
       try {
         const result = await uploadStatement(file);
-        showToast(`${file.name}: ${result.newRows} new, ${result.duplicateRows} already imported`);
+        showToast(result.demoRemoved
+          ? `${file.name}: ${result.newRows} new. The sample statements were removed so they don’t mix with yours.`
+          : `${file.name}: ${result.newRows} new, ${result.duplicateRows} already imported`);
         if (replaceId) await deleteStatement(replaceId);
       } catch (err) {
         showToast(`Couldn’t read ${file.name}: ${err.message}`);

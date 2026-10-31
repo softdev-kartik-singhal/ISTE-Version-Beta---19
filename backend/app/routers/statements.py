@@ -1,7 +1,7 @@
 """Statement endpoints: upload a file, load the demo data, list what has been imported."""
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
-from app.config import DEMO_DIR, MAX_UPLOAD_BYTES
+from app.config import DEMO_DIR, DEMO_EMAIL, MAX_UPLOAD_BYTES
 from app.db import get_conn
 from app.deps import current_user_id
 from app.services.cash import mark_cash_transfers
@@ -22,8 +22,11 @@ async def upload(file: UploadFile = File(...), conn=Depends(get_conn), user_id: 
     data = await file.read(MAX_UPLOAD_BYTES + 1)
     if len(data) > MAX_UPLOAD_BYTES:
         raise HTTPException(413, {"reason": f"File is larger than {MAX_UPLOAD_BYTES // (1024 * 1024)} MB."})
+    # The user's own statement replaces the sample statements when it covers the same account and dates (the two
+    # would otherwise be counted twice). The shared demo account keeps its samples.
+    own = conn.execute("SELECT email FROM users WHERE id = ?", (user_id,)).fetchone()["email"] != DEMO_EMAIL
     try:
-        return ingest(conn, user_id, file.filename or "", data)
+        return ingest(conn, user_id, file.filename or "", data, replace_samples=own)
     except FileAlreadyUploaded as e:
         raise HTTPException(409, {"reason": str(e)})
     except StatementRejected as e:
@@ -44,7 +47,7 @@ def load_demo_data(set: str = "eight_months", replace: bool = False, conn=Depend
     results = []
     for path in sorted((DEMO_DIR / set).glob("*.csv")):
         try:
-            results.append({"file": path.name, "status": "imported", **ingest(conn, user_id, path.name, path.read_bytes())})
+            results.append({"file": path.name, "status": "imported", **ingest(conn, user_id, path.name, path.read_bytes(), is_demo=True)})
         except FileAlreadyUploaded:
             results.append({"file": path.name, "status": "already uploaded"})
     return {"set": set, "replaced": replace, "files": results}

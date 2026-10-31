@@ -80,3 +80,37 @@ def test_the_session_always_lists_every_account_and_only_narrows_the_flag_count(
         assert s["accountList"] == whole["accountList"]
         assert s["flagCount"] == len(get(complete, "/api/flags", a["id"]).json()["flags"])
     assert complete.get("/api/session", params={"account": 999_999}).json()["flagCount"] == whole["flagCount"]   # unknown: ignored
+
+
+# ---------- accounts with less than one complete month (a short PDF, the Cash wallet) ----------
+
+def short_pdf_account(client):
+    """Upload the one-month HDFC PDF fixture; returns its account id."""
+    from tests.hdfc_fixture import build
+    r = client.post("/api/upload", files={"file": ("hdfc.pdf", build(), "application/pdf")})
+    assert r.status_code == 200
+    return next(a["id"] for a in client.get("/api/session").json()["accountList"] if a["last4"] == "9661")
+
+
+def test_an_account_with_no_complete_month_still_shows_what_it_has(complete):
+    account = short_pdf_account(complete)
+    d = get(complete, "/api/dashboard", account).json()
+    assert d["insufficientHistory"] is True                            # no forecast: that still needs a complete month
+    p = d["partial"]
+    assert p["firstDate"] == "2026-09-19" and p["transactions"] == 4   # the 5th row is an ATM withdrawal: a transfer, not spending
+    assert p["inflowPaise"] - p["outflowPaise"] == p["surplusPaise"]
+    assert sum(c["amountPaise"] for c in p["categories"]) <= p["outflowPaise"]
+    assert p["cashPaise"] > 0                                          # the closing balance printed on the statement
+
+
+def test_the_cash_wallet_shows_its_entries_so_far(complete):
+    complete.post("/api/cash", json={"type": "spent", "amountPaise": 50_000, "date": "2026-09-20", "category": "Groceries"})
+    wallet = next(a["id"] for a in complete.get("/api/session").json()["accountList"] if a["type"] == "cash")
+    p = get(complete, "/api/dashboard", wallet).json()["partial"]
+    assert p["transactions"] == 1 and p["outflowPaise"] == 50_000
+    assert p["categories"] == [{"name": "Groceries", "amountPaise": 50_000}]
+
+
+def test_normal_accounts_and_empty_accounts_are_unchanged(complete, banks):
+    assert "partial" not in get(complete, "/api/dashboard", banks[0]["id"]).json()     # enough history: the usual dashboard
+    assert complete.get("/api/dashboard").json()["insufficientHistory"] is False

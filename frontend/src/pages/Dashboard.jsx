@@ -5,6 +5,7 @@ import { useApi } from '../hooks/useApi';
 import { getHome } from '../services/api';
 import PageState from '../components/ui/PageState';
 import HomeSkeleton from '../components/home/HomeSkeleton';
+import PartialHome from '../components/home/PartialHome';
 import HomeHero from '../components/home/HomeHero';
 import KeyNumbers from '../components/home/KeyNumbers';
 import ComingUp from '../components/home/ComingUp';
@@ -27,6 +28,7 @@ export default function Dashboard() {
   }
   if (!api.ready) return <PageState state={api} />;
   const h = api.data;
+  if (h.partial) return <main className={`${PAGE} font-['Inter',system-ui,sans-serif]`}><div className={WRAP}><PartialHome partial={h.partial} /></div></main>;
 
   return (
     <main className={`${PAGE} font-['Inter',system-ui,sans-serif]`}>

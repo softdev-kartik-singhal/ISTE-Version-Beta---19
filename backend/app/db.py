@@ -1,8 +1,9 @@
 """SQLite connection helpers (plain sqlite3, no ORM)."""
+import hashlib
 import sqlite3
 from pathlib import Path
 
-from app.config import CATEGORY_RULES, DB_PATH
+from app.config import CATEGORY_RULES, DB_PATH, DEMO_DIR
 
 SCHEMA_FILE = Path(__file__).with_name("schema.sql")
 
@@ -22,6 +23,7 @@ def init_db(conn: sqlite3.Connection) -> None:
     conn.executescript(SCHEMA_FILE.read_text())
     add_tour_columns(conn)
     add_cash_columns(conn)
+    add_demo_flag(conn)
     seed_rules(conn)
     conn.commit()
 
@@ -48,6 +50,16 @@ def add_cash_columns(conn):
     if "source" not in columns:
         conn.execute("ALTER TABLE transactions ADD COLUMN source TEXT NOT NULL DEFAULT 'statement'")
         conn.execute("ALTER TABLE transactions ADD COLUMN note TEXT")
+
+
+def add_demo_flag(conn):
+    """Databases made before sample statements were tagged get the flag, and the sample files already loaded
+    are recognised by their exact hash (so a user's own file that happens to share a name is never touched)."""
+    columns = [r["name"] for r in conn.execute("PRAGMA table_info(uploaded_files)")]
+    if "is_demo" not in columns:
+        conn.execute("ALTER TABLE uploaded_files ADD COLUMN is_demo INTEGER NOT NULL DEFAULT 0")
+    for path in DEMO_DIR.glob("*/*.csv"):
+        conn.execute("UPDATE uploaded_files SET is_demo = 1 WHERE file_hash = ?", (hashlib.sha256(path.read_bytes()).hexdigest(),))
 
 
 def seed_rules(conn):
