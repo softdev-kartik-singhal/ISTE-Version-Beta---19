@@ -1,10 +1,11 @@
-// Shell for signed-in screens: sidebar + top bar, with the current page rendered beside them.
+// Shell for signed-in screens: a full-height sidebar beside the page (desktop) or a bottom tab bar (phones), plus the top bar.
 import { useState } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { TourProvider } from '../tour/TourProvider';
 import { CashProvider } from '../cash/CashProvider';
 import Sidebar from '../components/layout/Sidebar';
 import TopBar from '../components/layout/TopBar';
+import BottomTabBar from '../components/layout/BottomTabBar';
 import { useApi } from '../hooks/useApi';
 import { getSession, isSignedIn } from '../services/api';
 
@@ -23,15 +24,16 @@ function Shell() {
   return (
     <TourProvider tour={session.tour} userKey={session.user.email}>
     <CashProvider>
-    <div className="bg-surface font-body-md text-body-md text-on-surface min-h-screen">
+    <div className="bg-surface font-body-md text-body-md text-on-surface min-h-screen flex">
       <Sidebar session={session} />
-      <div className="pl-64">
+      <div className="flex-1 min-w-0 pb-16 lg:pb-0">
         <TopBar session={session} account={account} onAccountChange={setAccount} />
-        {/* Pages read the selected account via useOutletContext(). */}
+        {/* Pages read the selected account (and the session) via useOutletContext(). */}
         <div key={pathname} className="tour-page">
-          <Outlet context={{ account }} />
+          <Outlet context={{ account, session }} />
         </div>
       </div>
+      <BottomTabBar session={session} />
     </div>
     </CashProvider>
     </TourProvider>

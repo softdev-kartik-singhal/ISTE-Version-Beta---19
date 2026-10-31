@@ -1,7 +1,8 @@
 // Data access layer: every screen reads and writes through here, and only here, using the signed-in user's session token.
 // Backend answers are reshaped for the screens by adapters.js.
 import { setGoalBase } from '../utils/goalMath';
-import { goalDate, monthLabel, suggestions, toDashboard, toFlags, toGoals, toMoneyFlow, toSafeguards, toStatements, toSurplusPlan, toTrackRecord, toTransactions, toTrends } from './adapters';
+import { goalDate, monthLabel, suggestions, toFlags, toGoals, toMoneyFlow, toSafeguards, toStatements, toSurplusPlan, toTrackRecord, toTransactions, toTrends } from './adapters';
+import { toHome } from './homeView';
 
 export { toAsk } from './adapters'; // Ask re-shapes its stored answer when the bonus switch changes
 
@@ -93,6 +94,9 @@ export async function getSession() {
     user: { name: s.user.name, email: s.user.email, profile: s.user.profile || '' },
     accountCount: s.accountCount,
     accounts: s.accounts,
+    bankCount: s.accountList.filter((a) => a.type !== 'cash').length,
+    hasCash: s.accountList.some((a) => a.type === 'cash'),
+    statementsUpTo: s.statementsUpTo ? new Date(`${s.statementsUpTo}T00:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : null,
     lastSynced: formatSynced(s.lastSyncedAt),
     syncSummary: banks.length ? `${banks.join(', ')} synced` : 'No statements uploaded yet',
     flagCount: s.flagCount,
@@ -153,11 +157,12 @@ async function notReady(message) {
   return hasData ? { __state: 'insufficient', messages: [message] } : { __state: 'empty' };
 }
 
-export async function getDashboard() {
+// Home: everything the Home page shows, shaped by homeView.js.
+export async function getHome() {
   const d = await request('/api/dashboard');
-  if (d.insufficientHistory) return notReady('The dashboard needs at least one complete month of statements.');
+  if (d.insufficientHistory) return notReady('Home needs at least one complete month of statements.');
   const [trends, flags] = await Promise.all([request('/api/trends'), request('/api/flags')]);
-  return toDashboard(d, trends, flags);
+  return toHome(d, trends, flags);
 }
 
 export async function getStatements() {

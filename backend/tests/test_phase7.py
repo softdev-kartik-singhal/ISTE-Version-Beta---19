@@ -365,6 +365,7 @@ def test_session_and_privacy_report_real_facts(complete, db_path):
     s = complete.get("/api/session").json()
     assert s["user"]["email"] == EMAIL and s["accounts"] == ["HDFC ••1234", "Kotak ••5678"] and s["accountCount"] == 2
     assert s["flagCount"] == complete.get("/api/flags").json()["openCount"] and s["lastSyncedAt"]
+    assert s["statementsUpTo"] == "2026-09-28"                                   # newest statement row, not the upload time
     p = complete.get("/api/privacy").json()
     assert p["card"] is None and p["rawFilesStored"] == 0 and p["maskedAccount"] == "HDFC ••1234"
     assert p["counts"]["transactions"] == complete.get("/api/transactions").json()["total"] and p["counts"]["files"] == 3

@@ -1,5 +1,6 @@
 // Flags screen: anomaly summary, filter tabs, flag cards whose actions resolve them, and resolved history.
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { CheckCheck, HardDrive, ShieldCheck, SlidersHorizontal } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
 import { useToast } from '../hooks/useToast';
@@ -20,7 +21,8 @@ const TAB_IDLE = 'px-3 py-1.5 rounded-md font-label-md text-label-md text-second
 export default function Flags() {
   const api = useApi(getFlags);
   const categories = useApi(getCategories);
-  const [filter, setFilter] = useState('all');
+  const location = useLocation();
+  const [filter, setFilter] = useState(location.state?.type || 'all'); // Home can open one flag type directly
   const [sortBy, setSortBy] = useState('Urgency');
   const [historyOpen, setHistoryOpen] = useState(false);
   const [categoryFor, setCategoryFor] = useState(null);

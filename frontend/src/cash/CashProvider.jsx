@@ -62,7 +62,7 @@ export function CashProvider({ children }) {
     <CashContext.Provider value={{ openCash: (s = {}) => setStart(s) }}>
       {children}
       {/* Floating "+ Cash" button, phones only (wider screens have it in the page headers). */}
-      <button className="md:hidden fixed bottom-5 right-5 z-40 h-14 px-5 rounded-full bg-primary-container text-white shadow-xl flex items-center gap-1.5 font-label-md text-label-md" onClick={() => setStart({})}>
+      <button aria-label="Add cash" className="md:hidden fixed bottom-20 right-5 z-40 h-14 px-5 rounded-full bg-primary-container text-white shadow-xl flex items-center gap-1.5 font-label-md text-label-md" onClick={() => setStart({})}>
         <Plus size={20} /> Cash
       </button>
       {start && <CashSheet key={start.entry?.id || 'new'} start={start} categories={categories} onSubmit={submit} onDelete={remove} onClose={() => setStart(null)} />}

@@ -48,8 +48,10 @@ export default function Sidebar({ session }) {
     navigate('/login', { replace: true });
   }
 
+  // One full-height column that stays put while the page scrolls (sticky, in the normal layout), so its navy
+  // background and footer are drawn once however long the page is. Hidden on phones, which use the bottom tab bar.
   return (
-    <aside className="fixed left-0 top-0 h-full w-64 bg-[#0B2545] z-50 flex flex-col justify-between border-r border-white/10">
+    <aside className="hidden lg:flex sticky top-0 h-screen w-64 shrink-0 bg-[#0B2545] z-50 flex-col justify-between border-r border-white/10">
       <div className="flex flex-col min-h-0 flex-1">
         {/* px-7 = nav padding (16px) + link padding (12px), so the name lines up with the menu icons */}
         <Link to="/dashboard" className="h-16 px-7 flex items-center border-b border-white/10">
@@ -71,12 +73,8 @@ export default function Sidebar({ session }) {
         </nav>
       </div>
       <div className="shrink-0 px-space-md py-space-sm border-t border-white/10 space-y-0.5">
-        <div className="px-space-sm py-1.5 mb-1 rounded-lg bg-white/5 border border-white/10">
-          <div className="flex items-center gap-1.5 text-emerald-400 font-label-md text-label-md">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Connected</span>
-          </div>
-          <p className="mt-1 text-white/60 font-label-sm text-label-sm leading-tight">{session.syncSummary}</p>
+        <div className="px-space-sm py-1.5 mb-1 rounded-lg bg-white/5 border border-white/10 text-white/80 font-label-md text-label-md">
+          {session.statementsUpTo ? `Statements up to ${session.statementsUpTo}` : 'No statements uploaded yet'}
         </div>
         <button
           className="w-full flex items-center gap-space-sm px-3 py-1.5 text-white/70 hover:text-white transition-colors font-label-md text-label-md"
