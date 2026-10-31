@@ -42,7 +42,7 @@ export default function Sidebar({ session }) {
     <aside className="fixed left-0 top-0 h-full w-64 bg-[#0B2545] z-50 flex flex-col justify-between border-r border-white/10">
       <div className="flex flex-col">
         <Link to="/dashboard" className="h-16 px-space-lg flex items-center gap-space-sm border-b border-white/10">
-          <img alt="SmartGullak Logo" className="h-8 w-auto object-contain" src={session.logoUrl} />
+          <span className="font-headline-sm text-headline-sm font-semibold text-white tracking-tight">SmartGullak</span>
           <span className="font-headline-sm text-headline-sm text-white tracking-tight">SmartGullak</span>
         </Link>
         <nav className="p-space-md space-y-3 overflow-y-auto">

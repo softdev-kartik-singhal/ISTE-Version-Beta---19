@@ -6,6 +6,8 @@ import { useApi } from '../hooks/useApi';
 import { useToast } from '../hooks/useToast';
 import { deleteUserData, exportUserData, getPrivacy } from '../services/api';
 import { registerCard } from '../services/cardReader';
+import { USE_MOCK_CARD_READER } from '../config';
+import PageState from '../components/ui/PageState';
 import { downloadCsv } from '../utils/download';
 import DataPolicyCards from '../components/privacy/DataPolicyCards';
 import HardwareCardPanel from '../components/privacy/HardwareCardPanel';
@@ -16,20 +18,21 @@ import ConfirmSensitiveActionDialog from '../components/dialogs/ConfirmSensitive
 import Toast from '../components/ui/Toast';
 
 export default function Privacy() {
-  const data = useApi(getPrivacy);
+  const api = useApi(getPrivacy);
+  const data = api.data;
   const navigate = useNavigate();
   const [card, setCard] = useState(null);
   const [action, setAction] = useState(null); // 'export' | 'delete' | 'replace' | null
   const [busy, setBusy] = useState(false);
   const [highlight, setHighlight] = useState(null);
-  const [exportSize, setExportSize] = useState('2.4 MB');
+  const [exportSize, setExportSize] = useState('Not exported yet');
   const [toast, showToast] = useToast();
 
   useEffect(() => {
     if (data) setCard(data.card);
   }, [data]);
 
-  if (!data) return null;
+  if (!api.ready) return <PageState state={api} />;
 
   function flash(type) {
     setHighlight(type);
@@ -101,13 +104,15 @@ export default function Privacy() {
             onExport={() => (card ? setAction('export') : showToast('Register a SmartGullak card first'))}
             onDelete={() => (card ? setAction('delete') : showToast('Register a SmartGullak card first'))}
           />
-          <ActionSandbox
+          {USE_MOCK_CARD_READER && (
+            <ActionSandbox
             onPreviewConfirm={(mode) => {
               flash(mode);
               showToast(mode === 'export' ? 'Preview: export would start now' : 'Preview: data would be deleted now');
             }}
             onLostCard={() => showToast('Verification link sent to your registered email')}
           />
+          )}
           <ActionResultBanners exportFileName={data.exportFileName} exportSize={exportSize} highlight={highlight} />
         </div>
       </div>

@@ -1,9 +1,9 @@
 // Trends "Cashflow Intelligence" panel: plain-language findings plus the Ask link.
 import { Link } from 'react-router-dom';
-import { ArrowUpFromLine, BadgeCheck, BrainCog, Shield, Sparkles, UtensilsCrossed } from 'lucide-react';
+import { ArrowUpFromLine, BadgeCheck, BrainCog, Info, Shield, Sparkles, UtensilsCrossed } from 'lucide-react';
 import RichText from '../ui/RichText';
 
-const FINDING_ICONS = { verified: BadgeCheck, growth: ArrowUpFromLine, dining: UtensilsCrossed, shield: Shield };
+const FINDING_ICONS = { verified: BadgeCheck, growth: ArrowUpFromLine, dining: UtensilsCrossed, shield: Shield, info: Info };
 
 export default function IntelligencePanel({ findings }) {
   return (
@@ -15,12 +15,12 @@ export default function IntelligencePanel({ findings }) {
         </div>
         <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">
           <Sparkles size={14} />
-          <span>Audit v2.4</span>
+          <span>Audit</span>
         </div>
       </div>
       <div className="space-y-space-md">
         {findings.map((f) => {
-          const Icon = FINDING_ICONS[f.icon];
+          const Icon = FINDING_ICONS[f.icon] || Info; // fall back so an unknown icon name never crashes the page
           return (
             <div key={f.title} className="p-space-md rounded-lg bg-surface-container-low">
               <div className="flex items-start gap-2.5">

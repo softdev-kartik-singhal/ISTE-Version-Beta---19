@@ -16,7 +16,7 @@ import FormDialog from '../components/ui/FormDialog';
 import Toast from '../components/ui/Toast';
 
 export default function Landing() {
-  const data = useApi(getLanding);
+  const { data } = useApi(getLanding);
   const [active, setActive] = useState('features');
   const [contactOpen, setContactOpen] = useState(false);
   const [toast, showToast] = useToast();

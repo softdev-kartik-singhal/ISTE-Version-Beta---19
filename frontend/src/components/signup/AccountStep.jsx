@@ -14,12 +14,16 @@ export default function AccountStep({ initial, onContinue }) {
   const [error, setError] = useState('');
   const update = (field) => (e) => setForm({ ...form, [field]: e.target.value });
 
-  function submit(e) {
+  async function submit(e) {
     e.preventDefault();
     if (form.password !== form.confirm) return setError('Passwords do not match.');
     if (passwordStrength(form.password).segments < 3) return setError('Choose a stronger password (14+ characters with symbols).');
     setError('');
-    onContinue(form);
+    try {
+      await onContinue(form);
+    } catch (err) {
+      setError(err.message);
+    }
   }
 
   return (

@@ -1,7 +1,6 @@
 // Flag card for an unusually large spend, showing its impact on this month's safe ceiling.
-import { Armchair, BadgeCheck, Calendar, CalendarClock, ChartLine, Check, Columns2, CreditCard, TrendingUp } from 'lucide-react';
+import { Armchair, Calendar, CalendarClock, ChartLine, Check, Columns2, CreditCard, TrendingUp } from 'lucide-react';
 import FlagCardShell from './FlagCardShell';
-import ProgressBar from '../ui/ProgressBar';
 import { formatCurrency } from '../../utils/formatCurrency';
 
 export default function LargeSpendFlagCard({ flag, dimmed, onResolve }) {
@@ -26,15 +25,15 @@ export default function LargeSpendFlagCard({ flag, dimmed, onResolve }) {
           <button onClick={() => onResolve('Marked as a planned purchase')} className="px-3.5 py-2 rounded-lg bg-primary-container text-white font-label-md text-label-md font-semibold hover:bg-primary transition-all flex items-center gap-1.5 shadow-sm">
             <Check size={18} /> Looks fine (Planned purchase)
           </button>
-          <button onClick={() => onResolve('Reclassified as one-time capital expense')} className="px-3.5 py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md font-medium hover:bg-surface-container hover:text-primary transition-all flex items-center gap-1">
+          <button onClick={() => onResolve('Reviewed as a one-time expense')} className="px-3.5 py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md font-medium hover:bg-surface-container hover:text-primary transition-all flex items-center gap-1">
             <CalendarClock size={16} /> Reclassify as One-time Capital
           </button>
-          <button onClick={() => onResolve('Amortized over a 3-month EMI')} className="px-3.5 py-2 rounded-lg bg-surface-container-low text-secondary font-label-md text-label-md font-medium hover:bg-surface-container hover:text-on-surface transition-all flex items-center gap-1">
+          <button onClick={() => onResolve('Reviewed as an instalment purchase')} className="px-3.5 py-2 rounded-lg bg-surface-container-low text-secondary font-label-md text-label-md font-medium hover:bg-surface-container hover:text-on-surface transition-all flex items-center gap-1">
             <Columns2 size={16} /> Split to 3-month EMI amortize
           </button>
         </>
       }
-      aside={<button onClick={() => onResolve('Kept out of the Shopping average')} className="px-3 py-1.5 text-secondary hover:text-on-surface font-label-sm text-label-sm">Keep Shopping average unchanged</button>}
+      aside={<button onClick={() => onResolve('Reviewed and kept out of the average')} className="px-3 py-1.5 text-secondary hover:text-on-surface font-label-sm text-label-sm">Keep Shopping average unchanged</button>}
     >
       <div className="lg:col-span-5 flex items-start gap-space-sm">
         <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
@@ -56,22 +55,13 @@ export default function LargeSpendFlagCard({ flag, dimmed, onResolve }) {
       </div>
       <div className="lg:col-span-7 bg-surface-container-low rounded-lg p-space-sm flex flex-col justify-between">
         <div className="flex items-center justify-between mb-1">
-          <span className="font-label-sm text-label-sm text-secondary uppercase tracking-wider font-semibold">Affordability &amp; Runway Impact</span>
+          <span className="font-label-sm text-label-sm text-secondary uppercase tracking-wider font-semibold">Compared with your usual</span>
           <span className="font-currency-md text-currency-md font-semibold text-on-surface">
             {amount} <span className="text-label-sm text-secondary">DR</span>
           </span>
         </div>
-        <div className="space-y-1.5 my-1">
-          <div className="flex items-center justify-between text-label-sm font-label-sm">
-            <span className="text-secondary">October Safe Ceiling Remaining</span>
-            <span className="font-currency-sm font-medium text-primary">
-              {formatCurrency(flag.ceilingRemaining)} (Reduced from {formatCurrency(flag.ceilingBefore)})
-            </span>
-          </div>
-          <ProgressBar percent={flag.ceilingPercent} barClass="bg-primary-container" heightClass="h-2" />
-        </div>
-        <p className="font-label-sm text-label-sm text-secondary flex items-center gap-1 pt-1">
-          <BadgeCheck size={15} className="text-emerald-600" /> {flag.note}
+        <p className="font-label-sm text-label-sm text-secondary pt-1">
+          Your usual {flag.category} purchase is about {formatCurrency(flag.typicalAverage)}; this one is {flag.multiple}.
         </p>
       </div>
     </FlagCardShell>

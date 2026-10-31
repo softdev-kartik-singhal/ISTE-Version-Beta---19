@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from app.db import get_conn
 from app.services.affordability import apply_changes, evaluate, what_if
 from app.services.forecast import build_inputs, missing_items
-from app.services.ingest import default_user_id
+from app.deps import current_user_id
 from app.services.question import parse_question
 
 router = APIRouter(prefix="/api")
@@ -45,9 +45,8 @@ def checked_inputs(conn, user_id, amount, month):
 
 
 @router.post("/ask")
-def ask(body: AskIn, conn=Depends(get_conn)):
+def ask(body: AskIn, conn=Depends(get_conn), user_id: int = Depends(current_user_id)):
     """Two steps. Question only -> what we understood (the user confirms). Amount + month -> the answer."""
-    user_id = default_user_id(conn)
     if body.amountPaise is None or body.targetMonth is None:
         parsed = parse_question(body.question, build_inputs(conn, user_id).as_of)
         return {"status": "needs_input" if parsed["missing"] else "needs_confirmation", "parsed": parsed}
@@ -61,9 +60,9 @@ def ask(body: AskIn, conn=Depends(get_conn)):
 
 
 @router.post("/what-if")
-def what_if_endpoint(body: WhatIfIn, conn=Depends(get_conn)):
+def what_if_endpoint(body: WhatIfIn, conn=Depends(get_conn), user_id: int = Depends(current_user_id)):
     """Same calculation on modified inputs: cancel recurring payments and/or add an EMI."""
-    inp, refusal = checked_inputs(conn, default_user_id(conn), body.amountPaise, body.targetMonth)
+    inp, refusal = checked_inputs(conn, user_id, body.amountPaise, body.targetMonth)
     if refusal:
         return refusal
     emi = body.addEmi.model_dump() if body.addEmi else None

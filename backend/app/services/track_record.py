@@ -161,6 +161,15 @@ def judge(forecast, actual):
             "worstCaseHeld": a >= forecast["worst_paise"], "missPaise": a - forecast["typical_paise"]}
 
 
+def learning(conn, user_id):
+    """How much the user has taught the categoriser: corrections made and merchants it now remembers."""
+    q = ("SELECT COUNT(DISTINCT c.batch_id) AS batches, COUNT(DISTINCT CASE WHEN c.applies_to_merchant = 1 THEN t.merchant END) AS merchants,"
+         " COUNT(*) AS rows FROM corrections c JOIN transactions t ON t.id = c.transaction_id"
+         " JOIN accounts a ON a.id = t.account_id WHERE a.user_id = ?")
+    r = conn.execute(q, (user_id,)).fetchone()
+    return {"corrections": r["batches"], "merchantsRemembered": r["merchants"], "rowsRecategorised": r["rows"]}
+
+
 def track_record(conn, user_id):
     """Hit rate, average miss and bias over every month that has both a forecast and an actual."""
     rows = conn.execute("SELECT * FROM forecast_log WHERE user_id = ? ORDER BY id", (user_id,)).fetchall()
@@ -180,4 +189,5 @@ def track_record(conn, user_id):
                         "worstCaseHeldRate": "Share of months where reality was no worse than the worst case.",
                         "averageMissPaise": "Average distance between the actual surplus and the typical case.",
                         "biasPaise": "Average signed miss: negative = we were too optimistic."},
-            "chain": {"valid": chain["valid"], "entries": chain["entries"]}}
+            "chain": {"valid": chain["valid"], "entries": chain["entries"], "headHash": chain["headHash"]},
+            "learning": learning(conn, user_id)}

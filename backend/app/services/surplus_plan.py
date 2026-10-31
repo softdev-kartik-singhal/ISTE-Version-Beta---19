@@ -55,7 +55,10 @@ def surplus_plan(ledger, inp, split=SURPLUS_DEFAULT_SPLIT):
         to_fund = round(typical * pct / 100)
         return {"splitPct": pct, "monthlyToEmergencyPaise": to_fund, "monthlyToOtherGoalsPaise": typical - to_fund,
                 "monthsToFund": months_to_fund(shortfall, to_fund)}
-    return {"insufficientHistory": False, "disclaimer": DISCLAIMER,
+    kinds = [k for k in ("regular", "irregular") if inp.profile[k]]
+    framework = {"regular": "Salaried", "irregular": "Variable income"}
+    return {"insufficientHistory": False, "disclaimer": DISCLAIMER, "asOf": inp.as_of.isoformat(),
+            "framework": " + ".join(framework[k] for k in kinds) or "No income found yet",
             "emergencyFund": {"bufferMonths": EMERGENCY_FUND_MONTHS, "monthlyEssentialsPaise": baseline,
                               "essentials": items, "targetPaise": target, "savedPaise": saved,
                               "shortfallPaise": shortfall, "monthsCovered": round(saved / baseline, 1) if baseline else None,

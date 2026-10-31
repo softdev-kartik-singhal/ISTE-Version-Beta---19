@@ -22,14 +22,19 @@ CREATE TABLE IF NOT EXISTS accounts (
 -- One row per imported file. Only its hash is kept, never the file itself.
 CREATE TABLE IF NOT EXISTS uploaded_files (
     id             INTEGER PRIMARY KEY,
+    user_id        INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     account_id     INTEGER NOT NULL REFERENCES accounts(id) ON DELETE CASCADE,
-    file_hash      TEXT NOT NULL UNIQUE,   -- sha256: same file twice is rejected
+    file_hash      TEXT NOT NULL,          -- sha256: the same file twice by the SAME user is rejected
+    file_name      TEXT,                   -- display name only, long digit runs masked
+    file_type      TEXT,                   -- 'csv' or 'pdf'
+    duplicate_paise INTEGER NOT NULL DEFAULT 0,  -- total value of rows skipped as already imported
     row_count      INTEGER NOT NULL,
     new_rows       INTEGER NOT NULL,
     duplicate_rows INTEGER NOT NULL,
     first_date     TEXT,
     last_date      TEXT,
-    uploaded_at    TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    uploaded_at    TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (user_id, file_hash)
 );
 
 CREATE TABLE IF NOT EXISTS categories (
@@ -123,7 +128,33 @@ CREATE TABLE IF NOT EXISTS goals (
     name         TEXT NOT NULL,
     target_paise INTEGER NOT NULL,
     saved_paise  INTEGER NOT NULL DEFAULT 0,
-    target_date  TEXT
+    target_date  TEXT,
+    category     TEXT,
+    priority     TEXT
+);
+
+-- Login sessions. Only the SHA-256 of the token is stored, never the token itself.
+-- password_verified_at: set by "verify password" and used up by a sensitive action (60 s window).
+CREATE TABLE IF NOT EXISTS sessions (
+    token_hash           TEXT PRIMARY KEY,
+    user_id              INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at           INTEGER NOT NULL,   -- unix seconds
+    expires_at           INTEGER NOT NULL,
+    password_verified_at INTEGER
+);
+
+-- A browser asking "wait for a card tap". The ESP32 then posts the UID and the server resolves
+-- the one pending request. 'used' = a finished verification that a sensitive action has consumed.
+CREATE TABLE IF NOT EXISTS card_requests (
+    id           INTEGER PRIMARY KEY,
+    user_id      INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    kind         TEXT NOT NULL CHECK (kind IN ('register', 'verify')),
+    replace_card INTEGER NOT NULL DEFAULT 0,  -- register request that may replace the existing card
+    status       TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'done', 'failed', 'used')),
+    error_code   TEXT,
+    last4        TEXT,
+    created_at   INTEGER NOT NULL,
+    completed_at INTEGER
 );
 
 -- NFC card. Only a hash of the UID is stored; UNIQUE stops one card linking to two users.

@@ -2,6 +2,7 @@
 
 Money is always integer paise (1 rupee = 100 paise).
 """
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -120,9 +121,26 @@ DEMO_DIR = BASE_DIR / "demo_data"
 
 # --- Upload ----------------------------------------------------------------
 MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # statements are small; refuse anything larger
-# Until real auth (Phase 5) every request acts as this one demo user.
-DEFAULT_USER_EMAIL = "demo@smartgullak.in"
-DEFAULT_USER_NAME = "Demo User"
 
-# --- Auth ------------------------------------------------------------------
+# --- Demo account ----------------------------------------------------------------
+# Signing in as this user loads the planted demo dataset for them if it is not loaded yet.
+DEMO_EMAIL = "demo@smartgullak.app"
+DEMO_PASSWORD = "demo-vault-2026"
+DEMO_NAME = "Demo User"
+DEMO_DATASET = "eight_months_complete"
+
+# --- Auth, card, sensitive actions ------------------------------------------------
 BCRYPT_ROUNDS = 12
+PASSWORD_MIN_LENGTH = 8
+SESSION_HOURS = 12
+# After this many wrong passwords for one email, logins for it are refused for LOGIN_LOCK_SECONDS.
+LOGIN_MAX_FAILURES = 5
+LOGIN_LOCK_SECONDS = 300
+# How long a "wait for a card tap" request stays open.
+CARD_REQUEST_SECONDS = 60
+# Export / delete / card replacement need a password check AND a card tap, each no older than this.
+SENSITIVE_WINDOW_SECONDS = 60
+# Shared secret the ESP32 sends in the X-Device-Secret header. Unset = card endpoints are switched off.
+DEVICE_SECRET = os.environ.get("SMARTGULLAK_DEVICE_SECRET")
+# Mixed into the card-UID hash. Card UIDs are short, so a plain hash could be guessed; the pepper is not in the database.
+CARD_PEPPER = os.environ.get("SMARTGULLAK_CARD_PEPPER", "dev-only-change-me")

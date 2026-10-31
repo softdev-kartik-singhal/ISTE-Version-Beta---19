@@ -7,17 +7,19 @@ import { downloadCsv } from '../utils/download';
 import { formatCurrency } from '../utils/formatCurrency';
 import Toast from '../components/ui/Toast';
 import { getSurplusPlan } from '../services/api';
+import PageState from '../components/ui/PageState';
 import EmergencyFundStep from '../components/surplus/EmergencyFundStep';
 import OptionCard from '../components/surplus/OptionCard';
 import AllocationSimulator from '../components/surplus/AllocationSimulator';
 import StewardshipFooter from '../components/surplus/StewardshipFooter';
 
 export default function SurplusPlan() {
-  const data = useApi(getSurplusPlan);
+  const api = useApi(getSurplusPlan);
   const [showBreakdown, setShowBreakdown] = useState(false);
   const [committed, setCommitted] = useState(false);
   const [toast, showToast] = useToast();
-  if (!data) return null;
+  if (!api.ready) return <PageState state={api} />;
+  const data = api.data;
 
   function exportPlan(plan) {
     downloadCsv('smartgullak-allocation-plan.csv', [
@@ -116,6 +118,7 @@ export default function SurplusPlan() {
           </section>
 
           <AllocationSimulator allocation={data.allocation} committed={committed} onExport={exportPlan} onCommit={commit} />
+          <p className="font-label-sm text-label-sm text-on-surface-variant">{data.disclaimer}</p>
           <StewardshipFooter onMethodology={showMethodology} />
         </div>
       </div>

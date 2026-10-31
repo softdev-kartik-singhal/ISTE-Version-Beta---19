@@ -1,36 +1,72 @@
-// Mock RFID/NFC card reader. Replace the bodies with the real reader SDK (WebUSB / Web NFC / backend bridge) later.
-// Both functions wait like a real "tap", then resolve or reject with an error whose `code` the UI understands:
+// NFC card reader, talking to the backend. The card is read by the ESP32 over Wi-Fi, not by the browser:
+// the browser opens a "wait for a tap" request, the ESP32 posts the card UID, and the browser polls for the result.
+// Both functions resolve or reject with an error whose `code` the UI understands:
 //   ALREADY_LINKED  - card belongs to another account
-//   READER_MISSING  - no reader connected
+//   READER_MISSING  - nothing was tapped in time, or the server cannot be reached
 //   MISMATCH        - tapped card is not the registered one
+//   CARD_EXISTS     - this account already has a card and replacing it was not confirmed
+import { request } from './api';
+import { USE_MOCK_CARD_READER } from '../config';
 
-const TAP_DELAY_MS = 1500;
-const REGISTERED_CARD = { uid: '04:A2:19:4F:2A', last4: '4F2A' };
+const POLL_MS = 1000;
+const TIMEOUT_MS = 60_000; // matches the server's tap window
+const FORCED_ERRORS = { ALREADY_LINKED: 'This NFC UID is registered to another primary account', READER_MISSING: 'Connect reader via USB port or pair via BLE', MISMATCH: 'Tapped card does not match the registered card' };
+// What the server calls a failure -> what the UI calls it.
+const CODE_MAP = { TIMEOUT: 'READER_MISSING', NETWORK: 'READER_MISSING', SUPERSEDED: 'CANCELLED' };
+const MESSAGES = { ...FORCED_ERRORS, CARD_EXISTS: 'This account already has a card.', CANCELLED: 'Cancelled by a newer scan.' };
 
 function cardError(code, message) {
-  const err = new Error(message);
+  const err = new Error(message || MESSAGES[code] || 'Card error');
   err.code = code;
+  err.isCardError = true; // already translated; do not wrap it again
   return err;
 }
 
-// simulate: optional forced outcome for demos ('success' | 'ALREADY_LINKED' | 'READER_MISSING').
-export function registerCard({ simulate = 'success' } = {}) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (simulate === 'ALREADY_LINKED') reject(cardError('ALREADY_LINKED', 'This NFC UID is registered to another primary account'));
-      else if (simulate === 'READER_MISSING') reject(cardError('READER_MISSING', 'Connect reader via USB port or pair via BLE'));
-      else resolve({ ...REGISTERED_CARD, registeredAt: new Date().toISOString() });
-    }, TAP_DELAY_MS);
-  });
+// Turns a failed request into a card error the UI can show.
+function asCardError(err) {
+  const code = CODE_MAP[err.code] || err.code || 'READER_MISSING';
+  return cardError(code, MESSAGES[code] || err.message);
 }
 
-// simulate: optional forced outcome ('success' | 'MISMATCH' | 'READER_MISSING').
-export function verifyCard({ simulate = 'success' } = {}) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (simulate === 'MISMATCH') reject(cardError('MISMATCH', 'Tapped card does not match the registered card'));
-      else if (simulate === 'READER_MISSING') reject(cardError('READER_MISSING', 'Connect reader via USB port or pair via BLE'));
-      else resolve({ verified: true, last4: REGISTERED_CARD.last4 });
-    }, TAP_DELAY_MS);
-  });
+// Polls until the ESP32 has reported the tap (or the window closes).
+async function waitForTap(requestId) {
+  const deadline = Date.now() + TIMEOUT_MS + 2000;
+  while (Date.now() < deadline) {
+    const status = await request(`/api/card/requests/${requestId}`);
+    if (status.status === 'done') return status;
+    if (status.status === 'failed') throw cardError(CODE_MAP[status.errorCode] || status.errorCode);
+    await new Promise((resolve) => setTimeout(resolve, POLL_MS));
+  }
+  throw cardError('READER_MISSING');
+}
+
+// Simulated reader (USE_MOCK_CARD_READER in config.js): waits like a real tap, then succeeds or fails as asked.
+function simulated(result, simulate) {
+  return new Promise((resolve, reject) => setTimeout(() => (FORCED_ERRORS[simulate] ? reject(cardError(simulate)) : resolve(result)), 1500));
+}
+
+// Registers a card. If the account already has one this swaps it (the server then requires the password + current card
+// to have been verified in the last 60 seconds). simulate: optional forced error for the demo sandbox.
+export async function registerCard({ simulate } = {}) {
+  if (USE_MOCK_CARD_READER) return simulated({ last4: '4F2A', registeredAt: new Date().toISOString() }, simulate);
+  try {
+    const { registered } = await request('/api/card');
+    const { requestId } = await request('/api/card/register/start', { method: 'POST', body: { replace: registered } });
+    const done = await waitForTap(requestId);
+    return { last4: done.last4, registeredAt: new Date().toISOString() };
+  } catch (err) {
+    throw err.isCardError ? err : asCardError(err);
+  }
+}
+
+// Waits for the registered card to be tapped. simulate: optional forced error for the demo sandbox.
+export async function verifyCard({ simulate } = {}) {
+  if (USE_MOCK_CARD_READER) return simulated({ verified: true, last4: '4F2A' }, simulate);
+  try {
+    const { requestId } = await request('/api/card/verify/start', { method: 'POST' });
+    const done = await waitForTap(requestId);
+    return { verified: true, last4: done.last4 };
+  } catch (err) {
+    throw err.isCardError ? err : asCardError(err);
+  }
 }

@@ -25,7 +25,7 @@ export default function UploadHero({ onLoadDemo, onChooseFiles, onDropFiles }) {
         </div>
         <h2 className="font-headline-md text-headline-md text-on-surface font-semibold">Drop bank statements here or click to browse</h2>
         <p className="font-body-md text-body-md text-secondary mt-1 max-w-xl">
-          Accepts password-protected PDFs &amp; standard CSVs from HDFC, ICICI, SBI, Kotak, Axis, and Zerodha.
+          Accepts HDFC PDF statements and CSV exports from HDFC and Kotak.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-space-sm mt-space-md">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-lowest font-label-sm text-label-sm text-secondary shadow-sm">
@@ -50,7 +50,7 @@ export default function UploadHero({ onLoadDemo, onChooseFiles, onDropFiles }) {
             className="h-10 px-space-md rounded-lg bg-surface-container-lowest text-secondary hover:text-on-surface hover:bg-surface-container font-label-md text-label-md transition-colors shadow-sm"
             onClick={onLoadDemo}
           >
-            Use sample HDFC &amp; ICICI batch
+            Use the demo statements
           </button>
         </div>
       </div>

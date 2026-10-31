@@ -1,6 +1,7 @@
 // Dashboard screen: affordability box, key metrics, upcoming payments, insights, charts and flags.
 import { useApi } from '../hooks/useApi';
 import { getDashboard } from '../services/api';
+import PageState from '../components/ui/PageState';
 import AffordabilityHero from '../components/dashboard/AffordabilityHero';
 import LiquidityCards from '../components/dashboard/LiquidityCards';
 import UpcomingPayments from '../components/dashboard/UpcomingPayments';
@@ -11,8 +12,9 @@ import SpendingBreakdownCard from '../components/dashboard/SpendingBreakdownCard
 import AttentionList from '../components/dashboard/AttentionList';
 
 export default function Dashboard() {
-  const data = useApi(getDashboard);
-  if (!data) return null;
+  const api = useApi(getDashboard);
+  if (!api.ready) return <PageState state={api} />;
+  const data = api.data;
 
   return (
     <main className="relative pt-16 min-h-screen bg-[#F7F9FC]">

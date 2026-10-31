@@ -5,6 +5,7 @@ import { useApi } from '../hooks/useApi';
 import { useToast } from '../hooks/useToast';
 import { getTrends } from '../services/api';
 import { downloadCsv } from '../utils/download';
+import PageState from '../components/ui/PageState';
 import TrendsHeader from '../components/trends/TrendsHeader';
 import TrendSummaryCards from '../components/trends/TrendSummaryCards';
 import CashflowTrendCard from '../components/trends/CashflowTrendCard';
@@ -22,10 +23,11 @@ function cashflowFor(period, periods, cashflow) {
 }
 
 export default function Trends() {
-  const data = useApi(getTrends);
+  const api = useApi(getTrends);
   const [period, setPeriod] = useState(null);
   const [toast, showToast] = useToast();
-  if (!data) return null;
+  if (!api.ready) return <PageState state={api} />;
+  const data = api.data;
 
   const selected = period || data.periods[0];
   const cashflow = cashflowFor(selected, data.periods, data.cashflow);

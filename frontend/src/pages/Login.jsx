@@ -8,16 +8,15 @@ import ComplianceStrip from '../components/auth/ComplianceStrip';
 import FormDialog from '../components/ui/FormDialog';
 import Toast from '../components/ui/Toast';
 import { useToast } from '../hooks/useToast';
-import { demoCredentials, login, requestPasswordReset } from '../services/api';
+import { demoLogin, login, requestPasswordReset } from '../services/api';
 
 const INPUT =
   'w-full h-11 pl-11 bg-surface-container-low rounded-lg font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:bg-surface-container-lowest focus:shadow-[0_0_0_2px_#1d4ed8] transition-all';
 
 export default function Login() {
   const navigate = useNavigate();
-  // Pre-filled with the demo account, as in the design.
-  const [email, setEmail] = useState(() => demoCredentials().email);
-  const [password, setPassword] = useState(() => demoCredentials().password);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
   const [error, setError] = useState('');
@@ -31,6 +30,19 @@ export default function Login() {
     setError('');
     try {
       await login(email, password);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.message);
+      setBusy(false);
+    }
+  }
+
+  // One click into the shared demo account (the backend loads the demo statements for it).
+  async function tryDemo() {
+    setBusy(true);
+    setError('');
+    try {
+      await demoLogin();
       navigate('/dashboard');
     } catch (err) {
       setError(err.message);
@@ -134,6 +146,9 @@ export default function Login() {
               </button>
             </div>
           </form>
+          <button type="button" className="mt-4 h-11 rounded-lg bg-surface-container text-primary font-label-md text-label-md hover:bg-surface-container-high disabled:opacity-60" disabled={busy} onClick={tryDemo}>
+            Try the demo account
+          </button>
 
           <div className="mt-6 p-3.5 bg-surface-container-low rounded-lg flex items-start gap-2.5">
             <ShieldCheck size={18} className="text-primary shrink-0 mt-0.5" />

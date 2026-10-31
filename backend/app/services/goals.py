@@ -40,7 +40,7 @@ def assess(inp, ledger, goals):
         n = months_left(inp.as_of, g["target_date"])
         entry = {"id": g["id"], "name": g["name"], "targetPaise": g["target_paise"], "savedPaise": g["saved_paise"],
                  "targetDate": g["target_date"], "remainingPaise": remaining, "monthsLeft": n,
-                 "percentFunded": round(g["saved_paise"] * 100 / g["target_paise"], 1),
+                 "category": g.get("category"), "priority": g.get("priority"), "percentFunded": round(g["saved_paise"] * 100 / g["target_paise"], 1),
                  "monthlyNeededPaise": math.ceil(remaining / n) if n else remaining, "verdict": None, "missing": []}
         if remaining == 0:
             entry["status"] = "funded"

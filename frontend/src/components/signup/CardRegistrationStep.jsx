@@ -4,6 +4,7 @@ import { ArrowLeft, LockOpen, Nfc } from 'lucide-react';
 import CardReaderGraphic from './CardReaderGraphic';
 import CardStateFeedback from './CardStateFeedback';
 import { registerCard } from '../../services/cardReader';
+import { USE_MOCK_CARD_READER } from '../../config';
 
 // Sandbox buttons force a reader outcome so every state can be demoed without hardware.
 const SANDBOX = [
@@ -20,7 +21,7 @@ export default function CardRegistrationStep({ onFinish, onBack, onSkip }) {
   const attempt = useRef(0);
 
   // Starts a scan; only the latest scan's result is applied.
-  function scan(simulate = 'success') {
+  function scan(simulate) {
     const id = ++attempt.current;
     setState('waiting');
     setCard(null);
@@ -67,6 +68,7 @@ export default function CardRegistrationStep({ onFinish, onBack, onSkip }) {
           Your physical card protects high-impact actions like exporting ledgers, unlinking banks, or purging data. Zero overhead for daily tracking.
         </p>
       </div>
+      {USE_MOCK_CARD_READER && (
       <div className="bg-surface-container-low p-2.5 rounded-lg mb-5 flex flex-col gap-1.5">
         <div className="flex items-center justify-between">
           <span className="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Simulate Hardware Event</span>
@@ -89,6 +91,7 @@ export default function CardRegistrationStep({ onFinish, onBack, onSkip }) {
           ))}
         </div>
       </div>
+      )}
       <div className="w-full bg-surface-container rounded-xl p-6 flex flex-col items-center justify-center relative overflow-hidden">
         <CardReaderGraphic state={state} last4={card?.last4 || '4F2A'} />
         <div className="w-full mt-4 bg-surface-container-lowest p-3.5 rounded-lg flex items-center justify-between transition-all duration-300">

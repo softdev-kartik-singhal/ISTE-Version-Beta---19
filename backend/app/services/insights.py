@@ -8,9 +8,9 @@ from collections import defaultdict
 from datetime import date, timedelta
 from statistics import median
 
-from app.config import (SAFE_TO_SPEND_MARGIN, TREND_BASELINE_MONTHS, TREND_FLAT_PCT, TRENDS_MONTHS, UPCOMING_DAYS,
+from app.config import (BUFFER_MONTHS, CASES, FIXED_CATEGORIES, MIN_HISTORY_MONTHS, SAFE_TO_SPEND_MARGIN, TREND_BASELINE_MONTHS, TREND_FLAT_PCT, TRENDS_MONTHS, UPCOMING_DAYS,
                         INSIGHT_MIN_MONTHS)
-from app.services.stats import add_months, month_end, month_of
+from app.services.stats import add_months, month_end, month_of, percentile
 
 
 def rs(paise):
@@ -65,6 +65,10 @@ def category_trends(ledger, months):
     """Latest month vs the median of the earlier baseline months, per category, with a plain sentence."""
     table = category_by_month(ledger, months)
     this_month = months[-1]
+    by_merchant = defaultdict(lambda: defaultdict(int))  # category -> merchant -> money out, for the "examples" column
+    for r in ledger:
+        if r["amount_paise"] < 0 and r["month"] in months:
+            by_merchant[r["category"]][r["merchant"]] += -r["amount_paise"]
     out = []
     for name, by_month in table.items():
         series = [by_month[m] for m in months]
@@ -73,7 +77,7 @@ def category_trends(ledger, months):
         change = None if baseline == 0 else round((now / baseline - 1) * 100, 1)
         direction = "new" if change is None else "flat" if abs(change) <= TREND_FLAT_PCT else "up" if change > 0 else "down"
         out.append({"name": name, "thisMonthPaise": now, "medianPaise": int(baseline), "changePct": change,
-                    "direction": direction, "sparklinePaise": series, "insight": trend_sentence(name, now, baseline, change)})
+                    "direction": direction, "merchants": sorted(by_merchant[name], key=by_merchant[name].get, reverse=True)[:3], "sparklinePaise": series, "insight": trend_sentence(name, now, baseline, change)})
     return sorted(out, key=lambda c: -c["thisMonthPaise"])
 
 
@@ -175,6 +179,37 @@ def this_month(ledger, inp):
             if left < 0 else None}
 
 
+def projection(inp, weeks=8):
+    """Cash week by week for the next `weeks`, in the three cases (worst / typical / best).
+
+    Each week adds an even share of that case's monthly income and takes off an even share of its
+    variable spend, then takes off the recurring payments that really fall due that week.
+    """
+    per_week = 12 / 52  # a month's flow spread over its weeks
+    out, cash = [], {name: inp.start_cash for name in CASES}
+    for i in range(weeks):
+        start, end = inp.as_of + timedelta(days=7 * i), inp.as_of + timedelta(days=7 * (i + 1))
+        due = sum(-r["typical_paise"] for r in inp.recurring for _ in due_dates(r, start, end))
+        for name, (pct, key) in CASES.items():
+            income = percentile(inp.monthly_income, pct)
+            variable = sum(v[key] for v in inp.variable.values())
+            cash[name] += round((income - variable) * per_week) - due
+        out.append({"weekStart": (start + timedelta(days=1)).isoformat(), **{n: int(c) for n, c in cash.items()}})
+    return out
+
+
+def spending_split(ledger, month):
+    """This month's money out by category, and how much of it is fixed (rent, EMI)."""
+    totals = defaultdict(int)
+    for r in ledger:
+        if r["month"] == month and r["amount_paise"] < 0:
+            totals[r["category"]] += -r["amount_paise"]
+    cats = [{"name": n, "amountPaise": v} for n, v in sorted(totals.items(), key=lambda kv: -kv[1])]
+    fixed = sum(v for n, v in totals.items() if n in FIXED_CATEGORIES)
+    return {"month": month, "totalPaise": sum(totals.values()), "fixedPaise": fixed,
+            "flexiblePaise": sum(totals.values()) - fixed, "categories": cats}
+
+
 def dashboard(ledger, inp):
     """GET /api/dashboard payload."""
     if not inp.history_months:
@@ -183,4 +218,9 @@ def dashboard(ledger, inp):
     return {"insufficientHistory": False, "monthsAvailable": len(inp.history_months), "asOf": inp.as_of.isoformat(),
             "latestMonth": series[-1], "monthlySurplus": series[-1]["surplusPaise"],
             "planningSurplusPaise": int(median(planning_surplus(ledger, inp))), "cashPaise": inp.start_cash,
-            "thisMonth": this_month(ledger, inp), "upcoming": upcoming(inp)}
+            "thisMonth": this_month(ledger, inp), "upcoming": upcoming(inp),
+            "surplusVsPrevPaise": series[-1]["surplusPaise"] - series[-2]["surplusPaise"] if len(series) > 1 else None,
+            "analyzedTransactions": sum(r["month"] == series[-1]["month"] for r in ledger),
+            "spending": spending_split(ledger, series[-1]["month"]),
+            "bufferPaise": round(BUFFER_MONTHS * sum(-r["typical_paise"] for r in inp.recurring)),
+            "projection": projection(inp) if len(inp.history_months) >= MIN_HISTORY_MONTHS else None}

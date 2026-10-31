@@ -7,11 +7,12 @@ from app.config import GAP_DAYS_THRESHOLD
 def list_files(conn, user_id):
     rows = conn.execute(
         "SELECT f.id, a.bank, a.last4, f.row_count, f.new_rows, f.duplicate_rows, f.first_date, f.last_date,"
-        " f.uploaded_at FROM uploaded_files f JOIN accounts a ON a.id = f.account_id"
+        " f.uploaded_at, f.file_name, f.file_type, f.duplicate_paise FROM uploaded_files f JOIN accounts a ON a.id = f.account_id"
         " WHERE a.user_id = ? ORDER BY f.id", (user_id,)).fetchall()
     return [{"id": r["id"], "bank": r["bank"], "last4": r["last4"], "rows": r["row_count"],
              "newRows": r["new_rows"], "duplicateRows": r["duplicate_rows"],
-             "firstDate": r["first_date"], "lastDate": r["last_date"], "uploadedAt": r["uploaded_at"]} for r in rows]
+             "firstDate": r["first_date"], "lastDate": r["last_date"], "uploadedAt": r["uploaded_at"], "name": r["file_name"], "type": r["file_type"],
+             "duplicatePaise": r["duplicate_paise"]} for r in rows]
 
 
 def merge_summary(conn, user_id):

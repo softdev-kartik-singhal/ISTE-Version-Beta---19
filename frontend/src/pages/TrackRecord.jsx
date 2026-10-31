@@ -6,6 +6,7 @@ import { useToast } from '../hooks/useToast';
 import { downloadJson } from '../utils/download';
 import Toast from '../components/ui/Toast';
 import { getTrackRecord } from '../services/api';
+import PageState from '../components/ui/PageState';
 import VerifyLedgerButton from '../components/trackRecord/VerifyLedgerButton';
 import TrackRecordKpis from '../components/trackRecord/TrackRecordKpis';
 import ForecastComparison from '../components/trackRecord/ForecastComparison';
@@ -14,20 +15,21 @@ import AuditLedgerTable from '../components/trackRecord/AuditLedgerTable';
 import LearningLoop from '../components/trackRecord/LearningLoop';
 
 export default function TrackRecord() {
-  const data = useApi(getTrackRecord);
+  const api = useApi(getTrackRecord);
   const [olderLoaded, setOlderLoaded] = useState(false);
   const [toast, showToast] = useToast();
-  if (!data) return null;
+  if (!api.ready) return <PageState state={api} />;
+  const data = api.data;
 
   function exportProof() {
     const entries = olderLoaded ? [...data.ledger.entries, ...data.ledger.older] : data.ledger.entries;
-    downloadJson('smartgullak-merkle-proof.json', {
-      block: data.integrity.block,
-      merkleRoot: data.integrity.merkleRoot,
+    downloadJson('smartgullak-forecast-log.json', {
+      entries: data.integrity.entries,
+      headHash: data.integrity.headHash,
       generatedAt: new Date().toISOString(),
       leaves: entries.map((e) => ({ timestamp: e.timestamp, question: e.question, verdict: e.verdict, hash: e.hash })),
     });
-    showToast('Merkle proof exported');
+    showToast('Forecast log exported');
   }
 
   return (
@@ -39,10 +41,10 @@ export default function TrackRecord() {
               <div className="flex items-center gap-space-sm">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm">
                   <ShieldCheck size={14} />
-                  <span>Cryptographically Verified {data.version}</span>
+                  <span>Hash-chained {data.version.replace('hash-chained ', '')}</span>
                 </span>
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-currency-sm text-label-sm">
-                  Block #{data.integrity.block}
+                  {data.integrity.entries} entries
                 </span>
               </div>
               <h1 className="font-display-lg text-display-lg text-on-surface tracking-tight">Track Record &amp; Model Veracity</h1>
@@ -52,13 +54,13 @@ export default function TrackRecord() {
               </p>
             </div>
             <div className="flex items-center gap-space-sm self-start md:self-auto">
-              <VerifyLedgerButton blockCount={data.integrity.block} />
+              <VerifyLedgerButton entries={data.integrity.entries} />
               <button
                 className="inline-flex items-center gap-1.5 h-10 px-space-md rounded-lg bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md transition-colors shadow-sm"
                 onClick={exportProof}
               >
                 <Download size={18} />
-                <span>Export Merkle Proof</span>
+                <span>Export Log Proof</span>
               </button>
             </div>
           </div>

@@ -46,7 +46,7 @@ def large_flags(rows):
             usual = median(others)
             if amount > LARGE_PURCHASE_MULTIPLE * usual:
                 flags.append(make_flag("large", r, f"{rs(amount)} is {amount / usual:.1f}x your usual {category} "
-                                       f"purchase (median {rs(usual)})", multiple=round(amount / usual, 1)))
+                                       f"purchase (median {rs(usual)})", multiple=round(amount / usual, 1), usualPaise=int(usual)))
     return flags
 
 
@@ -69,7 +69,7 @@ def duplicate_flags(rows):
                 how = f"same reference {ref1}" if ref1 else "no reference to tell them apart"
                 when = "on the same day" if days == 0 else f"{days} day(s) apart"
                 flags.append(make_flag("duplicate", second, f"{rs(-amount)} paid to {merchant} twice, {when}, "
-                                       f"{how}", originalId=first["id"]))
+                                       f"{how}", originalId=first["id"], originalDate=first["txn_date"], ref=ref1))
     return flags
 
 

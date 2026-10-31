@@ -215,7 +215,7 @@ def test_summary_is_the_arithmetic_of_the_months(logged):
     assert s["averageMissPaise"] == round(mean(abs(m["actualPaise"] - m["typicalPaise"]) for m in ms))
     assert s["biasPaise"] == round(mean(m["actualPaise"] - m["typicalPaise"] for m in ms))
     assert all(m["missPaise"] == m["actualPaise"] - m["typicalPaise"] for m in ms)
-    assert t["chain"] == {"valid": True, "entries": 10} and "hitRate" in t["meaning"]
+    assert t["chain"]["valid"] is True and t["chain"]["entries"] == 10 and len(t["chain"]["headHash"]) == 64 and "hitRate" in t["meaning"]
 
 
 def test_judge_boundaries():

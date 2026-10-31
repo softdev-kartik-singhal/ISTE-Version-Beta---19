@@ -11,8 +11,7 @@ const TAB_IDLE = 'flex-1 py-2 px-3 rounded-md flex items-center justify-center g
 const BADGE_ACTIVE = 'w-5 h-5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm flex items-center justify-center font-bold';
 const BADGE_IDLE = 'w-5 h-5 rounded-full bg-surface-variant text-on-surface-variant font-label-sm text-label-sm flex items-center justify-center font-bold';
 
-// Pre-filled example account from the design.
-const DEFAULT_ACCOUNT = { name: 'Aditya Rao', email: 'aditya.rao@work.in', password: 'Aditya#Vault2025!', confirm: 'Aditya#Vault2025!' };
+const DEFAULT_ACCOUNT = { name: '', email: '', password: '', confirm: '' };
 
 export default function Signup() {
   const navigate = useNavigate();

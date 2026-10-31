@@ -1,10 +1,10 @@
 // One ledger row: date, merchant with channel and reference, account, editable category pill and amount.
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatCurrency';
 
 const ACCOUNT_DOTS = { HDFC: 'bg-primary-container', ICICI: 'bg-primary', Kotak: 'bg-secondary' };
 
-export default function TransactionRow({ tx, selected, onToggle, onEditCategory, onDelete }) {
+export default function TransactionRow({ tx, selected, onToggle, onEditCategory }) {
   const credit = tx.amount > 0;
   return (
     <tr className={selected ? 'bg-surface-container-high transition-colors' : 'hover:bg-surface-container-low transition-colors'}>
@@ -58,9 +58,6 @@ export default function TransactionRow({ tx, selected, onToggle, onEditCategory,
         </td>
       )}
       <td className="py-4 pr-space-lg pl-2 text-right">
-        <button className="p-1 rounded hover:bg-surface-container text-secondary hover:text-error" title="Delete transaction" onClick={onDelete}>
-          <Trash2 size={18} />
-        </button>
       </td>
     </tr>
   );

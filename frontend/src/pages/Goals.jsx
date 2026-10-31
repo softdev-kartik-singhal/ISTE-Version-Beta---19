@@ -1,77 +1,57 @@
 // Goals screen: portfolio KPIs, goal cards with feasibility, create/edit dialog, timeline adjustment and export.
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Plus, Share, ShieldCheck, SlidersHorizontal } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
 import { useToast } from '../hooks/useToast';
-import { getGoals } from '../services/api';
+import { getGoals, saveGoal } from '../services/api';
+import PageState from '../components/ui/PageState';
 import { downloadCsv } from '../utils/download';
-import { evaluateGoal, realisticMonths } from '../utils/goalMath';
+import { realisticMonths } from '../utils/goalMath';
 import GoalSummaryCards from '../components/goals/GoalSummaryCards';
 import GoalCard from '../components/goals/GoalCard';
 import GoalDialog from '../components/dialogs/GoalDialog';
 import Toast from '../components/ui/Toast';
 import { formatCurrency } from '../utils/formatCurrency';
 
-// Summary numbers follow the goals: totals are recomputed, commitment shifts by how much monthly needs changed.
-function summaryFor(data, goals) {
-  const saved = goals.reduce((s, g) => s + g.saved, 0);
-  const target = goals.reduce((s, g) => s + g.target, 0);
-  const initialMonthly = data.goals.reduce((s, g) => s + g.monthlyNeeded, 0);
-  const monthly = goals.reduce((s, g) => s + g.monthlyNeeded, 0);
-  const initialOnTrack = data.goals.filter((g) => g.status === 'onTrack').length;
-  const onTrack = goals.filter((g) => g.status === 'onTrack').length;
-  return {
-    portfolio: { count: goals.length, fundedPercent: target ? ((saved / target) * 100).toFixed(1) : '0.0', saved, target },
-    commitment: { ...data.summary.commitment, required: data.summary.commitment.required + monthly - initialMonthly },
-    viability: { ...data.summary.viability, solvent: data.summary.viability.solvent + onTrack - initialOnTrack, total: goals.length },
-  };
-}
+const summaryFor = (data) => data.summary; // the server recomputes the totals after every change
 
 export default function Goals() {
-  const data = useApi(getGoals);
-  const [goals, setGoals] = useState(null);
+  const api = useApi(getGoals);
   const [dialog, setDialog] = useState(null); // null | { goal?: existing goal }
   const [toast, showToast] = useToast();
 
-  useEffect(() => {
-    if (data) setGoals(data.goals);
-  }, [data]);
-
-  if (!data || !goals) return null;
+  if (!api.ready) return <PageState state={api} />;
+  const data = api.data;
+  const goals = data.goals;
   const average = data.surplus.average;
 
-  function saveGoal(values) {
-    if (dialog.goal) {
-      setGoals(goals.map((g) => (g.id === dialog.goal.id ? evaluateGoal({ ...g, ...values }, average) : g)));
-      showToast(`Updated "${values.name}"`);
-    } else {
-      const goal = evaluateGoal({ id: `goal-${Date.now()}`, priority: 'Medium', ...values }, average);
-      setGoals([...goals, goal]);
-      showToast(`Goal created: ${formatCurrency(goal.monthlyNeeded)}/mo locked in`);
+  // Saves on the server (target date = latest statement month + months left); the page then refreshes itself.
+  async function save(values, message) {
+    try {
+      await saveGoal(values, data.asOf);
+      showToast(message);
+    } catch (err) {
+      showToast(err.message);
     }
     setDialog(null);
+  }
+
+  function saveDialog(values) {
+    const existing = dialog.goal;
+    save({ ...values, id: existing?.id, priority: existing?.priority || 'Medium' }, existing ? `Updated "${values.name}"` : `Goal created: "${values.name}"`);
   }
 
   // Unreachable goals jump straight to the realistic date; others open the editor on the timeline.
   function adjust(goal) {
     if (goal.status !== 'unreachable') return setDialog({ goal });
     const months = realisticMonths(goal.target - goal.saved, average);
-    setGoals(goals.map((g) => (g.id === goal.id ? evaluateGoal({ ...g, monthsLeft: months }, average) : g)));
-    showToast(`"${goal.name}" moved to a ${months}-month timeline`);
+    save({ ...goal, monthsLeft: months }, `"${goal.name}" moved to a ${months}-month timeline`);
   }
 
   function exportGoals() {
     downloadCsv(
       'smartgullak-goals.csv',
-      goals.map((g) => ({
-        goal: g.name,
-        category: g.category,
-        target: g.target,
-        saved: g.saved,
-        monthly_needed: g.monthlyNeeded,
-        horizon: g.horizon,
-        status: g.statusLabel,
-      })),
+      goals.map((g) => ({ goal: g.name, category: g.category, target: g.target, saved: g.saved, monthly_needed: g.monthlyNeeded, horizon: g.horizon, status: g.statusLabel })),
     );
     showToast('Goals exported as CSV');
   }
@@ -159,7 +139,7 @@ export default function Goals() {
           classifications={data.classifications}
           averageSurplus={average}
           onClose={() => setDialog(null)}
-          onSave={saveGoal}
+          onSave={saveDialog}
         />
       </div>
       <Toast message={toast} />

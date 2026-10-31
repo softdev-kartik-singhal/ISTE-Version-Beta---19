@@ -1,26 +1,20 @@
 // Transactions screen: summary, filters, unified ledger, change-category dialog, manual entry and export.
 import { useEffect, useState } from 'react';
 import { useLocation, useOutletContext } from 'react-router-dom';
-import { FileDown, Plus, WandSparkles } from 'lucide-react';
+import { FileDown, WandSparkles } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
 import { useToast } from '../hooks/useToast';
-import { getTransactions } from '../services/api';
+import { correctCategory, getTransactions, undoCorrection } from '../services/api';
+import PageState from '../components/ui/PageState';
 import { downloadCsv } from '../utils/download';
 import TransactionSummary from '../components/transactions/TransactionSummary';
 import TransactionFilters from '../components/transactions/TransactionFilters';
 import TransactionTable from '../components/transactions/TransactionTable';
 import ChangeCategoryDialog from '../components/dialogs/ChangeCategoryDialog';
 import UndoToast from '../components/transactions/UndoToast';
-import FormDialog from '../components/ui/FormDialog';
 import Toast from '../components/ui/Toast';
 
 const accountLabel = (tx) => `${tx.bank} ••${tx.last4}`;
-const ACCOUNTS = {
-  'HDFC ••8491': { bank: 'HDFC', bankName: 'HDFC Bank', last4: '8491' },
-  'ICICI ••4022': { bank: 'ICICI', bankName: 'ICICI Bank', last4: '4022' },
-  'Kotak ••1190': { bank: 'Kotak', bankName: 'Kotak Mahindra', last4: '1190' },
-};
-
 function matches(tx, filters) {
   const text = `${tx.merchant} ${tx.reference} ${tx.category} ${Math.abs(tx.amount)}`.toLowerCase();
   if (filters.query && !text.includes(filters.query.toLowerCase())) return false;
@@ -32,21 +26,14 @@ function matches(tx, filters) {
 }
 
 export default function Transactions() {
-  const data = useApi(getTransactions);
+  const api = useApi(getTransactions);
   const location = useLocation();
   const { account } = useOutletContext();
-  const [rows, setRows] = useState(null);
   const [filters, setFilters] = useState({ query: location.state?.query || '', account: 'all', category: 'all', flow: 'All' });
   const [selectedIds, setSelectedIds] = useState([]);
   const [editing, setEditing] = useState(null);
-  const [undo, setUndo] = useState(null);
-  const [adding, setAdding] = useState(false);
+  const [undo, setUndo] = useState(null); // { batchId, message } of the last category change
   const [toast, showToast] = useToast();
-
-  // Keep a local, editable copy of the ledger once it loads.
-  useEffect(() => {
-    if (data) setRows(data.transactions);
-  }, [data]);
 
   // The account picked in the top bar filters this page too; so does a search typed there.
   useEffect(() => {
@@ -56,10 +43,12 @@ export default function Transactions() {
     if (location.state?.query !== undefined) setFilters((f) => ({ ...f, query: location.state.query }));
   }, [location.state]);
 
-  if (!data || !rows) return null;
-
+  if (!api.ready) return <PageState state={api} />;
+  const data = api.data;
+  const rows = data.transactions;
   const visible = rows.filter((tx) => matches(tx, filters));
   const categories = [...new Set([...rows.map((tx) => tx.category), ...data.categoryOptions.map((o) => o.name)])];
+  const accounts = [...new Set(rows.map(accountLabel))];
 
   function toggleRow(id) {
     setSelectedIds(selectedIds.includes(id) ? selectedIds.filter((x) => x !== id) : [...selectedIds, id]);
@@ -69,12 +58,15 @@ export default function Transactions() {
     setSelectedIds(allSelected ? selectedIds.filter((id) => !ids.includes(id)) : [...new Set([...selectedIds, ...ids])]);
   }
 
-  // "Update this one" changes the edited row; "Apply to N" also changes every row from the same merchant.
-  function applyCategory(category, count) {
-    const target = editing;
-    const affected = count === 1 ? [target.id] : rows.filter((tx) => tx.shortName === target.shortName).map((tx) => tx.id);
-    setUndo({ previous: rows, message: `Updated ${count} transaction${count === 1 ? '' : 's'} to ${category}` });
-    setRows(rows.map((tx) => (affected.includes(tx.id) ? { ...tx, category } : tx)));
+  // "Update this one" changes the edited row; "Apply to N" also changes every row from the same merchant (the server remembers it).
+  async function applyCategory(category, count) {
+    const option = data.categoryOptions.find((o) => o.name === category);
+    try {
+      const result = await correctCategory(editing.id, option.id, count > 1);
+      setUndo({ batchId: result.batchId, message: `Updated ${result.changed.length} transaction${result.changed.length === 1 ? '' : 's'} to ${category}` });
+    } catch (err) {
+      showToast(err.message);
+    }
     setEditing(null);
   }
 
@@ -84,45 +76,10 @@ export default function Transactions() {
     if (first) setEditing(first);
   }
 
-  function addTransaction(values) {
-    const amount = Number(values.amount) * (values.type === 'Credit' ? 1 : -1);
-    const date = new Date(values.date);
-    const tx = {
-      id: `manual-${Date.now()}`,
-      date: date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-      time: 'Manual',
-      initials: values.merchant.slice(0, 2).toUpperCase(),
-      merchant: values.merchant,
-      shortName: values.merchant,
-      channel: 'Cash',
-      reference: 'MANUAL/CASH-ENTRY',
-      ...ACCOUNTS[values.account],
-      category: values.category,
-      amount,
-    };
-    setRows([tx, ...rows]);
-    setAdding(false);
-    showToast(`Added ${values.merchant}`);
-  }
-
-  function deleteRow(tx) {
-    if (!window.confirm(`Delete "${tx.merchant}" (${tx.date})?`)) return;
-    setUndo({ previous: rows, message: `Deleted ${tx.merchant}` });
-    setRows(rows.filter((r) => r.id !== tx.id));
-  }
-
   function exportCsv() {
     downloadCsv(
       'smartgullak-transactions.csv',
-      visible.map((tx) => ({
-        date: tx.date,
-        time: tx.time,
-        merchant: tx.merchant,
-        reference: tx.reference,
-        account: accountLabel(tx),
-        category: tx.category,
-        amount: tx.amount,
-      })),
+      visible.map((tx) => ({ date: tx.date, merchant: tx.merchant, reference: tx.reference, account: accountLabel(tx), category: tx.category, amount: tx.amount })),
     );
     showToast(`Exported ${visible.length} transactions`);
   }
@@ -137,7 +94,7 @@ export default function Transactions() {
                 <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">Transactions</h1>
                 <span className="px-2 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-secondary">{data.totalRecords} records</span>
               </div>
-              <p className="font-body-sm text-body-sm text-secondary">Unified transaction ledger normalized across HDFC, ICICI, and Kotak accounts.</p>
+              <p className="font-body-sm text-body-sm text-secondary">Unified ledger of every statement you uploaded, with transfers between your own accounts marked and left out of totals.</p>
             </div>
             <div className="flex items-center gap-space-sm flex-wrap">
               <button
@@ -154,13 +111,6 @@ export default function Transactions() {
                 <WandSparkles size={18} className="text-primary" />
                 <span>Bulk Categorize</span>
               </button>
-              <button
-                className="h-10 px-space-md rounded-lg bg-primary-container text-on-primary font-label-md text-label-md flex items-center gap-2 hover:bg-primary transition-all shadow-sm"
-                onClick={() => setAdding(true)}
-              >
-                <Plus size={18} />
-                <span>Add Manual Transaction</span>
-              </button>
             </div>
           </div>
 
@@ -168,7 +118,7 @@ export default function Transactions() {
           <TransactionFilters
             filters={filters}
             onChange={setFilters}
-            accounts={Object.keys(ACCOUNTS)}
+            accounts={accounts}
             categories={categories}
             dateRange={data.filters.dateRange}
           />
@@ -179,7 +129,6 @@ export default function Transactions() {
             onToggleRow={toggleRow}
             onToggleAll={toggleAll}
             onEditCategory={setEditing}
-            onDelete={deleteRow}
           />
         </div>
 
@@ -192,35 +141,11 @@ export default function Transactions() {
           onClose={() => setEditing(null)}
           onApply={applyCategory}
         />
-        <FormDialog
-          key={adding ? 'add-open' : 'add-closed'}
-          open={adding}
-          title="Add Manual Transaction"
-          fields={[
-            { name: 'merchant', label: 'Merchant / description', placeholder: 'e.g. Local kirana store' },
-            { name: 'amount', label: 'Amount (₹)', type: 'number', placeholder: '450' },
-            { name: 'type', label: 'Type', options: ['Debit', 'Credit'] },
-            { name: 'date', label: 'Date', type: 'date' },
-            { name: 'account', label: 'Account', options: Object.keys(ACCOUNTS) },
-            { name: 'category', label: 'Category', options: categories },
-          ]}
-          initialValues={{
-            merchant: '',
-            amount: '',
-            type: 'Debit',
-            date: new Date().toISOString().slice(0, 10),
-            account: 'HDFC ••8491',
-            category: categories[0],
-          }}
-          submitLabel="Add transaction"
-          onClose={() => setAdding(false)}
-          onSubmit={addTransaction}
-        />
         {undo && (
           <UndoToast
             message={undo.message}
-            onUndo={() => {
-              setRows(undo.previous);
+            onUndo={async () => {
+              await undoCorrection(undo.batchId);
               setUndo(null);
               showToast('Change undone');
             }}

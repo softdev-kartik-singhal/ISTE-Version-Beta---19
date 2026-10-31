@@ -16,15 +16,15 @@ export default function DuplicateFlagCard({ flag, dimmed, onResolve, onChangeCat
       reason={
         <>
           Same merchant and amount <span className="font-currency-sm font-semibold text-on-surface">{amount}</span> debited within{' '}
-          {flag.gapMinutes} minutes on {flag.bankName}.
+          {flag.gapText} on {flag.bankName}.
         </>
       }
       actions={
         <>
-          <button onClick={() => onResolve('Dispute filed with HDFC Bank for the double debit')} className="px-3.5 py-2 rounded-lg bg-tertiary-container text-white font-label-md text-label-md font-semibold hover:bg-tertiary transition-all flex items-center gap-1.5 shadow-sm">
+          <button onClick={() => onResolve('Confirmed as a duplicate charge')} className="px-3.5 py-2 rounded-lg bg-tertiary-container text-white font-label-md text-label-md font-semibold hover:bg-tertiary transition-all flex items-center gap-1.5 shadow-sm">
             <Gavel size={18} /> Dispute / Report Double Debit
           </button>
-          <button onClick={() => onResolve('Confirmed as 2 separate orders')} className="px-3.5 py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md font-medium hover:bg-surface-container hover:text-primary transition-all">
+          <button onClick={() => onResolve('Reviewed as 2 separate orders')} className="px-3.5 py-2 rounded-lg bg-surface-container-high text-on-surface font-label-md text-label-md font-medium hover:bg-surface-container hover:text-primary transition-all">
             Not a duplicate (2 separate orders)
           </button>
           <button onClick={onChangeCategory} className="px-3.5 py-2 rounded-lg bg-surface-container-low text-secondary font-label-md text-label-md font-medium hover:bg-surface-container hover:text-on-surface transition-all flex items-center gap-1">

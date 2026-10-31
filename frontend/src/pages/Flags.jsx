@@ -1,9 +1,10 @@
 // Flags screen: anomaly summary, filter tabs, flag cards whose actions resolve them, and resolved history.
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { CheckCheck, HardDrive, ShieldCheck, SlidersHorizontal } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
 import { useToast } from '../hooks/useToast';
-import { getFlags } from '../services/api';
+import { correctCategory, decideFlag, getCategories, getFlags } from '../services/api';
+import PageState from '../components/ui/PageState';
 import DuplicateFlagCard from '../components/flags/DuplicateFlagCard';
 import LargeSpendFlagCard from '../components/flags/LargeSpendFlagCard';
 import NewMerchantFlagCard from '../components/flags/NewMerchantFlagCard';
@@ -13,47 +14,49 @@ import Toast from '../components/ui/Toast';
 
 const CARD_COMPONENTS = { duplicate: DuplicateFlagCard, large: LargeSpendFlagCard, 'new-merchant': NewMerchantFlagCard };
 const URGENCY = { duplicate: 0, large: 1, 'new-merchant': 2 };
-const CATEGORIES = ['Groceries & Household', 'Food & Dining', 'Shopping', 'Home & Furniture', 'Tech & Subscriptions', 'Freelance Biz Ops'];
 const TAB_ACTIVE = 'px-3 py-1.5 rounded-md font-label-md text-label-md bg-surface-container-lowest text-on-surface shadow-sm font-semibold transition-all';
 const TAB_IDLE = 'px-3 py-1.5 rounded-md font-label-md text-label-md text-secondary hover:text-on-surface transition-all';
 
 export default function Flags() {
-  const data = useApi(getFlags);
-  const [active, setActive] = useState(null);
-  const [resolvedItems, setResolvedItems] = useState([]);
-  const [resolvedCount, setResolvedCount] = useState(0);
+  const api = useApi(getFlags);
+  const categories = useApi(getCategories);
   const [filter, setFilter] = useState('all');
   const [sortBy, setSortBy] = useState('Urgency');
   const [historyOpen, setHistoryOpen] = useState(false);
   const [categoryFor, setCategoryFor] = useState(null);
   const [toast, showToast] = useToast();
 
-  useEffect(() => {
-    if (data) {
-      setActive(data.flags);
-      setResolvedItems(data.resolved.items);
-      setResolvedCount(data.resolved.count);
+  if (!api.ready) return <PageState state={api} />;
+  const data = api.data;
+  const active = data.flags;
+  const categoryNames = categories.ready ? categories.data.filter((c) => c.kind !== 'income').map((c) => c.name) : [];
+
+  // Saves the user's decision on the server. Only "confirmed as a duplicate" counts as a duplicate; anything else is "fine as it is".
+  async function resolve(flags, resolution) {
+    const decision = resolution.startsWith('Confirmed as a duplicate') ? 'confirmed' : 'dismissed';
+    try {
+      for (const f of flags) await decideFlag(f.id, decision);
+      showToast(flags.length === 1 ? `${flags[0].merchant}: ${resolution}` : `${flags.length} flags marked as reviewed`);
+    } catch (err) {
+      showToast(err.message);
     }
-  }, [data]);
-
-  if (!data || !active) return null;
-
-  // Moves flags from the active list into the resolved history with the chosen resolution.
-  function resolve(flags, resolution) {
-    const ids = flags.map((f) => f.id);
-    setActive(active.filter((f) => !ids.includes(f.id)));
-    setResolvedItems([
-      ...flags.map((f) => ({ id: f.id, icon: f.type, merchant: f.merchant, resolution, category: f.category, amount: f.amount, date: 'Today' })),
-      ...resolvedItems,
-    ]);
-    setResolvedCount(resolvedCount + flags.length);
-    showToast(flags.length === 1 ? `${flags[0].merchant}: ${resolution}` : `${flags.length} flags marked as reviewed`);
   }
 
   function markAllReviewed() {
     if (active.length && window.confirm(`Mark all ${active.length} anomaly flags as intentional and reviewed?`)) {
       resolve(active, 'Reviewed as intentional');
     }
+  }
+
+  async function recategorise(category) {
+    const option = categories.data.find((c) => c.name === category);
+    try {
+      await correctCategory(categoryFor.transactionId, option.id, true);
+      await resolve([categoryFor], `Recategorised to ${category}`);
+    } catch (err) {
+      showToast(err.message);
+    }
+    setCategoryFor(null);
   }
 
   const count = (type) => active.filter((f) => f.type === type).length;
@@ -68,7 +71,7 @@ export default function Flags() {
     { label: 'Duplicates', value: count('duplicate'), cls: 'bg-surface-container-low', valueCls: 'text-on-surface' },
     { label: 'Unusual Spend', value: count('large'), cls: 'bg-surface-container-low', valueCls: 'text-on-surface' },
     { label: 'New Merchants', value: count('new-merchant'), cls: 'bg-surface-container-low', valueCls: 'text-on-surface' },
-    { label: 'Resolved (30d)', value: resolvedCount, cls: 'bg-surface-container-high', valueCls: 'text-primary' },
+    { label: 'Resolved', value: data.resolved.count, cls: 'bg-surface-container-high', valueCls: 'text-primary' },
   ];
   const visible = active
     .filter((flag) => filter === 'all' || flag.type === filter)
@@ -106,9 +109,9 @@ export default function Flags() {
             <div className="mt-space-md pt-space-sm flex items-center justify-between text-secondary">
               <div className="flex items-center gap-space-sm text-label-sm font-label-sm">
                 <span className="flex items-center gap-1 text-primary">
-                  <HardDrive size={16} /> Continuous {data.confidence} ML Classification Confidence
+                  <HardDrive size={16} /> Rule-based checks on every statement
                 </span>
-                <span className="hidden sm:inline">• Rule base: ICICI, HDFC &amp; Kotak accounts</span>
+                <span className="hidden sm:inline">• Rules: duplicates, unusual amounts, new merchants</span>
               </div>
               <button
                 className="text-label-sm font-label-md text-primary hover:text-on-primary-fixed-variant transition-colors flex items-center gap-1 disabled:opacity-60"
@@ -165,21 +168,18 @@ export default function Flags() {
             )}
           </div>
 
-          <ResolvedFlags resolved={{ count: resolvedCount, items: resolvedItems }} open={historyOpen} onToggle={() => setHistoryOpen(!historyOpen)} />
+          <ResolvedFlags resolved={data.resolved} open={historyOpen} onToggle={() => setHistoryOpen(!historyOpen)} />
         </div>
       </div>
       <FormDialog
         key={categoryFor?.id || 'none'}
         open={categoryFor !== null}
         title={`Change category for ${categoryFor?.merchant || ''}`}
-        fields={[{ name: 'category', label: 'New category', options: CATEGORIES }]}
-        initialValues={{ category: CATEGORIES[0] }}
+        fields={[{ name: 'category', label: 'New category', options: categoryNames }]}
+        initialValues={{ category: categoryNames[0] }}
         submitLabel="Recategorise"
         onClose={() => setCategoryFor(null)}
-        onSubmit={({ category }) => {
-          resolve([{ ...categoryFor, category }], `Recategorised to ${category}`);
-          setCategoryFor(null);
-        }}
+        onSubmit={({ category }) => recategorise(category)}
       />
       <Toast message={toast} />
     </main>

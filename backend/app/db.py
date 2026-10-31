@@ -12,6 +12,7 @@ def connect(path=DB_PATH) -> sqlite3.Connection:
     conn = sqlite3.connect(path, check_same_thread=False)  # FastAPI may hop threads within one request
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")  # SQLite ignores FKs unless asked
+    conn.execute("PRAGMA secure_delete = ON")  # deleted rows are overwritten, not just unlinked
     return conn
 
 

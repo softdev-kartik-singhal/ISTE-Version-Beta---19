@@ -1,8 +1,8 @@
 """Save a parsed statement: file-hash check, row fingerprints, duplicate counting."""
 import hashlib
+import re
 import sqlite3
 
-from app.config import DEFAULT_USER_EMAIL, DEFAULT_USER_NAME
 from app.services.categorize import Categorizer
 from app.services.merchant import merchant_of, ref_of
 from app.services.parser import Row, parse_statement
@@ -14,11 +14,10 @@ class FileAlreadyUploaded(Exception):
     """Exactly this file (same bytes) was imported before."""
 
 
-def default_user_id(conn):
-    """The single demo user (real auth arrives in Phase 5). Password hash is unusable on purpose."""
-    conn.execute("INSERT OR IGNORE INTO users (name, email, password_hash) VALUES (?, ?, '!')",
-                 (DEFAULT_USER_NAME, DEFAULT_USER_EMAIL))
-    return conn.execute("SELECT id FROM users WHERE email = ?", (DEFAULT_USER_EMAIL,)).fetchone()["id"]
+def display_name(filename):
+    """File name for the statements list. Long digit runs (account numbers) keep only their last 4."""
+    name = (filename or "statement").rsplit("/", 1)[-1][:80]
+    return re.sub(r"\d{6,}", lambda m: "•" * (len(m[0]) - 4) + m[0][-4:], name)
 
 
 def file_hash(data):
@@ -52,7 +51,7 @@ def insert_rows(conn, account_id, file_id, rows, categorizer):
 
     Each new row also gets its merchant name and category.
     """
-    added = 0
+    added, skipped_paise = 0, 0
     for r in rows:
         merchant = merchant_of(r.description)
         cur = conn.execute(
@@ -61,24 +60,26 @@ def insert_rows(conn, account_id, file_id, rows, categorizer):
             (account_id, file_id, r.txn_date, r.amount_paise, r.balance_paise, r.description, merchant,
              categorizer.category_for(r.description, merchant, r.amount_paise), fingerprint(account_id, r)))
         added += cur.rowcount  # 1 if inserted, 0 if ignored
-    return added
+        skipped_paise += 0 if cur.rowcount else abs(r.amount_paise)
+    return added, skipped_paise
 
 
 def ingest(conn, user_id, filename, data):
     """Import one uploaded file. Raises StatementRejected or FileAlreadyUploaded; the raw bytes are never saved."""
     digest = file_hash(data)
-    if conn.execute("SELECT 1 FROM uploaded_files WHERE file_hash = ?", (digest,)).fetchone():
+    if conn.execute("SELECT 1 FROM uploaded_files WHERE user_id = ? AND file_hash = ?", (user_id, digest)).fetchone():
         raise FileAlreadyUploaded("This exact file was already uploaded.")
     statement = parse_statement(filename, data)
     try:
         account_id = get_or_create_account(conn, user_id, statement.bank, statement.last4)
         dates = [r.txn_date for r in statement.rows]
         file_id = conn.execute(
-            "INSERT INTO uploaded_files (account_id, file_hash, row_count, new_rows, duplicate_rows, first_date, last_date)"
-            " VALUES (?, ?, ?, 0, 0, ?, ?)", (account_id, digest, len(statement.rows), min(dates), max(dates))).lastrowid
-        added = insert_rows(conn, account_id, file_id, statement.rows, Categorizer(conn, user_id))
+            "INSERT INTO uploaded_files (user_id, account_id, file_hash, row_count, new_rows, duplicate_rows, first_date, last_date)"
+            " VALUES (?, ?, ?, ?, 0, 0, ?, ?)", (user_id, account_id, digest, len(statement.rows), min(dates), max(dates))).lastrowid
+        added, skipped_paise = insert_rows(conn, account_id, file_id, statement.rows, Categorizer(conn, user_id))
         skipped = len(statement.rows) - added
-        conn.execute("UPDATE uploaded_files SET new_rows = ?, duplicate_rows = ? WHERE id = ?", (added, skipped, file_id))
+        conn.execute("UPDATE uploaded_files SET new_rows = ?, duplicate_rows = ?, duplicate_paise = ?, file_name = ?, file_type = ?"
+                     " WHERE id = ?", (added, skipped, skipped_paise, display_name(filename), "pdf" if data.startswith(b"%PDF") else "csv", file_id))
         transfers = match_transfers(conn, user_id)
         refresh_recurring(conn, user_id)  # new rows may complete a pattern
         conn.commit()

@@ -90,7 +90,7 @@ export default function TopBar({ session, account, onAccountChange }) {
         </button>
         <div className="h-6 w-px bg-outline-variant" />
         <button className="flex items-center gap-space-sm" onClick={() => navigate('/privacy')}>
-          <img alt="Profile" className="w-8 h-8 rounded-full object-cover" src={session.user.avatarUrl} />
+          <span className="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md text-label-md">{session.user.name.split(" ").map((w) => w[0]).slice(0, 2).join("").toUpperCase()}</span>
           <div className="flex flex-col text-left">
             <span className="font-label-md text-label-md text-on-surface font-semibold leading-tight">{session.user.name}</span>
             <span className="font-label-sm text-label-sm text-secondary leading-tight">{session.user.profile}</span>

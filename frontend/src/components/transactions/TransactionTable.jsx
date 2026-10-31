@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import TransactionRow from './TransactionRow';
 
-export default function TransactionTable({ transactions, totalRecords, selectedIds, onToggleRow, onToggleAll, onEditCategory, onDelete }) {
+export default function TransactionTable({ transactions, totalRecords, selectedIds, onToggleRow, onToggleAll, onEditCategory }) {
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [page, setPage] = useState(1);
 
@@ -55,7 +55,6 @@ export default function TransactionTable({ transactions, totalRecords, selectedI
                 selected={selectedIds.includes(tx.id)}
                 onToggle={() => onToggleRow(tx.id)}
                 onEditCategory={() => onEditCategory(tx)}
-                onDelete={() => onDelete(tx)}
               />
             ))}
             {visible.length === 0 && (
