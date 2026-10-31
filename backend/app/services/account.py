@@ -45,7 +45,7 @@ def privacy_payload(conn, user_id):
                        "files": count("uploaded_files t", "JOIN accounts a ON a.id = t.account_id")},
             "rawFilesStored": 0, "accountNumbersStored": "last 4 digits only",
             "auditTrail": f"SG-{head[:8].upper()}" if head else None,
-            "exportFileName": f"SmartGullak_Transactions_{date.today().year}.csv"}
+            "exportFileName": f"SmartGullak_Report_{date.today().isoformat()}.html"}
 
 
 def export_data(conn, user_id):

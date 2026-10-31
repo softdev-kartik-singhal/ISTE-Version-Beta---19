@@ -8,7 +8,8 @@ from app import config
 from app.db import get_conn
 from app.deps import current_session, current_user_id
 from app.services import auth
-from app.services.account import delete_everything, export_data, privacy_payload, save_tour, session_payload
+from app.services.account import delete_everything, privacy_payload, save_tour, session_payload
+from app.services.report import build_report
 from app.services.card import check_fresh, consume_fresh
 
 router = APIRouter(prefix="/api")
@@ -95,9 +96,9 @@ def get_privacy(user_id: int = Depends(current_user_id), conn=Depends(get_conn))
 
 @router.post("/data/export")
 def export(session=Depends(current_session), conn=Depends(get_conn)):
-    """Needs a password check AND a card tap, each within the last 60 seconds. Uses them up."""
+    """The full analysis report (HTML). Needs a password check AND a card tap, each within the last 60 seconds. Uses them up."""
     check_fresh(conn, session)
-    data = export_data(conn, session["user_id"])
+    data = build_report(conn, session["user_id"])
     consume_fresh(conn, session)
     conn.commit()
     return data

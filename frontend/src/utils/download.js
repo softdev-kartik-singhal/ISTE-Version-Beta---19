@@ -1,4 +1,4 @@
-// Browser download helpers used by the Export buttons (CSV for tables, JSON for proofs).
+// Browser download helpers used by the Export buttons (CSV for tables, JSON for proofs, HTML for the full report).
 
 function saveFile(filename, content, type) {
   const url = URL.createObjectURL(new Blob([content], { type }));
@@ -20,4 +20,8 @@ export function downloadCsv(filename, rows) {
 
 export function downloadJson(filename, data) {
   saveFile(filename, JSON.stringify(data, null, 2), 'application/json');
+}
+
+export function downloadHtml(filename, html) {
+  saveFile(filename, html, 'text/html');
 }

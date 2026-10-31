@@ -24,6 +24,7 @@ export default function SensitiveActionPanel({ action, cardOutcome = 'auto', sta
   const [passwordError, setPasswordError] = useState('');
   const [checking, setChecking] = useState(false);
   const [cardState, setCardState] = useState('waiting');
+  const [cardError, setCardError] = useState(''); // why the last tap failed, shown on the retry chip
   const [consent, setConsent] = useState(false);
   const attempt = useRef(0);
   const passwordId = useId(); // unique, because the sandbox and the dialog can both be on screen
@@ -35,7 +36,11 @@ export default function SensitiveActionPanel({ action, cardOutcome = 'auto', sta
     setCardState('waiting');
     verifyCard()
       .then(() => id === attempt.current && setCardState('verified'))
-      .catch(() => id === attempt.current && setCardState('error'));
+      .catch((err) => {
+        if (id !== attempt.current) return;
+        setCardError(err.message);
+        setCardState('error');
+      });
   }
 
   // Entering step 2 starts the reader (or applies the pinned sandbox state).
@@ -166,7 +171,7 @@ export default function SensitiveActionPanel({ action, cardOutcome = 'auto', sta
                   </div>
                   <div className="space-y-1">
                     <div className="w-6 h-4 rounded bg-amber-400/80" />
-                    <span className="font-currency-sm text-[10px] text-white/90">•••• 8491 ADITYA</span>
+                    <span className="font-currency-sm text-[10px] text-white/90">•••• ····</span>
                   </div>
                 </div>
               </div>
@@ -194,7 +199,7 @@ export default function SensitiveActionPanel({ action, cardOutcome = 'auto', sta
                     className="flex items-center gap-2 px-space-md py-1.5 rounded-full bg-error-container text-error font-label-md text-label-md hover:opacity-90"
                   >
                     <CircleAlert size={16} />
-                    <span>Mismatch on secure enclave — Retry</span>
+                    <span>{cardError || 'Tapped card does not match the registered card'} — Retry</span>
                   </button>
                 )}
               </div>
