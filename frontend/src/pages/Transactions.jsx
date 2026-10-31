@@ -1,6 +1,6 @@
 // Transactions screen: summary, filters, unified ledger, change-category dialog, manual entry and export.
 import { useEffect, useState } from 'react';
-import { useLocation, useOutletContext } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { FileDown, WandSparkles } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
 import { useToast } from '../hooks/useToast';
@@ -31,7 +31,6 @@ function matches(tx, filters) {
 export default function Transactions() {
   const api = useApi(getTransactions);
   const location = useLocation();
-  const { account } = useOutletContext();
   // Other screens can open this page pre-filtered with route state { query } or { category }.
   const [filters, setFilters] = useState({ query: location.state?.query || '', account: 'all', category: location.state?.category || 'all', flow: 'All' });
   const [selectedIds, setSelectedIds] = useState([]);
@@ -40,10 +39,8 @@ export default function Transactions() {
   const [toast, showToast] = useToast();
   const { openCash } = useCash();
 
-  // The account picked in the top bar filters this page too; so does a search typed there.
-  useEffect(() => {
-    setFilters((f) => ({ ...f, account }));
-  }, [account]);
+  // The account picked in the top bar already narrows the list (the server returns only its transactions);
+  // a search typed in the top bar or a category from another screen arrives through route state.
   useEffect(() => {
     if (location.state?.query !== undefined) setFilters((f) => ({ ...f, query: location.state.query }));
     if (location.state?.category) setFilters((f) => ({ ...f, category: location.state.category }));

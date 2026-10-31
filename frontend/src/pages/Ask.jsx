@@ -2,8 +2,8 @@
 // Flow: type a question → we show what we understood (amount · month · Edit) → a short staged loader → the answer card.
 // Below it: "Show how we worked it out" (closed), the bonus note (only if there is a one-off income), "Try a change",
 // and the last 3 questions.
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation, useOutletContext } from 'react-router-dom';
 import { askAnswer, getAskSetup, parseQuestion } from '../services/api';
 import { monthNote, toAskView, toSubscriptions } from '../services/askView';
 import PageTip from '../tour/PageTip';
@@ -28,6 +28,7 @@ const LOADER_MS = 1100;
 
 export default function Ask() {
   const location = useLocation();
+  const { account } = useOutletContext();
   const reduced = useReducedMotion();
   const setup = useApi(getAskSetup);
   const [question, setQuestion] = useState(location.state?.question || '');
@@ -57,6 +58,17 @@ export default function Ask() {
     }
     setParsing(false);
   }
+
+  // An answer belongs to the account it was worked out for: choosing another account clears it.
+  const firstAccount = useRef(true);
+  useEffect(() => {
+    if (firstAccount.current) {
+      firstAccount.current = false;
+      return;
+    }
+    setResult(null);
+    setUnderstood(null);
+  }, [account]);
 
   useEffect(() => {
     if (setup.ready && location.state?.question) understand(location.state.question);

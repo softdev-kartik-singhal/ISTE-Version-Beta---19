@@ -20,7 +20,7 @@ def rs(paise):
 def load_rows(conn, user_id):
     return conn.execute(
         "SELECT t.id, t.txn_date, t.amount_paise, t.description, t.merchant, t.kind, c.name AS category,"
-        " a.bank, a.last4 FROM transactions t JOIN accounts a ON a.id = t.account_id"
+        " a.id AS account_id, a.bank, a.last4 FROM transactions t JOIN accounts a ON a.id = t.account_id"
         " LEFT JOIN categories c ON c.id = t.category_id WHERE a.user_id = ? AND a.type != 'cash' AND t.kind != 'transfer'"
         " ORDER BY t.txn_date, t.id", (user_id,)).fetchall()
 
@@ -28,7 +28,7 @@ def load_rows(conn, user_id):
 def make_flag(kind, row, reason, **extra):
     return {"id": f"{kind}-{row['id']}", "type": kind, "transactionId": row["id"], "date": row["txn_date"],
             "merchant": row["merchant"], "amountPaise": abs(row["amount_paise"]), "category": row["category"],
-            "account": f"{row['bank']} ••{row['last4']}", "reason": reason, **extra}
+            "account": f"{row['bank']} ••{row['last4']}", "accountId": row["account_id"] if "account_id" in row.keys() else None, "reason": reason, **extra}
 
 
 def large_flags(rows):
@@ -91,9 +91,12 @@ def new_merchant_flags(rows):
     return flags
 
 
-def all_flags(conn, user_id):
+def all_flags(conn, user_id, account_id=None):
+    """Flags are detected over the whole history (a purchase is unusual compared with everything you buy, not just
+    what one account shows). account_id then keeps only the ones that belong to that account."""
     rows = load_rows(conn, user_id)
-    return large_flags(rows) + duplicate_flags(rows) + new_merchant_flags(rows)
+    flags = large_flags(rows) + duplicate_flags(rows) + new_merchant_flags(rows)
+    return [f for f in flags if not account_id or f["accountId"] == account_id]
 
 
 def decisions(conn, user_id):
@@ -105,11 +108,11 @@ def decisions(conn, user_id):
     return {f"{r['flag_type']}-{r['transaction_id']}": r for r in rows}
 
 
-def flags_payload(conn, user_id):
+def flags_payload(conn, user_id, account_id=None):
     """Open flags (no decision yet) and resolved ones (with the user's decision)."""
     made = decisions(conn, user_id)
     open_, resolved = [], []
-    for f in all_flags(conn, user_id):
+    for f in all_flags(conn, user_id, account_id):
         d = made.get(f["id"])
         if d is None:
             open_.append(f)

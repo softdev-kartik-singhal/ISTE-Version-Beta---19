@@ -7,7 +7,7 @@ from pydantic import BaseModel
 from app.db import get_conn
 from app.services.affordability import apply_changes, evaluate, what_if
 from app.services.forecast import build_inputs, missing_items
-from app.deps import current_user_id
+from app.deps import account_filter, current_user_id
 from app.services.question import parse_question
 
 router = APIRouter(prefix="/api")
@@ -33,24 +33,24 @@ class WhatIfIn(BaseModel):
     addEmi: EmiIn | None = None
 
 
-def checked_inputs(conn, user_id, amount, month):
+def checked_inputs(conn, user_id, amount, month, account_id=None):
     """Validate the request and load the inputs. Returns (inputs, refusal-or-None)."""
     if amount is None or amount <= 0:
         raise HTTPException(422, {"reason": "amountPaise must be a positive number."})
     if not month or not MONTH_FORMAT.fullmatch(month):
         raise HTTPException(422, {"reason": "targetMonth must look like 2026-12."})
-    inp = build_inputs(conn, user_id)
+    inp = build_inputs(conn, user_id, account_id=account_id)
     missing = missing_items(inp)
     return inp, ({"status": "insufficient_data", "missing": missing} if missing else None)
 
 
 @router.post("/ask")
-def ask(body: AskIn, conn=Depends(get_conn), user_id: int = Depends(current_user_id)):
+def ask(body: AskIn, conn=Depends(get_conn), user_id: int = Depends(current_user_id), account_id=Depends(account_filter)):
     """Two steps. Question only -> what we understood (the user confirms). Amount + month -> the answer."""
     if body.amountPaise is None or body.targetMonth is None:
-        parsed = parse_question(body.question, build_inputs(conn, user_id).as_of)
+        parsed = parse_question(body.question, build_inputs(conn, user_id, account_id=account_id).as_of)
         return {"status": "needs_input" if parsed["missing"] else "needs_confirmation", "parsed": parsed}
-    inp, refusal = checked_inputs(conn, user_id, body.amountPaise, body.targetMonth)
+    inp, refusal = checked_inputs(conn, user_id, body.amountPaise, body.targetMonth, account_id)
     if refusal:
         return refusal
     try:
@@ -60,9 +60,9 @@ def ask(body: AskIn, conn=Depends(get_conn), user_id: int = Depends(current_user
 
 
 @router.post("/what-if")
-def what_if_endpoint(body: WhatIfIn, conn=Depends(get_conn), user_id: int = Depends(current_user_id)):
+def what_if_endpoint(body: WhatIfIn, conn=Depends(get_conn), user_id: int = Depends(current_user_id), account_id=Depends(account_filter)):
     """Same calculation on modified inputs: cancel recurring payments and/or add an EMI."""
-    inp, refusal = checked_inputs(conn, user_id, body.amountPaise, body.targetMonth)
+    inp, refusal = checked_inputs(conn, user_id, body.amountPaise, body.targetMonth, account_id)
     if refusal:
         return refusal
     emi = body.addEmi.model_dump() if body.addEmi else None

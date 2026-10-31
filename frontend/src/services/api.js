@@ -4,15 +4,41 @@ import { setGoalBase } from '../utils/goalMath';
 import { goalDate, monthLabel, suggestions, toFlags, toGoals, toMoneyFlow, toSafeguards, toStatements, toSurplusPlan, toTrackRecord, toTransactions, toTrends } from './adapters';
 import { toHome } from './homeView';
 import { toChangeView } from './askView';
+import { toSurvival } from './survivalView';
+import { toWays } from './waysView';
 
 
 export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 const TOKEN_KEY = 'sg_token';
+const ACCOUNT_KEY = 'sg_account';
+
+// The account picked in the top bar (an id), or null for all accounts. Kept in memory and in localStorage so a reload keeps it.
+function readSavedAccount() {
+  try {
+    const saved = localStorage.getItem(ACCOUNT_KEY);
+    return saved ? Number(saved) : null;
+  } catch {
+    return null;
+  }
+}
+let accountFilter = readSavedAccount();
+function rememberAccount(id) {
+  accountFilter = id;
+  try {
+    if (id == null) localStorage.removeItem(ACCOUNT_KEY); else localStorage.setItem(ACCOUNT_KEY, String(id));
+  } catch {
+    /* storage unavailable: the choice just lasts until the page is reloaded */
+  }
+}
+export const getAccountFilter = () => accountFilter;
 
 // Session token. localStorage keeps the user signed in across reloads; the server expires it after 12 hours.
 export const getToken = () => localStorage.getItem(TOKEN_KEY);
 export const setToken = (token) => localStorage.setItem(TOKEN_KEY, token);
-export const clearToken = () => localStorage.removeItem(TOKEN_KEY);
+export const clearToken = () => {
+  localStorage.removeItem(TOKEN_KEY);
+  rememberAccount(null); // the next person to sign in starts with all accounts
+};
 export const isSignedIn = () => Boolean(getToken());
 
 // Screens subscribe to changes: after any write (upload, correction, goal edit...) every mounted page refetches.
@@ -23,6 +49,28 @@ export const subscribe = (fn) => {
 };
 export const invalidate = () => listeners.forEach((fn) => fn());
 
+// Choosing an account in the top bar: from now on the money views are worked out for that account only, and every
+// mounted page refetches. null (or 'all') = all accounts.
+export function setAccountFilter(id) {
+  rememberAccount(id === 'all' || id == null ? null : Number(id));
+  invalidate();
+}
+
+// The server endpoints that can be narrowed to one account (?account=<id>). Statements, privacy and the track record
+// are about everything you uploaded, so they are not in this list.
+const NARROWABLE = new Set([
+  '/api/session', '/api/dashboard', '/api/trends', '/api/money-flow', '/api/surplus-plan', '/api/survival', '/api/ways-to-use-money',
+  '/api/goals', '/api/goals/preview', '/api/flags', '/api/recurring', '/api/transactions', '/api/suggestions', '/api/ask', '/api/what-if',
+]);
+function withAccount(path) {
+  if (accountFilter == null) return path;
+  const [base, query = ''] = path.split('?');
+  if (!NARROWABLE.has(base)) return path;
+  const params = new URLSearchParams(query);
+  params.set('account', accountFilter);
+  return `${base}?${params}`;
+}
+
 // Calls the backend and returns its JSON. Failures throw an Error with the server's message,
 // plus .status and .code (e.g. CARD_NOT_VERIFIED) so screens can react.
 export async function request(path, { method = 'GET', body } = {}) {
@@ -31,7 +79,7 @@ export async function request(path, { method = 'GET', body } = {}) {
   if (getToken()) headers.Authorization = `Bearer ${getToken()}`;
   let response;
   try {
-    response = await fetch(`${API_URL}${path}`, { method, headers, body: body === undefined ? undefined : isForm ? body : JSON.stringify(body) });
+    response = await fetch(`${API_URL}${withAccount(path)}`, { method, headers, body: body === undefined ? undefined : isForm ? body : JSON.stringify(body) });
   } catch {
     throw Object.assign(new Error('Cannot reach the SmartGullak server.'), { status: 0, code: 'NETWORK' });
   }
@@ -89,11 +137,14 @@ function formatSynced(utc) {
 
 export async function getSession() {
   const s = await request('/api/session');
+  const accountList = s.accountList.map((a) => ({ id: a.id, type: a.type, label: a.type === 'cash' ? 'Cash wallet' : `${a.bank} ••${a.last4}` }));
+  if (accountFilter != null && !accountList.some((a) => a.id === accountFilter)) rememberAccount(null); // that account is gone
   const banks = [...new Set(s.accounts.map((a) => a.split(' ')[0]))];
   return {
     user: { name: s.user.name, email: s.user.email, profile: s.user.profile || '' },
     accountCount: s.accountCount,
     accounts: s.accounts,
+    accountList,
     bankCount: s.accountList.filter((a) => a.type !== 'cash').length,
     hasCash: s.accountList.some((a) => a.type === 'cash'),
     statementsUpTo: s.statementsUpTo ? new Date(`${s.statementsUpTo}T00:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : null,
@@ -296,6 +347,23 @@ export async function getSurplusPlan() {
   const plan = await request('/api/surplus-plan');
   if (plan.insufficientHistory) return notReady('The surplus plan needs at least one complete month of statements.');
   return toSurplusPlan(plan);
+}
+
+// If income stopped: months the money would last and what stopping each non-essential expense adds.
+export async function getSurvival() {
+  const s = await request('/api/survival');
+  if (s.insufficientHistory) return notReady('This needs at least one complete month of statements.');
+  return toSurvival(s);
+}
+
+// What a fixed deposit, a recurring deposit and insurance could do for this user's numbers. Rates (% a year) are examples.
+export async function getWaysToUseMoney(fdRate, rdRate) {
+  const query = new URLSearchParams();
+  if (fdRate != null) query.set('fd_rate', fdRate);
+  if (rdRate != null) query.set('rd_rate', rdRate);
+  const w = await request(`/api/ways-to-use-money?${query}`);
+  if (w.insufficientHistory) return notReady('This needs at least one complete month of statements.');
+  return toWays(w);
 }
 
 // The first visit builds the track record by forecasting each past month from earlier data only (safe to repeat).

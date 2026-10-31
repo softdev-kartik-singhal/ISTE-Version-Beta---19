@@ -61,21 +61,27 @@ def latest_balances(conn, user_id):
     return [r["balance_paise"] for r in rows if r["balance_paise"] is not None]
 
 
-def build_inputs(conn, user_id, until=None):
+def build_inputs(conn, user_id, until=None, account_id=None):
     """Everything the calculation needs. With `until` (an ISO date) only rows up to that day are used
     and recurring payments, gaps and balances are recomputed from those rows alone, so a backtest
-    cannot see the future."""
+    cannot see the future. With `account_id` only that account's rows are used, recomputed the same way."""
     mark_cash_transfers(conn, user_id)  # ATM withdrawals are transfers to the Cash wallet, not spending
     query = ("SELECT t.id, t.account_id, t.txn_date, t.amount_paise, t.balance_paise, t.merchant, t.kind,"
              " c.name AS category, a.bank, a.last4 FROM transactions t JOIN accounts a ON a.id = t.account_id"
              " LEFT JOIN categories c ON c.id = t.category_id WHERE a.user_id = ? AND " + WITHIN_STATEMENTS)
-    rows = conn.execute(query + (" AND t.txn_date <= ?" if until else "") + " ORDER BY t.txn_date, t.id",
-                        (user_id, until) if until else (user_id,)).fetchall()
+    args = [user_id]
+    if until:
+        query += " AND t.txn_date <= ?"
+        args.append(until)
+    if account_id:
+        query += " AND a.id = ?"
+        args.append(account_id)
+    rows = conn.execute(query + " ORDER BY t.txn_date, t.id", args).fetchall()
     # Cash left unspent 30+ days after a withdrawal is counted as spending in that month, so the forecast does not assume it exists.
     ref = date.fromisoformat(until) if until else date.today()
-    rows = sorted([dict(r) for r in rows] + [r for r in unrecorded_rows(conn, user_id, ref) if not until or r["txn_date"] <= until],
+    rows = sorted([dict(r) for r in rows] + [r for r in unrecorded_rows(conn, user_id, ref) if (not until or r["txn_date"] <= until) and (not account_id or r["account_id"] == account_id)],
                   key=lambda r: (r["txn_date"], r["id"]))
-    if until:
+    if until or account_id:
         recurring = detect([dict(r) for r in rows if r["kind"] == "normal"])
         gaps, balances = rows_gaps(rows), rows_balances(rows)
     else:

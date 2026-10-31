@@ -1,6 +1,6 @@
 // Surplus Plan screen: emergency fund first, common options, and the monthly allocation simulator.
 import { useState } from 'react';
-import { ExternalLink, Gavel, Info, ShieldCheck } from 'lucide-react';
+import { ExternalLink, Info, ShieldCheck } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
 import { useToast } from '../hooks/useToast';
 import { downloadCsv } from '../utils/download';
@@ -9,9 +9,10 @@ import Toast from '../components/ui/Toast';
 import { getSurplusPlan } from '../services/api';
 import PageState from '../components/ui/PageState';
 import EmergencyFundStep from '../components/surplus/EmergencyFundStep';
-import OptionCard from '../components/surplus/OptionCard';
 import AllocationSimulator from '../components/surplus/AllocationSimulator';
 import SuggestionsCard from '../components/surplus/SuggestionsCard';
+import JobLossPlanner from '../components/surplus/JobLossPlanner';
+import WaysToUseMoney from '../components/surplus/WaysToUseMoney';
 import StewardshipFooter from '../components/surplus/StewardshipFooter';
 
 export default function SurplusPlan() {
@@ -91,31 +92,16 @@ export default function SurplusPlan() {
         <div className="flex flex-col gap-space-xl">
           <EmergencyFundStep fund={data.emergencyFund} showBreakdown={showBreakdown} onToggleBreakdown={() => setShowBreakdown(!showBreakdown)} />
 
+          <JobLossPlanner />
+
           <section className="flex flex-col gap-space-md">
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-space-sm">
-                <span className="px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md uppercase tracking-wider">Step 2</span>
-                <h2 className="font-headline-md text-headline-md text-on-surface tracking-tight">
-                  Once your emergency fund is ready, common options people consider
-                </h2>
-              </div>
-              <p className="font-body-md text-body-md text-on-surface-variant">
-                Disciplined financial building blocks for subsequent surplus deployment. Strictly objective benchmarks — no sponsored products or
-                return promises.
-              </p>
+            <div className="flex items-center gap-space-sm">
+              <span className="px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md uppercase tracking-wider">Step 2</span>
+              <h2 className="font-headline-md text-headline-md text-on-surface tracking-tight">
+                Once your emergency fund is ready, common options people consider
+              </h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-md">
-              {data.options.map((option) => (
-                <OptionCard key={option.title} option={option} />
-              ))}
-            </div>
-            <div className="p-3 bg-surface-container-low rounded-xl flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
-              <div className="flex items-center gap-2">
-                <Gavel size={17} className="text-outline" />
-                <span>Strictly neutral asset class mechanics. No product endorsements, affiliate commissions, or fixed return claims.</span>
-              </div>
-              <span className="hidden sm:inline font-currency-sm text-[11px] text-outline font-medium">Standardized Classification v2.4</span>
-            </div>
+            <WaysToUseMoney />
           </section>
 
           <AllocationSimulator allocation={data.allocation} committed={committed} onExport={exportPlan} onCommit={commit} />

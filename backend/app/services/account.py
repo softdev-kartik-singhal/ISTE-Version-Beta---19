@@ -16,7 +16,7 @@ def account_list(conn, user_id):
             for r in conn.execute("SELECT id, bank, last4, type FROM accounts WHERE user_id = ? ORDER BY id", (user_id,))]
 
 
-def session_payload(conn, user_id):
+def session_payload(conn, user_id, account_id=None):
     """GET /api/session: who is signed in, their accounts and when data last arrived."""
     user = conn.execute("SELECT name, email, profile, tour_completed, tour_step FROM users WHERE id = ?", (user_id,)).fetchone()
     accounts = account_labels(conn, user_id)
@@ -29,7 +29,7 @@ def session_payload(conn, user_id):
             "accountCount": len(accounts), "accounts": accounts, "accountList": account_list(conn, user_id),
             "hasData": bool(accounts), "lastSyncedAt": last, "statementsUpTo": up_to,
             "tour": {"completed": bool(user["tour_completed"]), "step": user["tour_step"]},
-            "flagCount": flags_payload(conn, user_id)["openCount"]}
+            "flagCount": flags_payload(conn, user_id, account_id if account_id in {a["id"] for a in account_list(conn, user_id)} else None)["openCount"]}
 
 
 def privacy_payload(conn, user_id):

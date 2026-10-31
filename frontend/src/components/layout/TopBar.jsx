@@ -28,7 +28,8 @@ export default function TopBar({ session, account, onAccountChange }) {
 
   // Bank accounts and the cash wallet are counted separately: "2 bank accounts + cash".
   const allLabel = `${session.bankCount} bank account${session.bankCount === 1 ? '' : 's'}${session.hasCash ? ' + cash' : ''}`;
-  const accountLabel = account === 'all' ? allLabel : account;
+  const options = [{ id: 'all', label: allLabel }, ...session.accountList];
+  const accountLabel = (options.find((o) => o.id === account) || options[0]).label;
 
   return (
     <header className="fixed top-0 left-0 lg:left-64 right-0 h-16 bg-surface-container-lowest border-b border-[#E3E8EF] z-40 px-4 lg:px-space-xl flex items-center justify-between shadow-[0_1px_3px_rgba(15,23,42,0.03)]">
@@ -48,30 +49,32 @@ export default function TopBar({ session, account, onAccountChange }) {
             ⌘K
           </kbd>
         </form>
-        <div className="relative hidden md:block">
+        <div className="relative">
           <button
             type="button"
             className="flex items-center bg-surface border border-[#E3E8EF] rounded-lg px-space-sm py-1.5 gap-2 cursor-pointer hover:bg-surface-container-low transition-colors"
+            aria-label={`Showing ${accountLabel}. Change account`}
+            aria-expanded={menuOpen}
             onClick={() => setMenuOpen(!menuOpen)}
           >
             <Landmark size={18} className="text-primary" />
-            <span className="font-label-md text-label-md text-on-surface">{accountLabel}</span>
+            <span className="hidden md:inline font-label-md text-label-md text-on-surface">{accountLabel}</span>
             <ChevronDown size={16} className="text-secondary" />
           </button>
           {menuOpen && (
             <div className="absolute left-0 top-11 w-56 bg-surface-container-lowest rounded-lg shadow-xl border border-[#E3E8EF] py-1 z-50">
-              {['all', ...session.accounts].map((a) => (
+              {options.map((o) => (
                 <button
-                  key={a}
+                  key={o.id}
                   type="button"
                   className="w-full px-3 py-2 flex items-center justify-between font-label-md text-label-md text-on-surface hover:bg-surface-container-low"
                   onClick={() => {
-                    onAccountChange(a);
+                    onAccountChange(o.id);
                     setMenuOpen(false);
                   }}
                 >
-                  <span>{a === 'all' ? allLabel : a}</span>
-                  {a === account && <Check size={16} className="text-primary" />}
+                  <span>{o.label}</span>
+                  {o.id === account && <Check size={16} className="text-primary" />}
                 </button>
               ))}
             </div>

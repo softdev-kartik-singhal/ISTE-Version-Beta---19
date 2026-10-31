@@ -1,5 +1,5 @@
 """FastAPI dependencies: who is calling, and has the caller just proved password + card?"""
-from fastapi import Depends, Header, HTTPException
+from fastapi import Depends, Header, HTTPException, Query
 
 from app import config, security
 from app.db import get_conn
@@ -17,6 +17,15 @@ def current_session(authorization: str | None = Header(None), conn=Depends(get_c
 
 def current_user_id(session=Depends(current_session)):
     return session["user_id"]
+
+
+def account_filter(account: int | None = Query(None), conn=Depends(get_conn), user_id: int = Depends(current_user_id)):
+    """Optional ?account=<id>: show the numbers of one account only. 404 if it is not one of the caller's own accounts."""
+    if account is None:
+        return None
+    if not conn.execute("SELECT 1 FROM accounts WHERE id = ? AND user_id = ?", (account, user_id)).fetchone():
+        raise HTTPException(404, {"reason": "That account was not found."})
+    return account
 
 
 def require_device(x_device_secret: str | None = Header(None)):

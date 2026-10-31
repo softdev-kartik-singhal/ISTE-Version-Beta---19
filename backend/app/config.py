@@ -112,6 +112,14 @@ EMERGENCY_FUND_MONTHS = 3    # emergency fund target = this many months of essen
 SURPLUS_DEFAULT_SPLIT = 60   # default % of monthly surplus sent to the emergency fund
 SURPLUS_SPLIT_PRESETS = (100, 75, 60, 50, 25)
 
+# "Ways to use money" examples. These are labelled assumptions the user can change, not offers or promises.
+EXAMPLE_FD_RATE_PCT = 7.0          # example fixed-deposit rate, % a year
+EXAMPLE_RD_RATE_PCT = 6.5          # example recurring-deposit rate, % a year
+EXAMPLE_SAVINGS_RATE_PCT = 3.0     # example savings-account rate, for "what it earns sitting idle"
+RD_SHARE_PCT = 50                  # share of the usual monthly leftover used in the recurring-deposit example
+COVER_YEARS_OF_ESSENTIALS = 10     # rule of thumb: life cover worth about this many years of essential spending
+EXAMPLE_HOSPITAL_BILL_PAISE = 50_000_000  # an example large hospital bill (Rs 5,00,000)
+
 # --- Trust ---------------------------------------------------------------------
 # The track record needs at least this many judged months before its hit rate means anything.
 TRACK_RECORD_MIN_MONTHS = 3

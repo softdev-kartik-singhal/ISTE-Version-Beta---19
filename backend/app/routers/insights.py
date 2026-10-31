@@ -4,7 +4,8 @@ from pydantic import BaseModel
 
 from app.db import get_conn
 from app.services.flags import decide, flags_payload, undo_decision
-from app.deps import current_user_id
+from app.deps import account_filter, current_user_id
+from app.services.forecast import build_inputs
 
 router = APIRouter(prefix="/api")
 
@@ -14,9 +15,10 @@ class DecisionIn(BaseModel):
 
 
 @router.get("/recurring")
-def list_recurring(conn=Depends(get_conn), user_id: int = Depends(current_user_id)):
-    rows = conn.execute("SELECT * FROM recurring WHERE user_id = ? ORDER BY next_expected",
-                        (user_id,)).fetchall()
+def list_recurring(conn=Depends(get_conn), user_id: int = Depends(current_user_id), account_id=Depends(account_filter)):
+    # One account: the regular payments are found again from that account's own rows (the saved list covers every account).
+    rows = (build_inputs(conn, user_id, account_id=account_id).recurring if account_id else
+            conn.execute("SELECT * FROM recurring WHERE user_id = ? ORDER BY next_expected", (user_id,)).fetchall())
     items = [{"merchant": r["merchant"], "label": r["label"], "typicalPaise": r["typical_paise"],
               "cadenceDays": r["cadence_days"], "occurrences": r["occurrences"], "lastSeen": r["last_seen"],
               "nextExpected": r["next_expected"]} for r in rows]
@@ -24,8 +26,8 @@ def list_recurring(conn=Depends(get_conn), user_id: int = Depends(current_user_i
 
 
 @router.get("/flags")
-def list_flags(conn=Depends(get_conn), user_id: int = Depends(current_user_id)):
-    return flags_payload(conn, user_id)
+def list_flags(conn=Depends(get_conn), user_id: int = Depends(current_user_id), account_id=Depends(account_filter)):
+    return flags_payload(conn, user_id, account_id)
 
 
 @router.post("/flags/{flag_id}/decision")
