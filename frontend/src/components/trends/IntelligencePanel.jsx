@@ -2,7 +2,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowUpFromLine, BadgeCheck, BrainCog, Info, Shield, Sparkles, UtensilsCrossed } from 'lucide-react';
 import RichText from '../ui/RichText';
-import NextActionButton from '../ui/NextActionButton';
 
 const FINDING_ICONS = { verified: BadgeCheck, growth: ArrowUpFromLine, dining: UtensilsCrossed, shield: Shield, info: Info };
 
@@ -45,11 +44,6 @@ export default function IntelligencePanel({ findings }) {
                     </div>
                   )}
                   {f.footnote && <p className="font-label-sm text-label-sm text-secondary mt-1">{f.footnote}</p>}
-                  {f.action && (
-                    <div className="mt-2.5">
-                      <NextActionButton action={f.action} />
-                    </div>
-                  )}
                 </div>
               </div>
             </div>

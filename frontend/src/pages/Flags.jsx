@@ -1,6 +1,5 @@
 // Flags screen: anomaly summary, filter tabs, flag cards whose actions resolve them, and resolved history.
 import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { CheckCheck, HardDrive, ShieldCheck, SlidersHorizontal } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
 import { useToast } from '../hooks/useToast';
@@ -21,8 +20,7 @@ const TAB_IDLE = 'px-3 py-1.5 rounded-md font-label-md text-label-md text-second
 export default function Flags() {
   const api = useApi(getFlags);
   const categories = useApi(getCategories);
-  const location = useLocation();
-  const [filter, setFilter] = useState(location.state?.type || 'all'); // other screens can open a flag type directly
+  const [filter, setFilter] = useState('all');
   const [sortBy, setSortBy] = useState('Urgency');
   const [historyOpen, setHistoryOpen] = useState(false);
   const [categoryFor, setCategoryFor] = useState(null);
@@ -90,12 +88,12 @@ export default function Flags() {
                   <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-tertiary-container/10 text-tertiary font-label-md text-label-md">
                     <ShieldCheck size={14} /> Automated Guardrail Engine
                   </span>
-                  <span className="text-secondary font-label-sm text-label-sm">• Checked on every statement</span>
+                  <span className="text-secondary font-label-sm text-label-sm">• Real-time Ledger Audit</span>
                 </div>
-                <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">Things to check</h1>
+                <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">Flags &amp; Anomalies</h1>
                 <p className="font-body-md text-body-md text-secondary">
                   {active.length
-                    ? `${active.length} payment${active.length === 1 ? '' : 's'} look${active.length === 1 ? 's' : ''} unusual. Check ${active.length === 1 ? 'it' : 'them'} so your numbers stay right.`
+                    ? `SmartGullak detected ${active.length} transaction${active.length === 1 ? '' : 's'} needing your review to ensure accurate cashflow models and guardrails.`
                     : 'All caught up — no transactions need your review right now.'}
                 </p>
               </div>

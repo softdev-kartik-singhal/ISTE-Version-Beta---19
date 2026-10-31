@@ -1,5 +1,4 @@
 // Track Record KPI row: forecast accuracy, average miss, cryptographic state and learning delta.
-import InfoTip from '../ui/InfoTip';
 import { BrainCircuit, Link, Target, TrendingDown } from 'lucide-react';
 
 const ICONS = {
@@ -17,10 +16,7 @@ export default function TrackRecordKpis({ kpis }) {
         return (
           <div key={kpi.label} className="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex flex-col justify-between space-y-space-md hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between">
-              <span className="font-label-md text-label-md uppercase tracking-wider text-secondary flex items-center gap-1">
-                {kpi.label}
-                {kpi.tip && <InfoTip text={kpi.tip} />}
-              </span>
+              <span className="font-label-md text-label-md uppercase tracking-wider text-secondary">{kpi.label}</span>
               <span className={`p-2 rounded-lg ${cls}`}>
                 <Icon size={20} />
               </span>

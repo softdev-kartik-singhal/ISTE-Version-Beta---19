@@ -1,5 +1,4 @@
 // Route map: public pages (landing, auth) and the signed-in app screens inside AppLayout.
-// Main tabs: Home (/dashboard), Ask, Spending, Plan. The other screens are reached from More or from links on those tabs.
 // Pages are lazy-loaded so each screen downloads only when it is first opened.
 import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
@@ -10,8 +9,6 @@ const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Ask = lazy(() => import('./pages/Ask'));
-const Spending = lazy(() => import('./pages/Spending'));
-const Plan = lazy(() => import('./pages/Plan'));
 const Trends = lazy(() => import('./pages/Trends'));
 const MoneyFlow = lazy(() => import('./pages/MoneyFlow'));
 const Goals = lazy(() => import('./pages/Goals'));
@@ -32,8 +29,6 @@ export default function App() {
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/ask" element={<Ask />} />
-          <Route path="/spending" element={<Spending />} />
-          <Route path="/plan" element={<Plan />} />
           <Route path="/trends" element={<Trends />} />
           <Route path="/money-flow" element={<MoneyFlow />} />
           <Route path="/goals" element={<Goals />} />

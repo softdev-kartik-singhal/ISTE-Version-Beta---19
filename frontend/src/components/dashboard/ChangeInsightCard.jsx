@@ -1,6 +1,7 @@
 // One "What changed this month" insight card on the Dashboard.
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import Card from '../ui/Card';
-import NextActionButton from '../ui/NextActionButton';
 import { iconFor } from '../../utils/icons';
 
 const TONES = {
@@ -25,7 +26,10 @@ export default function ChangeInsightCard({ insight }) {
         <p className="font-body-sm text-body-sm text-secondary">{insight.detail}</p>
       </div>
       <div className="mt-4 pt-3 border-t border-[#E3E8EF]/60">
-        <NextActionButton action={insight.action} />
+        <Link className="font-label-md text-label-md text-primary hover:underline flex items-center gap-1" to="/trends">
+          <span>See trend</span>
+          <ArrowRight size={14} />
+        </Link>
       </div>
     </Card>
   );

@@ -2,7 +2,6 @@
 // Backend answers are reshaped for the screens by adapters.js.
 import { setGoalBase } from '../utils/goalMath';
 import { goalDate, monthLabel, suggestions, toDashboard, toFlags, toGoals, toMoneyFlow, toSafeguards, toStatements, toSurplusPlan, toTrackRecord, toTransactions, toTrends } from './adapters';
-import { toHome, toPlan, toSpending } from './simpleViews';
 
 export { toAsk } from './adapters'; // Ask re-shapes its stored answer when the bonus switch changes
 
@@ -151,28 +150,6 @@ export async function getDashboard() {
   if (d.insufficientHistory) return notReady('The dashboard needs at least one complete month of statements.');
   const [trends, flags] = await Promise.all([request('/api/trends'), request('/api/flags')]);
   return toDashboard(d, trends, flags);
-}
-
-// Home: the simple summary, plus the detailed dashboard shapes for its "Show how" section.
-export async function getHome() {
-  const d = await request('/api/dashboard');
-  if (d.insufficientHistory) return notReady('Home needs at least one complete month of statements.');
-  const [trends, flags] = await Promise.all([request('/api/trends'), request('/api/flags')]);
-  return { home: toHome(d, trends, flags), detail: toDashboard(d, trends, flags) };
-}
-
-// Spending: every category for every month we have, and the debits behind them (for the merchant lists).
-export async function getSpending() {
-  const [t, list] = await Promise.all([request('/api/trends'), request('/api/transactions?limit=500')]);
-  if (t.insufficientHistory) return notReady('Spending compares each month with your usual, which needs 4 complete months of statements.');
-  return toSpending(t, list.transactions);
-}
-
-// Plan: last month's leftover, the emergency fund, goals and the ways to use money left over.
-export async function getPlan() {
-  const [d, g, p] = await Promise.all([request('/api/dashboard'), request('/api/goals'), request('/api/surplus-plan')]);
-  if (d.insufficientHistory || p.insufficientHistory) return notReady('Your plan needs at least one complete month of statements.');
-  return toPlan(d, g, p);
 }
 
 export async function getStatements() {

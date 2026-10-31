@@ -1,16 +1,12 @@
-// One of the four Dashboard key-metric cards (label with info tip, icon, big amount, badge, footer).
-import InfoTip from '../ui/InfoTip';
+// One of the four Dashboard key-metric cards (label, icon, big amount, badge, footer).
 import Card from '../ui/Card';
 
-export default function LiquidityCard({ label, tip, icon: Icon, iconClass, value, valueClass = 'text-on-surface', badge, footer }) {
+export default function LiquidityCard({ label, icon: Icon, iconClass, value, valueClass = 'text-on-surface', badge, footer }) {
   return (
     <Card className="p-5 flex flex-col justify-between">
       <div>
         <div className="flex items-center justify-between text-secondary mb-2">
-          <span className="font-label-md text-label-md uppercase tracking-wider text-secondary flex items-center gap-1">
-            {label}
-            {tip && <InfoTip text={tip} />}
-          </span>
+          <span className="font-label-md text-label-md uppercase tracking-wider text-secondary">{label}</span>
           <Icon size={18} className={iconClass} />
         </div>
         <div className="flex items-baseline justify-between gap-2">

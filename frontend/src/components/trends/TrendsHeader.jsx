@@ -6,10 +6,13 @@ export default function TrendsHeader({ periods, period, onPeriodChange, onExport
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
       <div>
         <div className="flex items-center gap-space-xs">
-          <h1 className="font-headline-lg text-headline-lg text-on-surface">Month by month</h1>
+          <span className="font-headline-lg text-headline-lg text-on-surface">Trends &amp; Surplus</span>
+          <span className="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm uppercase tracking-wider">
+            Multi-Stream
+          </span>
         </div>
         <p className="font-body-md text-body-md text-secondary mt-0.5">
-          Money in, money out and what was left over, month by month.
+          Historical cashflow stability, surplus velocity, and multi-month category variances.
         </p>
       </div>
       <div className="flex items-center gap-space-sm self-start md:self-auto">

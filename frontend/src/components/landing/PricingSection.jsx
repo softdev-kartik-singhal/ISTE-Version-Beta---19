@@ -38,7 +38,7 @@ export default function PricingSection({ plans, onContact }) {
                   <span className="font-body-md text-body-md text-on-surface-variant font-medium">/ forever</span>
                 </div>
                 <p className="font-body-md text-body-md text-on-surface-variant mt-2 leading-relaxed">
-                  Track the cash you really have and get clear affordability answers for individuals.
+                  Essential liquidity tracking and deterministic affordability answers for individuals.
                 </p>
               </div>
               <div className="h-px w-full bg-surface-container-high" />

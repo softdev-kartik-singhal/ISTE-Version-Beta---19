@@ -18,7 +18,7 @@ export default function ReconciliationCard({ reconciliation }) {
           </div>
           <div>
             <h3 className="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight">Multi-Account Reconciliation &amp; Merge Summary</h3>
-            <p className="font-body-sm text-body-sm text-secondary">Overlaps and duplicates between statements, cleaned up</p>
+            <p className="font-body-sm text-body-sm text-secondary">Cross-statement normalization, deduping, and ledger cleansing</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -56,7 +56,7 @@ export default function ReconciliationCard({ reconciliation }) {
         <ShieldCheck size={20} className="text-primary shrink-0" />
         <p className="font-body-sm text-body-sm leading-relaxed">
           <strong className="text-on-surface font-medium">Affordability Guardrail:</strong> Self-account transfers and identical transaction IDs are
-          automatically flagged to ensure your <em>&quot;Can I Afford This?&quot;</em> affordability calculation stays accurate without
+          automatically flagged to ensure your <em>&quot;Can I Afford This?&quot;</em> affordability calculation stays strictly calibrated without
           double-counting your actual cash availability.
         </p>
       </div>

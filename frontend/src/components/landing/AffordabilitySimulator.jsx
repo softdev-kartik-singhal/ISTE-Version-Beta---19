@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Network, Nfc, ShieldCheck, SlidersHorizontal, Terminal } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { simulate } from '../../utils/landingVerdict';
-import VerdictBadge from '../ui/VerdictBadge';
 
 export default function AffordabilitySimulator({ sim }) {
   const [amount, setAmount] = useState(sim.defaultAmount);
@@ -74,9 +73,6 @@ export default function AffordabilitySimulator({ sim }) {
                       <span className="px-2 py-0.5 rounded bg-surface-container-highest text-primary font-label-sm text-label-sm font-bold">VERDICT 09-B</span>
                     </div>
                     <p className="font-body-sm text-body-sm text-on-surface-variant mt-1">{verdict.detail}</p>
-                    <div className="mt-2">
-                      <VerdictBadge state={verdict.state} change={verdict.change} />
-                    </div>
                   </div>
                 </div>
                 <div className="w-full md:w-56 shrink-0 bg-surface-container-lowest p-3 rounded-lg shadow-sm">

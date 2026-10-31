@@ -15,7 +15,7 @@ export default function CategoryTrendsTable({ categories, month }) {
     <div className="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-md">
         <div>
-          <h3 className="font-headline-sm text-headline-sm text-on-surface">Categories this month vs usual</h3>
+          <h3 className="font-headline-sm text-headline-sm text-on-surface">Category Trends &amp; Variances</h3>
           <p className="font-body-sm text-body-sm text-secondary">Comparing {month} spending against trailing 3-month medians</p>
         </div>
         <div className="relative w-full sm:w-64">
@@ -35,8 +35,8 @@ export default function CategoryTrendsTable({ categories, month }) {
             <tr className="bg-surface-container-low text-secondary font-label-md text-label-md uppercase tracking-wider">
               <th className="py-3 px-space-md rounded-l-lg font-semibold">Category</th>
               <th className="py-3 px-space-md text-right font-semibold">This Month (Oct)</th>
-              <th className="py-3 px-space-md text-right font-semibold">Usual</th>
-              <th className="py-3 px-space-md text-right font-semibold">Change</th>
+              <th className="py-3 px-space-md text-right font-semibold">3-Month Median</th>
+              <th className="py-3 px-space-md text-right font-semibold">Variance Change</th>
               <th className="py-3 px-space-md text-center rounded-r-lg font-semibold">6-Month Sparkline</th>
             </tr>
           </thead>

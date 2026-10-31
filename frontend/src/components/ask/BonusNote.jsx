@@ -20,7 +20,7 @@ export default function BonusNote({ bonus, included, onToggle }) {
           <p className="font-body-md text-body-md text-secondary max-w-3xl">
             Your annual corporate bonus from last year (
             <span className="font-currency-sm font-semibold text-on-surface">{formatCurrency(bonus.lastAmount)}</span> in {bonus.lastMonth})
-            hasn&apos;t arrived this cycle yet, so it is left out of your usual income. If it arrives:{' '}
+            hasn&apos;t arrived this cycle yet, so it is strictly excluded from baseline liquidity. If it arrives:{' '}
             <strong>Yes — you will unlock an additional {formatCurrency(bonus.unlockedSurplus)}+ surplus across all scenarios.</strong>
           </p>
         </div>

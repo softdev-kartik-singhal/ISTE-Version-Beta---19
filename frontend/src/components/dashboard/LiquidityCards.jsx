@@ -9,13 +9,12 @@ export default function LiquidityCards({ liquidity }) {
     <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-space-md">
       <LiquidityCard
         label="Safe to spend this week"
-        tip="Money left this month, minus a small safety margin, divided by the weeks left in the month."
         icon={Wallet}
         iconClass="text-primary"
         value={formatCurrency(liquidity.safeToSpendWeek)}
         badge={
           <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-label-sm font-label-sm bg-secondary-fixed text-on-secondary-fixed">
-            After bills
+            Live buffer
           </span>
         }
         footer={
@@ -27,28 +26,26 @@ export default function LiquidityCards({ liquidity }) {
       />
       <LiquidityCard
         label="Money left this month"
-        tip="Expected income (what arrived, or your usual income if more) minus spending so far and bills still due this month."
         icon={PiggyBank}
         iconClass="text-secondary"
         value={formatCurrency(liquidity.moneyLeftMonth)}
-        badge={<span className="inline-flex items-center gap-1 text-label-sm font-label-sm text-secondary">estimate</span>}
+        badge={<span className="inline-flex items-center gap-1 text-label-sm font-label-sm text-secondary">projected</span>}
         footer={
           <p className="font-body-sm text-body-sm text-secondary flex items-center justify-between">
-            <span>Safety buffer untouched</span>
+            <span>Surplus buffer intact</span>
             <span className="font-medium text-on-surface">{liquidity.daysLeft} days left</span>
           </p>
         }
       />
       <LiquidityCard
-        label="Left over last month"
-        tip="Money in minus money out last month, leaving out transfers between your own accounts."
+        label="Last month's surplus"
         icon={TrendingUp}
         iconClass="text-emerald-400"
         value={formatCurrency(liquidity.lastMonthSurplus, { sign: true })}
         valueClass="text-emerald-400"
         badge={
           <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-label-sm font-label-sm bg-emerald-400/10 text-emerald-400 font-semibold">
-            Saved
+            CR
           </span>
         }
         footer={
@@ -59,8 +56,7 @@ export default function LiquidityCards({ liquidity }) {
         }
       />
       <LiquidityCard
-        label="Bills due in the next 7 days"
-        tip="Sum of regular payments (rent, EMIs, subscriptions) expected in the next 7 days, at their usual amount."
+        label="Upcoming payments (7 days)"
         icon={CalendarSync}
         iconClass="text-secondary"
         value={formatCurrency(liquidity.upcomingTotal)}
@@ -72,7 +68,7 @@ export default function LiquidityCards({ liquidity }) {
         }
         footer={
           <p className="font-body-sm text-body-sm text-secondary truncate">
-            From your regular payments • {liquidity.mandates} auto-debits
+            Verified against balance • {liquidity.mandates} mandates
           </p>
         }
       />

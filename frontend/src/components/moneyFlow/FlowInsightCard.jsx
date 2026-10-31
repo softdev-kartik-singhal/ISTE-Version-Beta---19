@@ -1,6 +1,6 @@
 // One of the three Money Flow insight cards (growing category, concentrated outflow, new merchants).
+import { Link } from 'react-router-dom';
 import { BadgePlus, ChartPie, TrendingUp } from 'lucide-react';
-import NextActionButton from '../ui/NextActionButton';
 import { formatCurrency } from '../../utils/formatCurrency';
 
 const BADGE_ICONS = { trending: TrendingUp, pie: ChartPie, new: BadgePlus };
@@ -25,7 +25,9 @@ export default function FlowInsightCard({ insight }) {
       </div>
       <div className="pt-3 mt-4 border-t border-surface-container flex items-center justify-between text-[12px]">
         <span className="text-on-surface-variant font-medium">{insight.footer}</span>
-        <NextActionButton action={{ label: insight.action, to: '/transactions', state: { query: insight.query } }} />
+        <Link className="text-primary font-semibold hover:underline" to="/transactions" state={{ query: insight.query }}>
+          {insight.action}
+        </Link>
       </div>
     </div>
   );

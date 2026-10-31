@@ -35,7 +35,7 @@ export default function CategoryDrawer({ detail, onClose }) {
           </div>
           <div className="flex items-center justify-between font-label-md text-label-md text-on-surface-variant">
             <span>{detail.share}</span>
-            <span className="font-currency-sm text-[12px] text-outline">Usual: {formatCurrency(detail.median)}</span>
+            <span className="font-currency-sm text-[12px] text-outline">3-Mo Median: {formatCurrency(detail.median)}</span>
           </div>
         </div>
 

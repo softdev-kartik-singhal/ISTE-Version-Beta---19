@@ -47,7 +47,7 @@ export default function TrackRecord() {
                   {data.integrity.entries} entries
                 </span>
               </div>
-              <h1 className="font-display-lg text-display-lg text-on-surface tracking-tight">Track Record</h1>
+              <h1 className="font-display-lg text-display-lg text-on-surface tracking-tight">Track Record &amp; Model Veracity</h1>
               <p className="font-body-md text-body-md text-secondary max-w-3xl">
                 Empirical audit of past cashflow predictions, range bounds, and ledger tamper verification. Real-time integrity proof against immutable
                 financial histories.
@@ -77,7 +77,7 @@ export default function TrackRecord() {
                   <span className="font-label-md text-label-md uppercase tracking-wider text-primary">Key Empirical Finding</span>
                 </div>
                 <h2 className="font-headline-lg text-headline-lg text-on-surface">{data.finding.headline}</h2>
-                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">How close our past forecasts came to what really happened.</p>
+                <p className="font-body-md text-body-md text-on-surface-variant leading-relaxed">{data.finding.detail}</p>
               </div>
               <div className="flex flex-col sm:flex-row lg:flex-col gap-3 min-w-[280px]">
                 {data.finding.facts.map((fact) => (

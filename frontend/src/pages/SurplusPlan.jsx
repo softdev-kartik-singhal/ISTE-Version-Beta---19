@@ -26,7 +26,7 @@ export default function SurplusPlan() {
       { bucket: 'Emergency Buffer', percent: plan.emergencyPct, monthly: plan.emergencyAmt, note: `ETA to target: ${plan.eta}` },
       { bucket: 'Long-term Goals', percent: plan.goalsPct, monthly: plan.goalsAmt, note: `${plan.goalsAmt * 12} per year` },
     ]);
-    showToast('Plan exported as CSV');
+    showToast('Allocation plan exported as CSV');
   }
 
   function commit(plan) {
@@ -55,8 +55,10 @@ export default function SurplusPlan() {
                 </span>
                 <span className="font-currency-sm text-currency-sm text-on-surface-variant font-medium">| {data.fiscalYear}</span>
               </div>
-              <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">Detailed plan</h1>
-              <p className="font-body-md text-body-md text-on-surface-variant mt-0.5">How your money left over could be split between the emergency fund and goals.</p>
+              <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">Surplus Plan</h1>
+              <p className="font-body-md text-body-md text-on-surface-variant mt-0.5">
+                Deterministic framework to allocate liquid monthly cashflow into safety buffers and long-term milestones.
+              </p>
             </div>
             <div className="flex items-center gap-3 bg-surface-container-lowest px-4 py-2.5 rounded-xl shadow-sm">
               <div className="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary shrink-0">

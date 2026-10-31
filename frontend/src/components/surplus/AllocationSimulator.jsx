@@ -18,12 +18,12 @@ export default function AllocationSimulator({ allocation, committed, onExport, o
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
         <div className="flex items-center gap-space-sm">
           <span className="px-2.5 py-1 rounded-full bg-primary-container text-surface-container-lowest font-label-md text-label-md uppercase tracking-wider">Step 3</span>
-          <h2 className="font-headline-md text-headline-md text-on-surface tracking-tight">Try splitting this month&apos;s money left over</h2>
+          <h2 className="font-headline-md text-headline-md text-on-surface tracking-tight">Simulate this month&apos;s surplus distribution</h2>
         </div>
         <div className="flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-lg">
-          <span className="font-label-sm text-label-sm text-on-surface-variant uppercase">Usually left over each month:</span>
+          <span className="font-label-sm text-label-sm text-on-surface-variant uppercase">Available Monthly Surplus:</span>
           <span className="font-currency-md text-currency-md font-bold text-primary">{formatCurrency(allocation.monthlySurplus)}</span>
-          <span className="font-label-sm text-[10px] text-outline">(usual month)</span>
+          <span className="font-label-sm text-[10px] text-outline">(trailing median)</span>
         </div>
       </div>
 
@@ -73,7 +73,7 @@ export default function AllocationSimulator({ allocation, committed, onExport, o
               <Shield size={20} className="text-primary" />
             </div>
             <div className="flex flex-col">
-              <span className="font-label-md text-label-md text-on-surface-variant">To the emergency fund</span>
+              <span className="font-label-md text-label-md text-on-surface-variant">Emergency Fund Allocation</span>
               <div className="flex items-baseline gap-2 mt-1">
                 <span className="font-currency-hero text-currency-hero text-on-surface font-bold">{formatCurrency(emergencyAmt)}</span>
                 <span className="font-body-md text-body-md text-on-surface-variant">/ month</span>
