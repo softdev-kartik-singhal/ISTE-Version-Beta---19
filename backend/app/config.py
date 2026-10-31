@@ -182,7 +182,7 @@ PROMISE_PATTERNS = [r"guarantee", r"assured", r"risk[- ]free", r"double your", r
 # --- Cash wallet ---------------------------------------------------------------------------
 # Bank narrations (whole words, case-insensitive, punctuation ignored) that mean cash left or entered the bank.
 ATM_WITHDRAWAL_WORDS = ["ATM WDL", "ATW", "NWD", "CASH WITHDRAWAL", "CASH WDL"]
-CASH_DEPOSIT_WORDS = ["CASH DEP", "BY CASH"]
+CASH_DEPOSIT_WORDS = ["CASH DEP", "CASH DEPOSIT", "BY CASH"]
 # Cash still in the wallet this many days after a withdrawal is counted as spending nobody recorded.
 CASH_UNRECORDED_DAYS = 30
 CASH_BANK, CASH_LAST4 = "Cash wallet", "CASH"       # how the wallet appears as an account

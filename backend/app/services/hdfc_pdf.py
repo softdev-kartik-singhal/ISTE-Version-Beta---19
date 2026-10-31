@@ -28,6 +28,8 @@ HEADER_WORDS = {"date": "Date", "narration": "Narration", "ref": "Chq", "value_d
                 "withdrawal": "Withdrawal", "deposit": "Deposit", "balance": "Closing"}
 LINE_TOLERANCE = 3     # words whose tops differ by less than this (points) are on the same line
 WRAP_JOINERS = "-/@.:_"  # a wrapped narration line ending in one of these continues the same token: no space
+WRAP_WIDTH = 40          # HDFC cuts narrations every 40 characters, even mid-word: a full line continues with no space
+TABLE_TOP_SLACK = 15     # on pages without a header, a row's first narration line can sit a little above the old header line
 
 
 class Summary(NamedTuple):
@@ -104,15 +106,23 @@ def column_of(word, starts):
 
 
 def table_lines(pdf):
-    """Every line of the transaction table on every page, with its words split into columns."""
-    out = []
+    """Every line of the transaction table on every page, with its words split into columns.
+
+    Real HDFC statements print the column header on page 1 only. Later pages repeat the customer block at the top
+    and the table starts where the header used to be, so those pages reuse page 1's columns and table top."""
+    out, starts, table_top = [], None, None
     for page_no, page in enumerate(pdf.pages, start=1):
         lines = group_lines(page.extract_words(keep_blank_chars=False))
         header = find_header(lines)
-        if not header:
-            continue  # e.g. a last page that only has the summary
-        at, starts = header
-        for line in lines[at + 1:]:
+        if header:
+            at, starts = header
+            table_top = lines[at][0]["top"]
+            body = lines[at + 1:]
+        elif starts:
+            body = [l for l in lines if l[0]["top"] >= table_top - TABLE_TOP_SLACK]  # skip the repeated customer block
+        else:
+            continue  # no table seen yet
+        for line in body:
             if TABLE_END.search(text_of(line)):
                 break  # footer or summary: the table on this page is over
             cells = {c: [] for c in COLUMNS}
@@ -124,12 +134,14 @@ def table_lines(pdf):
 
 # ---------------------------------------------------------------- rows
 def join_narration(lines):
-    """Narration lines in reading order. A line ending in '-', '/', '@'... was cut mid-token, so no space is added."""
-    text = ""
+    """Narration lines in reading order. A full-width line (HDFC cuts at 40 characters) or one ending in '-', '/', '@'...
+    was cut mid-token, so the next line follows with no space; a shorter line ended at a word, so a space is added."""
+    text, previous = "", ""
     for part in lines:
-        if text and text[-1] not in WRAP_JOINERS:
+        if text and len(previous) < WRAP_WIDTH and text[-1] not in WRAP_JOINERS:
             text += " "
         text += part
+        previous = part
     return text.strip()
 
 
@@ -156,6 +168,11 @@ def build_rows(lines):
 
 
 # ---------------------------------------------------------------- summary and checks
+def summary_lines(pdf):
+    """Page text rebuilt line by line from word positions (plain text extraction scrambles the summary block)."""
+    return "\n".join(text_of(l) for page in pdf.pages for l in group_lines(page.extract_words()))
+
+
 def find_summary(text):
     """The STATEMENT SUMMARY values: the line after 'Opening Balance Dr Count Cr Count Debits Credits Closing Balance'."""
     lines = [l.strip() for l in text.splitlines()]
@@ -219,7 +236,7 @@ def parse(pdf, text, reject, make_row):
     """The statement as (last4, rows). `reject(reason)` raises; `make_row` builds the shared Row type."""
     last4 = last4_of(text, reject)
     rows = build_rows(table_lines(pdf))
-    summary = find_summary(text)
+    summary = find_summary(summary_lines(pdf)) or find_summary(text)
     if not rows:
         reject("No transaction rows were found in the statement table." if summary else
                "No transaction rows were found and the statement summary is missing, so the opening balance is unknown.")

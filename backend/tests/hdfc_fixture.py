@@ -3,15 +3,17 @@ masked account number, repeated page header, a column table with wrapped narrati
 '0.00' in empty amount cells, footers, and the STATEMENT SUMMARY on the last page. No real statement is used."""
 from tests.make_pdf import make_positioned_pdf
 
-X = {"date": 30, "narration": 80, "ref": 250, "value_date": 330, "withdrawal": 390, "deposit": 460, "balance": 530}
+X = {"date": 30, "narration": 80, "ref": 280, "value_date": 345, "withdrawal": 400, "deposit": 465, "balance": 530}
 
 
-def page_header(page_no):
+def page_header(page_no, columns=True):
     lines = ["HDFC BANK Ltd.", f"Page No .: {page_no}", "MR TEST PERSON", "12 FAKE STREET, TESTVILLE",
              "JOINT HOLDERS :", "Account Branch : TESTVILLE", "A/C Open Date : 01/01/2020", "Account Status : Regular",
              "Statement From : 19/09/26 TO : 18/10/26", "Account number : 50XXXXXXXX9661"]
     items = [(30, 30 + 12 * i, t) for i, t in enumerate(lines)]
     header_y = 30 + 12 * len(lines) + 10
+    if not columns:  # like the real statement: later pages have no column header; rows start where it was
+        return items, header_y
     items += [(X["date"], header_y, "Date"), (X["narration"], header_y, "Narration"), (X["ref"], header_y, "Chq./Ref No."),
               (X["value_date"], header_y, "Value Dt"), (X["withdrawal"], header_y, "Withdrawal Amt."),
               (X["deposit"], header_y, "Deposit Amt."), (X["balance"], header_y, "Closing Balance*")]
@@ -52,11 +54,12 @@ def build(summary=SUMMARY, last_balance="54,749.50", drop_last_row=False):
     p1 += row(y + 60, "25/09/26", ["ATW-512345XXXXXX1234-S1ANBG12-", "MG ROAD"], "0000000000000000", "2,000.00", "0.00", "56,749.50")
     p1 += footer(y + 100)
 
-    p2, y = page_header(2)
+    p2, y = page_header(2, columns=False)
     # Row 4: an ordinary word wrap (no joiner at the end), so a space is added.
     p2 += row(y, "02/10/26", ["POS 4123XXXXXXXX9999", "FAKE MART"], "0000000000000000", "3,500.00", "0.00", "53,249.50")
+    # Row 5 (below): a full 40-character line cut mid-word, the way HDFC wraps, so no space is added.
     if not drop_last_row:
-        p2 += row(y + 35, "10/10/26", ["IMPS-123456-FRIEND NAME-REFUND"], "123456", "0.00", "1,500.00", last_balance)
+        p2 += row(y + 35, "10/10/26", ["IMPS-123456-FRIEND NAME-REFUND FOR DINNE", "R"], "123456", "0.00", "1,500.00", last_balance)
     p2 += [(30, y + 70 + 12 * i, t) for i, t in enumerate(summary)]
     p2 += [(30, y + 120, "**END OF STATEMENT**")] + footer(y + 135)
     return make_positioned_pdf([p1, p2])

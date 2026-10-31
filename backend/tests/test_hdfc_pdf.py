@@ -39,6 +39,7 @@ def test_wrapped_narrations_are_joined():
     assert narrations[1] == "NEFT CR-ACME SOFTWARE PVT LTD-SALARY"  # first part was printed above the date line
     assert narrations[2] == "ATW-512345XXXXXX1234-S1ANBG12-MG ROAD"
     assert narrations[3] == "POS 4123XXXXXXXX9999 FAKE MART"  # an ordinary word wrap keeps its space
+    assert narrations[4] == "IMPS-123456-FRIEND NAME-REFUND FOR DINNER"  # a full 40-character line continues the word
 
 
 def test_zero_cells_two_digit_years_and_balance_chain():
@@ -49,6 +50,10 @@ def test_zero_cells_two_digit_years_and_balance_chain():
     for r in parsed:
         balance += r.amount_paise
         assert r.balance_paise == balance
+
+
+def test_later_pages_without_a_column_header_are_still_read():
+    assert [r.txn_date for r in rows()][3:] == ["2026-10-02", "2026-10-10"]  # page 2 repeats only the customer block
 
 
 def test_page_headers_and_footers_are_not_rows():
