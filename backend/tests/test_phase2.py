@@ -128,10 +128,19 @@ def test_demo_data_end_to_end(client):
     assert gap["from"] < "2026-08-11" and gap["to"] > "2026-08-20" and gap["days"] >= 10
 
 
-def test_demo_data_twice_does_not_double_count(client):
+def test_demo_data_never_adds_on_top_of_existing_statements(client):
     client.post("/api/demo-data")
-    again = client.post("/api/demo-data").json()
-    assert all(f["status"] == "already uploaded" for f in again["files"])
+    again = client.post("/api/demo-data")
+    assert again.status_code == 409 and again.json()["detail"]["code"] == "HAS_STATEMENTS"
+    assert len(client.get("/api/statements").json()["files"]) == 3   # nothing was added
+
+
+def test_demo_data_replace_swaps_the_dataset(client):
+    client.post("/api/demo-data?set=eight_months")
+    r = client.post("/api/demo-data?set=short_2mo&replace=true")
+    assert r.status_code == 200 and r.json()["replaced"] is True
+    files = client.get("/api/statements").json()["files"]
+    assert [f["name"] for f in files] == ["bank_c_aug_sep.csv"]      # only the new set, nothing left over
 
 
 def test_real_duplicate_charge_and_genuine_second_payment_both_kept(client, db_path):

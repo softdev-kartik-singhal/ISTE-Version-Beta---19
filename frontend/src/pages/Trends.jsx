@@ -46,7 +46,7 @@ export default function Trends() {
       <PageTip id="trends" text="Spot the categories that grew the most compared with your usual month." />
       <div className="flex flex-col w-full">
         <div className="px-space-xl py-space-lg space-y-space-lg max-w-[1440px] mx-auto w-full">
-          <TrendsHeader periods={data.periods} period={selected} onPeriodChange={setPeriod} onExport={exportTrends} />
+          <TrendsHeader periods={data.periods} period={selected} dataMonth={data.categoryMonth} onPeriodChange={setPeriod} onExport={exportTrends} />
           <TrendSummaryCards summary={data.summary} />
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
             <div className="lg:col-span-8 space-y-space-lg">

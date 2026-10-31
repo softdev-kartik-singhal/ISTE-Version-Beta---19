@@ -1,5 +1,5 @@
-// Row of four Dashboard metric cards: safe to spend, money left, last surplus, upcoming payments.
-import { Link } from 'react-router-dom';
+// Row of four Dashboard metric cards: safe to spend per week, money left and last month's surplus (each labelled
+// with the month it describes), and the payments due next.
 import { ArrowUp, CalendarSync, CircleCheck, Info, PiggyBank, TrendingUp, Wallet } from 'lucide-react';
 import LiquidityCard from './LiquidityCard';
 import { formatCurrency } from '../../utils/formatCurrency';
@@ -8,24 +8,24 @@ export default function LiquidityCards({ liquidity }) {
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-space-md">
       <LiquidityCard
-        label="Safe to spend this week"
+        label="Safe to spend per week"
         icon={Wallet}
         iconClass="text-primary"
         value={formatCurrency(liquidity.safeToSpendWeek)}
         badge={
           <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-label-sm font-label-sm bg-secondary-fixed text-on-secondary-fixed">
-            Live buffer
+            Buffer kept
           </span>
         }
         footer={
-          <Link className="font-body-sm text-body-sm text-primary hover:underline flex items-center gap-1" to="/ask">
-            <Info size={14} />
-            <span>How we calculated this</span>
-          </Link>
+          <p className="font-body-sm text-body-sm text-secondary flex items-center gap-1" title="Money left until the next salary, after regular payments due before it and keeping your safety buffer, divided by the weeks remaining.">
+            <Info size={14} className="text-primary" />
+            <span>Until {liquidity.untilSalary ? 'next salary' : 'month end'}, {liquidity.safeUntil}</span>
+          </p>
         }
       />
       <LiquidityCard
-        label="Money left this month"
+        label={`Money left in ${liquidity.dataMonth}`}
         tour="money-left"
         icon={PiggyBank}
         iconClass="text-secondary"
@@ -34,15 +34,15 @@ export default function LiquidityCards({ liquidity }) {
         footer={
           <p className="font-body-sm text-body-sm text-secondary flex items-center justify-between">
             <span>Surplus buffer intact</span>
-            <span className="font-medium text-on-surface">{liquidity.daysLeft} days left</span>
+            <span className="font-medium text-on-surface">{liquidity.daysLeft} days left after {liquidity.asOf}</span>
           </p>
         }
       />
       <LiquidityCard
-        label="Last month's surplus"
+        label={liquidity.lastMonth ? `${liquidity.lastMonth} surplus` : "Last month's surplus"}
         icon={TrendingUp}
         iconClass="text-emerald-400"
-        value={formatCurrency(liquidity.lastMonthSurplus, { sign: true })}
+        value={liquidity.lastMonthSurplus == null ? '—' : formatCurrency(liquidity.lastMonthSurplus, { sign: true })}
         valueClass="text-emerald-400"
         badge={
           <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-label-sm font-label-sm bg-emerald-400/10 text-emerald-400 font-semibold">
@@ -57,7 +57,7 @@ export default function LiquidityCards({ liquidity }) {
         }
       />
       <LiquidityCard
-        label="Upcoming payments (7 days)"
+        label={`Payments due in the 7 days after ${liquidity.asOf}`}
         icon={CalendarSync}
         iconClass="text-secondary"
         value={formatCurrency(liquidity.upcomingTotal)}

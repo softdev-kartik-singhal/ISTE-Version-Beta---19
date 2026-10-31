@@ -178,9 +178,10 @@ export async function deleteStatement(id) {
   invalidate();
 }
 
-// Loads the planted demo dataset for the signed-in user only (files already loaded are skipped).
-export async function loadDemoData(set = 'eight_months_complete') {
-  const result = await request(`/api/demo-data?set=${set}`, { method: 'POST' });
+// Loads the planted demo dataset for the signed-in user only. If they already have statements the server refuses
+// (error code HAS_STATEMENTS) unless replace is true, which clears their statements first.
+export async function loadDemoData({ replace = false, set = 'eight_months_complete' } = {}) {
+  const result = await request(`/api/demo-data?set=${set}&replace=${replace}`, { method: 'POST' });
   invalidate();
   return result;
 }
@@ -242,7 +243,7 @@ export async function getAskSetup() {
   const [d, s] = await Promise.all([request('/api/dashboard'), request('/api/session')]);
   if (d.insufficientHistory) return notReady('Questions are answered from your statements, which need at least one complete month.');
   const { defaultQuestion, quickQuestions } = suggestions(d.planningSurplusPaise);
-  return { presets: [defaultQuestion, ...quickQuestions], accounts: [...new Set(s.accountList.map((a) => a.bank))] };
+  return { presets: [defaultQuestion, ...quickQuestions], accounts: [...new Set(s.accountList.map((a) => a.bank))], asOf: d.asOf };
 }
 
 // Ask, step 1: what we understood from the sentence (amount, month, and what is missing). Nothing is calculated yet.

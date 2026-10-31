@@ -1,4 +1,4 @@
-// Surplus Plan Step 3: split this month's surplus between emergency buffer and long-term goals.
+// Surplus Plan Step 3: split the usual monthly surplus between emergency buffer and long-term goals.
 import { useState } from 'react';
 import { ArrowRight, RefreshCw, Shield, TrendingUp } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatCurrency';
@@ -11,14 +11,15 @@ export default function AllocationSimulator({ allocation, committed, onExport, o
   const goalsPct = 100 - emergencyPct;
   const emergencyAmt = Math.round((allocation.monthlySurplus * emergencyPct) / 100);
   const goalsAmt = Math.round((allocation.monthlySurplus * goalsPct) / 100);
-  const eta = emergencyAmt <= 0 ? 'Paused (Indefinite)' : `~${(allocation.remainingEmergency / emergencyAmt).toFixed(1)} months`;
+  const complete = allocation.remainingEmergency <= 0; // never a negative remaining amount or "~0.0 months"
+  const eta = complete ? 'Complete' : emergencyAmt <= 0 ? 'Paused (Indefinite)' : `~${Math.max(1, Math.ceil(allocation.remainingEmergency / emergencyAmt))} months`;
 
   return (
     <section className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-lg">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
         <div className="flex items-center gap-space-sm">
           <span className="px-2.5 py-1 rounded-full bg-primary-container text-surface-container-lowest font-label-md text-label-md uppercase tracking-wider">Step 3</span>
-          <h2 className="font-headline-md text-headline-md text-on-surface tracking-tight">Simulate this month&apos;s surplus distribution</h2>
+          <h2 className="font-headline-md text-headline-md text-on-surface tracking-tight">Simulate how your usual monthly surplus is split</h2>
         </div>
         <div className="flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-lg">
           <span className="font-label-sm text-label-sm text-on-surface-variant uppercase">Available Monthly Surplus:</span>
@@ -82,7 +83,9 @@ export default function AllocationSimulator({ allocation, committed, onExport, o
             <p className="font-body-sm text-body-sm text-on-surface-variant">Target destination: High-yield liquid savings or overnight sweep deposit.</p>
           </div>
           <div className="p-3 bg-surface-container-lowest rounded-lg flex items-center justify-between">
-            <span className="font-label-sm text-label-sm text-on-surface-variant font-medium">New ETA to full {allocation.targetLabel} target:</span>
+            <span className="font-label-sm text-label-sm text-on-surface-variant font-medium">
+              {complete ? 'Your emergency fund is complete' : `New ETA to full ${allocation.targetLabel} target:`}
+            </span>
             <span className="font-currency-sm text-currency-sm font-semibold text-primary">{eta}</span>
           </div>
         </div>

@@ -7,13 +7,14 @@ from statistics import median
 from app.config import (DUPLICATE_WINDOW_DAYS, LARGE_MIN_HISTORY, LARGE_MIN_PAISE, LARGE_PURCHASE_MULTIPLE,
                         NEW_MERCHANT_MIN_PAISE, NEW_MERCHANT_WARMUP_DAYS)
 from app.services.merchant import ref_of
+from app.services.money import inr
 
 DECISIONS = ("confirmed", "dismissed")
 
 
 def rs(paise):
-    """Plain rupee text for reason strings (the frontend formats money elsewhere)."""
-    return f"Rs {paise / 100:,.0f}"
+    """Rupee text for reason/insight sentences (₹ with Indian grouping, like the frontend)."""
+    return inr(paise)
 
 
 def load_rows(conn, user_id):

@@ -71,7 +71,8 @@ def test_money_left_and_weekly_safe_to_spend(inp):
     t = this_month(ledger, i)
     assert (t["incomeReceivedPaise"], t["spentSoFarPaise"], t["committedStillDuePaise"]) == (10_000_000, 2_000_000, 500_000)
     assert t["moneyLeftPaise"] == 7_500_000 and t["daysLeft"] == 20
-    assert t["weeklySafeToSpendPaise"] == round(7_500_000 * 0.9 / (20 / 7))
+    assert t["nextSalary"] is None and t["safeUntil"] == "2026-09-30"           # no salary: until month end
+    assert t["weeklySafeToSpendPaise"] == round(7_500_000 / (20 / 7))
 
 
 def test_salary_not_yet_received_uses_typical_income(inp):
@@ -97,7 +98,7 @@ def test_overspent_month_gives_zero_safe_and_a_note(inp):
 def test_end_of_month_sliver_is_one_week_not_less(inp):
     ledger, i = synthetic(inp, [("2026-09-01", 7_000_000, "S")], as_of=date(2026, 9, 29), monthly_income=(7_000_000,),
                           recurring=(), one_offs=())
-    assert this_month(ledger, i)["weeklySafeToSpendPaise"] == round(7_000_000 * 0.9)
+    assert this_month(ledger, i)["weeklySafeToSpendPaise"] == 7_000_000
 
 
 def test_due_dates_by_cadence():
@@ -132,7 +133,10 @@ def test_category_trends_are_vs_three_month_median(complete):
     assert sum(c["thisMonthPaise"] for c in t["categories"]) == t["months"][-1]["outflowPaise"]   # nothing lost
     for c in t["categories"]:
         assert c["thisMonthPaise"] == c["sparklinePaise"][-1] and len(c["sparklinePaise"]) == 8
-        assert c["medianPaise"] == int(median(c["sparklinePaise"][-4:-1]))
+        baseline = c["sparklinePaise"][-4:-1]
+        if c["name"] == "Shopping":                       # June holds the flagged ₹82,000 Croma one-off: left out of "usual"
+            baseline = [baseline[0] - 8_200_000, *baseline[1:]]
+        assert c["medianPaise"] == int(median(baseline))
         if c["medianPaise"]:
             assert c["changePct"] == round((c["thisMonthPaise"] / c["medianPaise"] - 1) * 100, 1)
             assert c["direction"] == ("flat" if abs(c["changePct"]) <= 5 else "up" if c["changePct"] > 0 else "down")
@@ -331,3 +335,52 @@ def test_goal_status_unknown_when_data_is_insufficient(client):
     g = by_name(client)["Phone"]
     assert g["status"] == "unknown" and [m["code"] for m in g["missing"]] == ["HISTORY"]
     assert g["monthlyNeededPaise"] > 0                                   # the arithmetic still works
+
+
+def test_safe_to_spend_runs_until_next_salary_after_bills_due_before_it(inp):
+    """Salary on the 28th: the week figure covers 28 Sep -> 28 Oct and first pays the rent due on 1 Oct."""
+    ledger = [{"month": "2026-09", "txn_date": "2026-09-28", "amount_paise": 9_000_000, "merchant": "ACME", "category": "Salary"}]
+    rent = {"merchant": "RENT", "label": "rent", "typical_paise": -2_000_000, "cadence_days": 30, "last_seen": "2026-09-01"}
+    i = replace(inp, as_of=date(2026, 9, 28), monthly_income=(9_000_000,), recurring=(rent,), one_offs=(), start_cash=50_000_000)
+    t = this_month(ledger, i)
+    assert t["nextSalary"] == "2026-10-28" and t["committedBeforeSalaryPaise"] == 2_000_000
+    assert t["moneyLeftPaise"] == 9_000_000                                             # rent on 1 Oct is not this month
+    assert t["weeklySafeToSpendPaise"] == round((9_000_000 - 2_000_000) / (30 / 7))
+
+
+def test_safe_to_spend_never_eats_into_the_buffer(inp):
+    ledger = [{"month": "2026-09", "txn_date": "2026-09-01", "amount_paise": 9_000_000, "merchant": "S", "category": "X"}]
+    rent = {"merchant": "RENT", "label": "rent", "typical_paise": -3_000_000, "cadence_days": 30, "last_seen": "2026-08-25"}
+    i = replace(inp, as_of=date(2026, 9, 2), monthly_income=(9_000_000,), recurring=(rent,), one_offs=(), start_cash=7_000_000)
+    t = this_month(ledger, i)                       # cash 70k - rent still due 30k - buffer 30k = only 10k may be spent
+    assert t["weeklySafeToSpendPaise"] == round(1_000_000 / (28 / 7))
+
+
+def test_last_month_surplus_is_the_month_before_the_current_one(complete):
+    d = get(complete, "/api/dashboard").json()
+    aug = get(complete, "/api/transactions", date_from="2026-08-01", date_to="2026-08-31").json()["summary"]
+    assert d["thisMonth"]["month"] == "2026-09" and d["previousMonth"]["month"] == "2026-08"
+    assert d["previousMonth"]["surplusPaise"] == aug["inflowPaise"] - aug["outflowPaise"]
+
+
+def test_flagged_large_purchase_is_left_out_of_the_usual_baseline(inp):
+    """A one-off ₹82,000 TV in the baseline months must not make next month's normal shopping look 'down'."""
+    from app.services.insights import category_trends
+    months = ["2026-05", "2026-06", "2026-07", "2026-08"]
+    row = lambda d, p, anomaly=False: {"month": d[:7], "txn_date": d, "amount_paise": p, "merchant": "M", "category": "Shopping", "anomaly": anomaly}
+    ledger = [row("2026-05-10", -300_000), row("2026-06-10", -300_000), row("2026-06-14", -8_200_000, anomaly=True),
+              row("2026-07-10", -300_000), row("2026-08-10", -300_000)]
+    (shop,) = category_trends(ledger, months)
+    assert shop["medianPaise"] == 300_000 and shop["direction"] == "flat"
+    assert shop["sparklinePaise"][1] == 8_500_000                       # June still shows what really happened
+
+
+def test_rupee_text_uses_the_rupee_sign_and_indian_grouping():
+    from app.services.money import inr
+    assert [inr(p) for p in (0, 50_000, 12_000_000, 8_200_000_00, -149_900)] == ["₹0", "₹500", "₹1,20,000", "₹82,00,000", "-₹1,499"]
+
+
+def test_no_rs_left_in_backend_sentences(complete):
+    import json
+    text = json.dumps([get(complete, p).json() for p in ("/api/trends", "/api/flags", "/api/dashboard")], ensure_ascii=False)
+    assert "Rs " not in text and "₹" in text

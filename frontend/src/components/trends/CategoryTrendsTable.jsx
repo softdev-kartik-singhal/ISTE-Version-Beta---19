@@ -34,7 +34,7 @@ export default function CategoryTrendsTable({ categories, month }) {
           <thead>
             <tr className="bg-surface-container-low text-secondary font-label-md text-label-md uppercase tracking-wider">
               <th className="py-3 px-space-md rounded-l-lg font-semibold">Category</th>
-              <th className="py-3 px-space-md text-right font-semibold">This Month (Oct)</th>
+              <th className="py-3 px-space-md text-right font-semibold">{month}</th>
               <th className="py-3 px-space-md text-right font-semibold">3-Month Median</th>
               <th className="py-3 px-space-md text-right font-semibold">Variance Change</th>
               <th className="py-3 px-space-md text-center rounded-r-lg font-semibold">6-Month Sparkline</th>

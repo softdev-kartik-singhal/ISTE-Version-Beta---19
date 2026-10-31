@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from app.config import DEMO_DIR, MAX_UPLOAD_BYTES
 from app.db import get_conn
 from app.deps import current_user_id
-from app.services.ingest import FileAlreadyUploaded, ingest
+from app.services.ingest import FileAlreadyUploaded, clear_statements, has_statements, ingest
 from app.services.parser import StatementRejected
 from app.services.recurring import refresh_recurring
 from app.services.transfers import match_transfers
@@ -30,17 +30,23 @@ async def upload(file: UploadFile = File(...), conn=Depends(get_conn), user_id: 
 
 
 @router.post("/demo-data")
-def load_demo_data(set: str = "eight_months", conn=Depends(get_conn), user_id: int = Depends(current_user_id)):
-    """Import the bundled demo CSVs. Re-running reports each file as already uploaded."""
+def load_demo_data(set: str = "eight_months", replace: bool = False, conn=Depends(get_conn), user_id: int = Depends(current_user_id)):
+    """Import the bundled demo CSVs. Never adds on top of existing statements: if the user has any,
+    409 HAS_STATEMENTS is returned unless replace=true, which clears them first."""
     if set not in DEMO_SETS:
         raise HTTPException(422, {"reason": f"Unknown demo set. Choose one of: {', '.join(DEMO_SETS)}."})
+    if has_statements(conn, user_id):
+        if not replace:
+            raise HTTPException(409, {"reason": "You already have statements. Replace them with the demo data?", "code": "HAS_STATEMENTS"})
+        clear_statements(conn, user_id)
+        conn.commit()
     results = []
     for path in sorted((DEMO_DIR / set).glob("*.csv")):
         try:
             results.append({"file": path.name, "status": "imported", **ingest(conn, user_id, path.name, path.read_bytes())})
         except FileAlreadyUploaded:
             results.append({"file": path.name, "status": "already uploaded"})
-    return {"set": set, "files": results}
+    return {"set": set, "replaced": replace, "files": results}
 
 
 @router.delete("/statements/{file_id}")

@@ -120,8 +120,8 @@ def test_case_7_uploading_everything_again_changes_nothing(client, db_path):
     """The same files a second time: refused, and the database is byte-for-byte the same."""
     client.post("/api/demo-data?set=eight_months")
     before = table_snapshot(db_path)
-    again = client.post("/api/demo-data?set=eight_months").json()["files"]
-    assert {f["status"] for f in again} == {"already uploaded"}
+    again = client.post("/api/demo-data?set=eight_months")               # never added on top of existing statements
+    assert again.status_code == 409 and again.json()["detail"]["code"] == "HAS_STATEMENTS"
     for name in ("bank_a_feb_jul.csv", "bank_a_jul_sep.csv", "bank_b_feb_sep.csv"):
         data = open(f"demo_data/eight_months/{name}", "rb").read()
         r = client.post("/api/upload", files={"file": (name, data)})

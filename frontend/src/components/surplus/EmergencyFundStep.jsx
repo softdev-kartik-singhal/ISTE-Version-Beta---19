@@ -4,6 +4,7 @@ import { formatCurrency } from '../../utils/formatCurrency';
 
 export default function EmergencyFundStep({ fund, showBreakdown, onToggleBreakdown }) {
   const percent = Math.round((fund.saved / fund.target) * 100);
+  const complete = fund.saved >= fund.target; // at or over 100%: no ETA, no "remaining" amount
 
   return (
     <section id="emergency-fund" className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col gap-space-lg relative overflow-hidden">
@@ -89,7 +90,7 @@ export default function EmergencyFundStep({ fund, showBreakdown, onToggleBreakdo
             </div>
             <div className="relative w-full pt-4 pb-2">
               <div className="w-full h-3 bg-surface-container rounded-full overflow-hidden flex">
-                <div className="h-full bg-primary-container transition-all duration-700 rounded-full" style={{ width: `${percent}%` }} />
+                <div className="h-full bg-primary-container transition-all duration-700 rounded-full" style={{ width: `${Math.min(100, percent)}%` }} />
               </div>
               <div className="relative w-full flex justify-between mt-2 font-label-sm text-label-sm text-on-surface-variant">
                 {fund.milestones.map((m, i) => {
@@ -112,13 +113,17 @@ export default function EmergencyFundStep({ fund, showBreakdown, onToggleBreakdo
             </div>
             <div className="flex flex-col">
               <span className="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Forward Velocity Projection</span>
-              <p className="font-body-sm text-body-sm text-on-surface leading-snug">
-                At your average surplus of{' '}
-                <span className="font-currency-sm text-currency-sm font-semibold text-primary">{formatCurrency(fund.averageSurplus)}</span>, you will
-                bridge the remaining {formatCurrency(fund.target - fund.saved)} in approximately{' '}
-                <strong className="font-semibold text-on-surface">{fund.etaRange}</strong> (projected completion:{' '}
-                <strong className="font-semibold text-on-surface">{fund.completion}</strong>).
-              </p>
+              {complete ? (
+                <p className="font-body-sm text-body-sm text-on-surface leading-snug font-semibold">Your emergency fund is complete.</p>
+              ) : (
+                <p className="font-body-sm text-body-sm text-on-surface leading-snug">
+                  At your average surplus of{' '}
+                  <span className="font-currency-sm text-currency-sm font-semibold text-primary">{formatCurrency(fund.averageSurplus)}</span>, you will
+                  bridge the remaining {formatCurrency(fund.target - fund.saved)} in approximately{' '}
+                  <strong className="font-semibold text-on-surface">{fund.etaRange}</strong> (projected completion:{' '}
+                  <strong className="font-semibold text-on-surface">{fund.completion}</strong>).
+                </p>
+              )}
             </div>
           </div>
         </div>

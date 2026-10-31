@@ -1,14 +1,14 @@
-// Trends page title row with the period selector and Export Trends button.
+// Trends page title row (with the month the data runs to), the period selector and Export Trends button.
 import { CalendarDays, ChevronDown, Download } from 'lucide-react';
 
-export default function TrendsHeader({ periods, period, onPeriodChange, onExport }) {
+export default function TrendsHeader({ periods, period, dataMonth, onPeriodChange, onExport }) {
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
       <div>
         <div className="flex items-center gap-space-xs">
           <span className="font-headline-lg text-headline-lg text-on-surface">Trends &amp; Surplus</span>
-          <span className="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm uppercase tracking-wider">
-            Multi-Stream
+          <span className="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">
+            Data up to {dataMonth}
           </span>
         </div>
         <p className="font-body-md text-body-md text-secondary mt-0.5">

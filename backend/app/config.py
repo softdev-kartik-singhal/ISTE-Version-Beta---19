@@ -99,7 +99,6 @@ TREND_BASELINE_MONTHS = 3    # a category is compared with its median over this 
 INSIGHT_MIN_MONTHS = 4       # this month + the baseline months; with fewer we say "insufficient history"
 TREND_FLAT_PCT = 5           # within +/- this % of the median counts as "flat"
 UPCOMING_DAYS = 7            # "upcoming payments" window after the latest statement date
-SAFE_TO_SPEND_MARGIN = 0.10  # weekly safe-to-spend keeps this share of money-left unspent
 CONCENTRATION_HIGH_PCT = 50  # one merchant above this share of a category is "concentrated"
 MONEY_FLOW_TOP_N = 5         # merchants shown in the money-flow graph
 # Fixed costs: not where a user would dig first, so never the default money-flow category.

@@ -60,14 +60,25 @@ def assess(inp, ledger, goals):
 
 
 def portfolio(entries, inp, ledger):
-    """Totals across goals, including the monthly commitment against the typical monthly surplus."""
+    """Totals across goals, including the monthly commitment against the typical monthly surplus.
+
+    shortfall = needed - surplus, only when needed is bigger (never negative); spare = the opposite.
+    A shortfall can still leave every goal on track when savings already in the bank cover the gap,
+    so allOnTrack is returned too and the screen words the two cases differently.
+    """
     saved, target = sum(e["savedPaise"] for e in entries), sum(e["targetPaise"] for e in entries)
     surplus = planning_surplus(ledger, inp)
+    typical = int(median(surplus)) if surplus else None
+    required = sum(e["monthlyNeededPaise"] for e in entries if e["status"] != "funded")
+    on_track = sum(e["status"] in ("on_track", "funded") for e in entries)
     return {"count": len(entries), "savedPaise": saved, "targetPaise": target,
             "fundedPercent": round(saved * 100 / target, 1) if target else 0,
-            "monthlyRequiredPaise": sum(e["monthlyNeededPaise"] for e in entries if e["status"] != "funded"),
-            "typicalSurplusPaise": int(median(surplus)) if surplus else None,
-            "onTrack": sum(e["status"] in ("on_track", "funded") for e in entries)}
+            "monthlyRequiredPaise": required,
+            "typicalSurplusPaise": typical,
+            "shortfallPaise": max(0, required - typical) if typical is not None else None,
+            "sparePaise": max(0, typical - required) if typical is not None else None,
+            "allOnTrack": on_track == len(entries),
+            "onTrack": on_track}
 
 
 def valid_date(text):

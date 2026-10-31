@@ -92,3 +92,16 @@ def ingest(conn, user_id, filename, data):
     return {"fileId": file_id, "bank": statement.bank, "last4": statement.last4, "rows": len(statement.rows),
             "newRows": added, "duplicateRows": skipped, "transfersMatched": transfers,
             "firstDate": min(dates), "lastDate": max(dates)}
+
+
+def has_statements(conn, user_id):
+    return conn.execute("SELECT 1 FROM uploaded_files WHERE user_id = ?", (user_id,)).fetchone() is not None
+
+
+def clear_statements(conn, user_id):
+    """Remove every imported statement of a user and everything derived from them (transactions, accounts,
+    recurring payments, the forecast log). Corrections and flag decisions go with their transactions.
+    Goals and settings are kept. The caller commits."""
+    conn.execute("DELETE FROM transactions WHERE account_id IN (SELECT id FROM accounts WHERE user_id = ?)", (user_id,))
+    for table in ("uploaded_files", "recurring", "forecast_log", "accounts"):
+        conn.execute(f"DELETE FROM {table} WHERE user_id = ?", (user_id,))

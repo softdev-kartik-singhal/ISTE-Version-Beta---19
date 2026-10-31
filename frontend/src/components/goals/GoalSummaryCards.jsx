@@ -1,5 +1,5 @@
 // Goals KPI row: portfolio funding, monthly commitment vs surplus, and milestone viability.
-import { Scale, ShieldCheck, Target, TriangleAlert } from 'lucide-react';
+import { CircleCheck, Info, Scale, ShieldCheck, Target, TriangleAlert } from 'lucide-react';
 import ProgressBar from '../ui/ProgressBar';
 import { formatCurrency } from '../../utils/formatCurrency';
 
@@ -52,10 +52,25 @@ export default function GoalSummaryCards({ summary }) {
             <span>Trailing Median Surplus</span>
             <span className="font-currency-sm text-currency-sm font-semibold text-on-surface">{formatCurrency(commitment.medianSurplus)}/mo</span>
           </div>
-          <div className="px-2 py-1 rounded bg-error-container/50 text-on-error-container font-label-sm text-label-sm flex items-center gap-1.5 leading-snug">
-            <TriangleAlert size={15} className="shrink-0" />
-            <span>Deficit of {formatCurrency(commitment.required - commitment.medianSurplus)}/mo — prioritize or extend milestones</span>
-          </div>
+          {/* shortfall = needed − surplus, shown only when needed is bigger; covered-by-savings is not a deficit */}
+          {commitment.shortfall > 0 && !commitment.allOnTrack && (
+            <div className="px-2 py-1 rounded bg-error-container/50 text-on-error-container font-label-sm text-label-sm flex items-center gap-1.5 leading-snug">
+              <TriangleAlert size={15} className="shrink-0" />
+              <span>Deficit of {formatCurrency(commitment.shortfall)}/mo — prioritize or extend milestones</span>
+            </div>
+          )}
+          {commitment.shortfall > 0 && commitment.allOnTrack && (
+            <div className="px-2 py-1 rounded bg-amber-100 text-amber-900 font-label-sm text-label-sm flex items-center gap-1.5 leading-snug">
+              <Info size={15} className="shrink-0" />
+              <span>Needs {formatCurrency(commitment.shortfall)}/mo more than your usual surplus; your current savings cover the gap</span>
+            </div>
+          )}
+          {commitment.shortfall === 0 && (
+            <div className="px-2 py-1 rounded bg-emerald-100 text-emerald-900 font-label-sm text-label-sm flex items-center gap-1.5 leading-snug">
+              <CircleCheck size={15} className="shrink-0" />
+              <span>Covered: {formatCurrency(commitment.spare)}/mo to spare</span>
+            </div>
+          )}
         </div>
       </div>
       <div className="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between relative overflow-hidden">

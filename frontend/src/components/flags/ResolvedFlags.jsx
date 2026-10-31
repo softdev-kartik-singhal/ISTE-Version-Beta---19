@@ -17,7 +17,7 @@ export default function ResolvedFlags({ resolved, open, onToggle }) {
             <div className="flex items-center gap-2">
               <h2 className="font-headline-sm text-headline-sm text-on-surface">Resolved Flags</h2>
               <span className="px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold">
-                {resolved.count} items resolved this month
+                {resolved.count} items resolved
               </span>
             </div>
             <p className="font-body-sm text-body-sm text-secondary">

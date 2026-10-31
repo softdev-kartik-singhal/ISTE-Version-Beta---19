@@ -27,7 +27,7 @@ export default function MoneyFlow() {
     if (node.id.startsWith('cat:')) {
       setCategory(node.name);
       setDrawerOpen(true);
-    } else showToast(`${node.name}: ${formatCurrency(node.amount)} this month`);
+    } else showToast(`${node.name}: ${formatCurrency(node.amount)} in ${data.monthLabel}`);
   }
 
   return (

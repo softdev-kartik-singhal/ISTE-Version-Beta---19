@@ -55,17 +55,29 @@ export default function Statements() {
     fileInput.current.click();
   }
 
-  // Loads the planted demo statements for this account only, when asked.
+  // Loads the planted demo statements for this account only. It never adds on top of existing statements:
+  // if there are some, the user is asked whether to replace them.
   async function loadDemo() {
     setDemoState('loading');
     try {
-      const result = await loadDemoData();
+      let result;
+      try {
+        result = await loadDemoData();
+      } catch (err) {
+        if (err.code !== 'HAS_STATEMENTS') throw err;
+        if (!window.confirm('You already have statements. Replace all of them with the demo data? Your current statements and their transactions will be removed.')) {
+          setDemoState('idle');
+          return;
+        }
+        result = await loadDemoData({ replace: true });
+      }
       const added = result.files.filter((f) => f.status === 'imported').length;
-      showToast(added ? `Demo statements loaded (${added} files)` : 'The demo statements are already loaded');
+      showToast(result.replaced ? `Statements replaced with the demo data (${added} files)` : `Demo statements loaded (${added} files)`);
       setDemoState('done');
     } catch (err) {
       showToast(err.message);
       setDemoState('idle');
+      return;
     }
     setTimeout(() => setDemoState('idle'), 2000);
   }

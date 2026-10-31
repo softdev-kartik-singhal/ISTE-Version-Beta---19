@@ -3,6 +3,7 @@ import { useApi } from '../hooks/useApi';
 import { getDashboard } from '../services/api';
 import PageState from '../components/ui/PageState';
 import AffordabilityHero from '../components/dashboard/AffordabilityHero';
+import StaleDataBanner from '../components/ui/StaleDataBanner';
 import LiquidityCards from '../components/dashboard/LiquidityCards';
 import UpcomingPayments from '../components/dashboard/UpcomingPayments';
 import ChangeInsightCard from '../components/dashboard/ChangeInsightCard';
@@ -20,6 +21,7 @@ export default function Dashboard() {
     <main className="relative pt-16 min-h-screen bg-[#F7F9FC]">
       <div className="max-w-[1440px] mx-auto p-space-xl">
         <div className="flex flex-col w-full space-y-space-lg">
+          <StaleDataBanner asOf={data.liquidity.asOfIso} />
           <AffordabilityHero defaultQuestion={data.defaultQuestion} quickQuestions={data.quickQuestions} />
           <LiquidityCards liquidity={data.liquidity} />
           <UpcomingPayments payments={data.upcoming} />
@@ -27,7 +29,7 @@ export default function Dashboard() {
           {/* What changed this month */}
           <section className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="font-headline-sm text-headline-sm text-on-surface">What changed this month</h3>
+              <h3 className="font-headline-sm text-headline-sm text-on-surface">What changed in {data.liquidity.dataMonth}</h3>
               <span className="font-label-sm text-label-sm text-secondary">Analyzed from {data.analyzedTransactions} transactions</span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-space-md">

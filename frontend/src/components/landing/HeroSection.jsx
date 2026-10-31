@@ -12,7 +12,7 @@ export default function HeroSection({ onSeeDemo }) {
           <span className="font-label-md text-label-md text-primary font-semibold tracking-wide uppercase">Private Decision Intelligence for Salaried + Freelancers</span>
         </div>
         <h1 className="max-w-4xl font-display-lg text-display-lg lg:text-[44px] lg:leading-[52px] font-bold text-on-surface tracking-tight mb-space-md">
-          Know if you can afford it — <br className="hidden sm:inline" />
+          Know if you can afford it - <br className="hidden sm:inline" />
           <span className="text-primary-container">before you spend</span>
         </h1>
         <p className="max-w-2xl font-body-lg text-body-lg text-on-surface-variant mb-space-xl">

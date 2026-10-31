@@ -57,7 +57,9 @@ export function toDashboard(d, trends, flags) {
     status: 'Auto-debit',
     statusIcon: 'clock',
   }));
-  const delta = d.surplusVsPrevPaise;
+  const pm = d.previousMonth; // the month before the statements' current month
+  const delta = d.previousVsBeforePaise;
+  const dataMonth = monthLabel(tm.month); // figures describe the statements' month, which may not be today's month
   const moves = (trends.categories || [])
     .filter((c) => ['up', 'down', 'new'].includes(c.direction) && c.thisMonthPaise > 0)
     .sort((a, b) => Math.abs(b.changePct ?? 999) - Math.abs(a.changePct ?? 999))
@@ -66,7 +68,7 @@ export function toDashboard(d, trends, flags) {
     ? moves.map((c) => ({
         id: c.name, icon: catIcon(c.name), tone: c.direction === 'up' ? 'warning' : c.direction === 'down' ? 'positive' : 'neutral',
         badge: c.changePct == null ? 'New' : `${c.changePct > 0 ? '+' : ''}${Math.round(c.changePct)}%`, title: c.insight,
-        detail: `${formatCurrency(r(c.thisMonthPaise))} this month against a usual ${formatCurrency(r(c.medianPaise))}.`,
+        detail: `${formatCurrency(r(c.thisMonthPaise))} in ${monthName(trends.categoryMonth)} against a usual ${formatCurrency(r(c.medianPaise))}.`,
       }))
     : [{ id: 'none', icon: 'info', tone: 'neutral', badge: '—', title: 'Comparisons start after 4 months of statements', detail: 'Once there is enough history, the biggest changes from your usual spending appear here.' }];
   const months = (trends.months || []).slice(-6);
@@ -77,8 +79,11 @@ export function toDashboard(d, trends, flags) {
   return {
     ...suggestions(d.planningSurplusPaise),
     liquidity: {
-      safeToSpendWeek: r(tm.weeklySafeToSpendPaise), moneyLeftMonth: r(tm.moneyLeftPaise), daysLeft: tm.daysLeft, lastMonthSurplus: r(d.monthlySurplus),
-      surplusVsPrev: delta == null ? 'First month on record' : `${delta >= 0 ? '↑' : '↓'} ${formatCurrency(Math.abs(r(delta)))} ${delta >= 0 ? 'higher' : 'lower'} than ${monthShort(prevMonth(d.latestMonth.month))}`,
+      dataMonth, asOf: day(d.asOf), asOfIso: d.asOf,
+      safeToSpendWeek: r(tm.weeklySafeToSpendPaise), safeUntil: dayShort(tm.safeUntil), untilSalary: Boolean(tm.nextSalary),
+      moneyLeftMonth: r(tm.moneyLeftPaise), daysLeft: tm.daysLeft,
+      lastMonth: pm ? monthLabel(pm.month) : null, lastMonthSurplus: pm ? r(pm.surplusPaise) : null,
+      surplusVsPrev: !pm ? 'No earlier month on record' : delta == null ? 'First month on record' : `${delta >= 0 ? '↑' : '↓'} ${formatCurrency(Math.abs(r(delta)))} ${delta >= 0 ? 'higher' : 'lower'} than ${monthShort(prevMonth(pm.month))}`,
       upcomingTotal: upcoming.reduce((s, u) => s + u.amount, 0), upcomingDebits: upcoming.length, mandates: upcoming.length,
     },
     upcoming,
@@ -291,7 +296,7 @@ export function toMoneyFlow(f, compare) {
     change: d.insufficientHistory || d.changePct == null ? 'Not enough history to compare' : `${pctText(d.changePct)} vs ${compare === 'prev' ? 'last month' : '3-mo med'}`,
     share: `${variableTotal ? Math.round((d.amountPaise * 100) / variableTotal) : 0}% of non-fixed monthly spend`,
     median: r(d.baselinePaise ?? 0), transactionCount: d.transactionCount, compareLabel: compare === 'prev' ? `${monthShort(f.month)} vs ${monthShort(prev)}` : `${monthShort(f.month)} vs 3-mo avg`,
-    drivers: d.drivers.map((x) => ({ name: title(x.merchant), delta: r(x.deltaPaise), amountClass: x.deltaPaise > 0 ? 'text-error font-bold' : 'text-primary font-bold', tag: `${x.contributionPct}% of ${x.deltaPaise > 0 ? 'increase' : 'decrease'}`, tagClass: 'bg-amber-200 text-amber-900 font-bold', detail: `${plural(x.transactions, 'transaction')} this month.` })),
+    drivers: d.drivers.map((x) => ({ name: title(x.merchant), delta: r(x.deltaPaise), amountClass: x.deltaPaise > 0 ? 'text-error font-bold' : 'text-primary font-bold', tag: `${x.contributionPct}% of ${x.deltaPaise > 0 ? 'increase' : 'decrease'}`, tagClass: 'bg-amber-200 text-amber-900 font-bold', detail: `${plural(x.transactions, 'transaction')} in ${monthLabel(f.month)}.` })),
     concentration: { summary: `Top 3 = ${d.concentration.top3SharePct}%`, parts: d.concentration.parts.map((p) => ({ name: title(p.merchant), percent: p.sharePct })), tip: d.concentration.tip || 'Spending is spread across several merchants.' },
     trajectory: { range: `Range: ₹${small(Math.min(...d.trajectory.map((t) => t.amountPaise)) / 100)} - ₹${small(Math.max(...d.trajectory.map((t) => t.amountPaise)) / 100)}`, months: d.trajectory.map((t) => ({ month: monthShort(t.month), value: r(t.amountPaise), label: small(r(t.amountPaise)) })) },
   };
@@ -300,7 +305,7 @@ export function toMoneyFlow(f, compare) {
   const card = (label, badge, icon, cls, name, amountPaise, note, detail, query) => ({ label, badge, badgeIcon: icon, badgeClass: cls, title: title(name), amount: r(amountPaise), amountNote: note, detail, footer: `${monthLabel(f.month)}`, action: 'See transactions →', query });
   const insights = [
     flexible && card('Biggest Flexible Spend', `${Math.round((flexible.amountPaise * 100) / Math.max(1, variableTotal))}% of non-fixed`, 'pie', 'bg-cyan-100 text-cyan-900', flexible.name, flexible.amountPaise, `of ${formatCurrency(r(variableTotal))} non-fixed spend`, 'The largest category after rent and EMI.', flexible.name),
-    merchant && card('Top Merchant', `${Math.round((merchant.amountPaise * 100) / Math.max(1, f.spendPaise))}% of spend`, 'trending', 'bg-rose-100 text-rose-800', merchant.name, merchant.amountPaise, `of ${formatCurrency(r(f.spendPaise))} total spend`, 'The single merchant you paid most this month.', merchant.name),
+    merchant && card('Top Merchant', `${Math.round((merchant.amountPaise * 100) / Math.max(1, f.spendPaise))}% of spend`, 'trending', 'bg-rose-100 text-rose-800', merchant.name, merchant.amountPaise, `of ${formatCurrency(r(f.spendPaise))} total spend`, `The single merchant you paid most in ${monthLabel(f.month)}.`, merchant.name),
     card('Income Retained', pct(f.incomePaise - f.spendPaise), 'trending', 'bg-emerald-100 text-emerald-900', 'Money kept', Math.max(0, f.incomePaise - f.spendPaise), `of ${formatCurrency(r(f.incomePaise))} income`, 'Income minus all spending, with transfers between your own accounts left out.', ''),
   ].filter(Boolean);
   return {
@@ -398,7 +403,7 @@ export function toGoals(g, plan) {
     surplus: { average: avg, floor: r(plan.surplus.lowPaise) },
     summary: {
       portfolio: { count: s.count, fundedPercent: s.fundedPercent, saved: r(s.savedPaise), target: r(s.targetPaise) },
-      commitment: { required: r(s.monthlyRequiredPaise), medianSurplus: avg },
+      commitment: { required: r(s.monthlyRequiredPaise), medianSurplus: s.typicalSurplusPaise == null ? avg : r(s.typicalSurplusPaise), shortfall: r(s.shortfallPaise ?? 0), spare: r(s.sparePaise ?? 0), allOnTrack: s.allOnTrack },
       viability: { solvent: s.onTrack, total: s.count, bufferStatus: `${plan.emergencyFund.monthsCovered ?? 0} months of essentials in cash`, emergencyFloor: r(plan.emergencyFund.targetPaise) },
     },
     goals: g.goals.map((x) => ({
