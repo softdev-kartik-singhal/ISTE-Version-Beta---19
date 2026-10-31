@@ -1,6 +1,7 @@
 // Public site header: logo, in-page section links, Log In and Sign Up.
 import { Link } from 'react-router-dom';
 import { User } from 'lucide-react';
+import logo from '../../../SmartGullak.png';
 
 const LINKS = [
   { id: 'features', label: 'Features' },
@@ -14,7 +15,7 @@ export default function LandingNav({ active, onNavigate }) {
     <header className="fixed top-0 left-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
       <div className="h-16 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between">
         <button className="flex items-center gap-space-sm" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <div className="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-on-primary font-headline-md font-bold text-headline-md">₹</div>
+          <img src={logo} alt="" className="w-8 h-8 rounded-lg object-contain" />
           <div className="flex flex-col">
             <span className="font-headline-sm text-headline-sm text-on-surface font-bold tracking-tight">SmartGullak</span>
           </div>
