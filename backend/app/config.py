@@ -92,6 +92,32 @@ CONFIDENCE_INCOME_SPREAD = 0.30     # (best - worst income) / typical income abo
 CONFIDENCE_BORDERLINE_SHARE = 0.10  # typical-case money left is within this share of the price
 CONFIDENCE_MAX_HORIZON = 1          # forecasting more months ahead than this
 
+# --- Insights ----------------------------------------------------------------
+TRENDS_MONTHS = 6            # months shown in trends
+TREND_BASELINE_MONTHS = 3    # a category is compared with its median over this many earlier months
+INSIGHT_MIN_MONTHS = 4       # this month + the baseline months; with fewer we say "insufficient history"
+TREND_FLAT_PCT = 5           # within +/- this % of the median counts as "flat"
+UPCOMING_DAYS = 7            # "upcoming payments" window after the latest statement date
+SAFE_TO_SPEND_MARGIN = 0.10  # weekly safe-to-spend keeps this share of money-left unspent
+CONCENTRATION_HIGH_PCT = 50  # one merchant above this share of a category is "concentrated"
+MONEY_FLOW_TOP_N = 5         # merchants shown in the money-flow graph
+# Fixed costs: not where a user would dig first, so never the default money-flow category.
+FIXED_CATEGORIES = ["Rent", "EMI"]
+
+# --- Surplus plan ---------------------------------------------------------------
+# Spending categories that count as essentials for the emergency fund.
+ESSENTIAL_CATEGORIES = ["Rent", "EMI", "Bills & Utilities", "Groceries", "Travel & Commute", "Fuel"]
+EMERGENCY_FUND_MONTHS = 3    # emergency fund target = this many months of essentials
+SURPLUS_DEFAULT_SPLIT = 60   # default % of monthly surplus sent to the emergency fund
+SURPLUS_SPLIT_PRESETS = (100, 75, 60, 50, 25)
+
+# --- Trust ---------------------------------------------------------------------
+# The track record needs at least this many judged months before its hit rate means anything.
+TRACK_RECORD_MIN_MONTHS = 3
+# Categorisation check: at most this many simulated merchant corrections.
+ACCURACY_MAX_STEPS = 20
+DEMO_DIR = BASE_DIR / "demo_data"
+
 # --- Upload ----------------------------------------------------------------
 MAX_UPLOAD_BYTES = 5 * 1024 * 1024  # statements are small; refuse anything larger
 # Until real auth (Phase 5) every request acts as this one demo user.

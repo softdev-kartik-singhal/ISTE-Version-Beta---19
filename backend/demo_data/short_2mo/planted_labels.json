@@ -1,0 +1,116 @@
+{
+ "rows": [
+  {
+   "last4": "9999",
+   "date": "2026-08-01",
+   "amountPaise": -1800000,
+   "description": "UPI/RENT/MS IYER LANDLORD",
+   "balancePaise": 4200000,
+   "category": "Rent"
+  },
+  {
+   "last4": "9999",
+   "date": "2026-08-05",
+   "amountPaise": -64900,
+   "description": "NETFLIX.COM",
+   "balancePaise": 4135100,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "9999",
+   "date": "2026-08-05",
+   "amountPaise": -83200,
+   "description": "UPI/BIGBASKET/1780520225",
+   "balancePaise": 4051900,
+   "category": "Groceries"
+  },
+  {
+   "last4": "9999",
+   "date": "2026-08-11",
+   "amountPaise": -46700,
+   "description": "UPI/BIGBASKET/7105574449",
+   "balancePaise": 4005200,
+   "category": "Groceries"
+  },
+  {
+   "last4": "9999",
+   "date": "2026-08-13",
+   "amountPaise": -117700,
+   "description": "UPI/SWIGGY/9950486177",
+   "balancePaise": 3887500,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "9999",
+   "date": "2026-08-13",
+   "amountPaise": -96900,
+   "description": "UPI/BIGBASKET/6204041308",
+   "balancePaise": 3790600,
+   "category": "Groceries"
+  },
+  {
+   "last4": "9999",
+   "date": "2026-08-28",
+   "amountPaise": 5200000,
+   "description": "NEFT CR-BRIGHT LABS-SALARY",
+   "balancePaise": 8990600,
+   "category": "Salary"
+  },
+  {
+   "last4": "9999",
+   "date": "2026-09-01",
+   "amountPaise": -1800000,
+   "description": "UPI/RENT/MS IYER LANDLORD",
+   "balancePaise": 7190600,
+   "category": "Rent"
+  },
+  {
+   "last4": "9999",
+   "date": "2026-09-05",
+   "amountPaise": -64900,
+   "description": "NETFLIX.COM",
+   "balancePaise": 7125700,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "9999",
+   "date": "2026-09-08",
+   "amountPaise": -61200,
+   "description": "UPI/SWIGGY/4604460472",
+   "balancePaise": 7064500,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "9999",
+   "date": "2026-09-08",
+   "amountPaise": -125200,
+   "description": "UPI/SWIGGY/5070585433",
+   "balancePaise": 6939300,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "9999",
+   "date": "2026-09-16",
+   "amountPaise": -75900,
+   "description": "UPI/SWIGGY/9383431259",
+   "balancePaise": 6863400,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "9999",
+   "date": "2026-09-21",
+   "amountPaise": -36300,
+   "description": "UPI/SWIGGY/3799264931",
+   "balancePaise": 6827100,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "9999",
+   "date": "2026-09-28",
+   "amountPaise": 5200000,
+   "description": "NEFT CR-BRIGHT LABS-SALARY",
+   "balancePaise": 12027100,
+   "category": "Salary"
+  }
+ ]
+}

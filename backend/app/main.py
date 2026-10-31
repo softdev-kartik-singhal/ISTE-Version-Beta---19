@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import connect, init_db
-from app.routers import ask, insights, statements, transactions
+from app.routers import ask, goals, insights, overview, statements, transactions, trust
 
 
 @asynccontextmanager
@@ -22,3 +22,6 @@ app.include_router(statements.router)
 app.include_router(transactions.router)
 app.include_router(insights.router)
 app.include_router(ask.router)
+app.include_router(overview.router)
+app.include_router(goals.router)
+app.include_router(trust.router)

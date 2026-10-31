@@ -7,7 +7,8 @@ from app.config import (MIN_HISTORY_MONTHS, MONTH_EDGE_SLACK_DAYS, VARIABLE_HIGH
                         VARIABLE_MONTHS)
 from app.services.income import classify_income, income_profile, monthly_income
 from app.services.stats import add_months, month_end, month_of, months_between, percentile
-from app.services.summary import coverage
+from app.services.recurring import detect
+from app.services.summary import coverage, find_gaps
 
 
 @dataclass(frozen=True)
@@ -59,14 +60,22 @@ def latest_balances(conn, user_id):
     return [r["balance_paise"] for r in rows if r["balance_paise"] is not None]
 
 
-def build_inputs(conn, user_id):
-    rows = conn.execute(
-        "SELECT t.id, t.txn_date, t.amount_paise, t.merchant, t.kind, c.name AS category FROM transactions t"
-        " JOIN accounts a ON a.id = t.account_id LEFT JOIN categories c ON c.id = t.category_id"
-        " WHERE a.user_id = ?", (user_id,)).fetchall()
-    recurring = [dict(r) for r in conn.execute("SELECT * FROM recurring WHERE user_id = ?", (user_id,))]
-    gaps = [{**g, "bank": a["bank"], "last4": a["last4"]} for a in coverage(conn, user_id)["accounts"] for g in a["gaps"]]
-    balances = latest_balances(conn, user_id)
+def build_inputs(conn, user_id, until=None):
+    """Everything the calculation needs. With `until` (an ISO date) only rows up to that day are used
+    and recurring payments, gaps and balances are recomputed from those rows alone, so a backtest
+    cannot see the future."""
+    query = ("SELECT t.id, t.account_id, t.txn_date, t.amount_paise, t.balance_paise, t.merchant, t.kind,"
+             " c.name AS category, a.bank, a.last4 FROM transactions t JOIN accounts a ON a.id = t.account_id"
+             " LEFT JOIN categories c ON c.id = t.category_id WHERE a.user_id = ?")
+    rows = conn.execute(query + (" AND t.txn_date <= ?" if until else "") + " ORDER BY t.txn_date, t.id",
+                        (user_id, until) if until else (user_id,)).fetchall()
+    if until:
+        recurring = detect([dict(r) for r in rows if r["kind"] == "normal"])
+        gaps, balances = rows_gaps(rows), rows_balances(rows)
+    else:
+        recurring = [dict(r) for r in conn.execute("SELECT * FROM recurring WHERE user_id = ?", (user_id,))]
+        gaps = [{**g, "bank": a["bank"], "last4": a["last4"]} for a in coverage(conn, user_id)["accounts"] for g in a["gaps"]]
+        balances = latest_balances(conn, user_id)
     if not rows:
         return Inputs(date.today(), 0, (), (), income_profile({"regular": [], "irregular": [], "one_off": []}, {}),
                       (), (), {}, tuple(gaps), False)
@@ -82,6 +91,23 @@ def build_inputs(conn, user_id):
                         for c in classes["one_off"]),
                   tuple(debits), variable_spend(rows, last_months, {r["merchant"] for r in debits}), tuple(gaps),
                   bool(balances))
+
+
+def rows_balances(rows):
+    """Each account's last balance among these rows (rows are ordered by date, id)."""
+    last = {}
+    for r in rows:
+        last[r["account_id"]] = r["balance_paise"]
+    return [b for b in last.values() if b is not None]
+
+
+def rows_gaps(rows):
+    """Coverage gaps computed from these rows only (same rule as the statements page)."""
+    by_account = {}
+    for r in rows:
+        by_account.setdefault((r["account_id"], r["bank"], r["last4"]), []).append(r)
+    return [{**g, "bank": bank, "last4": last4} for (_, bank, last4), acct_rows in by_account.items()
+            for g in find_gaps(acct_rows)]
 
 
 def missing_items(inp):

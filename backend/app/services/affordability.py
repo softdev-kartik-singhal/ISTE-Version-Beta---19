@@ -131,3 +131,16 @@ def what_if(inp, price, target_month, cancel=(), add_emi=None):
               for n in CASES}
     return {"original": original, "modified": modified, "changePaise": change,
             "verdictChanged": original["verdict"]["code"] != modified["verdict"]["code"]}
+
+
+def monthly_surplus_forecast(inp, month):
+    """Worst / typical / best surplus (income - committed - variable) for one month.
+
+    Uses the same cases as the affordability answer, so what we log is what we would have told the user.
+    """
+    committed_total, _ = committed(inp, [month])
+    out = {}
+    for name, (income_pct, variable_key) in CASES.items():
+        variable = sum(v[variable_key] for v in inp.variable.values())
+        out[name] = round(percentile(inp.monthly_income, income_pct)) - committed_total - variable
+    return out

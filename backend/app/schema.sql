@@ -97,14 +97,24 @@ CREATE TABLE IF NOT EXISTS recurring (
     next_expected  TEXT NOT NULL
 );
 
--- Every forecast we make, later compared to what really happened (track record).
+-- Append-only, hash-chained log of monthly-surplus forecasts and what actually happened.
+-- entry_hash = SHA-256(prev_hash + the entry's own fields); prev_hash is the user's previous entry
+-- (64 zeros for the first). Changing or removing an old row breaks every later link.
 CREATE TABLE IF NOT EXISTS forecast_log (
-    id             INTEGER PRIMARY KEY,
-    user_id        INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    made_on        TEXT NOT NULL,
-    target_month   TEXT NOT NULL,          -- yyyy-mm
-    forecast_paise INTEGER NOT NULL,
-    actual_paise   INTEGER
+    id            INTEGER PRIMARY KEY,
+    user_id       INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    kind          TEXT NOT NULL CHECK (kind IN ('forecast', 'actual')),
+    source        TEXT NOT NULL CHECK (source IN ('live', 'backtest')),
+    made_on       TEXT NOT NULL,
+    target_month  TEXT NOT NULL,           -- yyyy-mm the entry is about
+    worst_paise   INTEGER,                 -- forecast entries: the band and the middle
+    typical_paise INTEGER,
+    best_paise    INTEGER,
+    actual_paise  INTEGER,                 -- actual entries: what really happened
+    prev_hash     TEXT NOT NULL,
+    entry_hash    TEXT NOT NULL,
+    UNIQUE (user_id, prev_hash),           -- the chain cannot fork
+    UNIQUE (user_id, kind, target_month)   -- one forecast and one actual per month
 );
 
 CREATE TABLE IF NOT EXISTS goals (

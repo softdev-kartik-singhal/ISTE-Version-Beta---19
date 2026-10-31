@@ -33,6 +33,10 @@ Each file starts with an `Account No` line carrying the **full** number, so the 
 | 11 | **New merchant** | B, 14 Sep 2026: `INTL POS STRIPE CURSOR AI`, Rs 1,720, first and only appearance | "New merchant" flag |
 | 12 | **10-day date gap** | B: no rows 11–20 Aug 2026, and the balance jumps across the hole | Coverage report shows a 10-day gap |
 
+| 13 | **Hard-to-categorise merchants** | B: Blinkit, Zepto (groceries), MakeMyTrip, IRCTC (travel), Myntra (shopping), 15 rows in all | The keyword rules do not know them, so they land in "Other". One merchant correction fixes every row: used by the categorisation-accuracy check |
+
+Every dataset folder also has `planted_labels.json`: the true category of every row, used only to measure categorisation accuracy (never by the app's own rules).
+
 Also present: salary (28th, Rs 95,000), electricity bill, groceries, Swiggy / Zomato, Uber, fuel.
 
 ## Eight months without the gap

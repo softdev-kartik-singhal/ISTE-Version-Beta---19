@@ -17,9 +17,17 @@ def connect(path=DB_PATH) -> sqlite3.Connection:
 
 def init_db(conn: sqlite3.Connection) -> None:
     """Create all tables (safe to run repeatedly)."""
+    drop_old_forecast_log(conn)
     conn.executescript(SCHEMA_FILE.read_text())
     seed_rules(conn)
     conn.commit()
+
+
+def drop_old_forecast_log(conn):
+    """The first version of forecast_log had no hash columns and was never written to; replace it."""
+    columns = [r["name"] for r in conn.execute("PRAGMA table_info(forecast_log)")]
+    if columns and "entry_hash" not in columns:
+        conn.execute("DROP TABLE forecast_log")
 
 
 def seed_rules(conn):

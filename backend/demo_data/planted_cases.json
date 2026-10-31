@@ -71,5 +71,15 @@
   "irregular_freelance_months_with_none": [
     "2026-03",
     "2026-06"
-  ]
+  ],
+  "hard_to_categorise": {
+    "bank": "bank_b",
+    "merchants": [
+      "BLINKIT",
+      "ZEPTO",
+      "MAKEMYTRIP",
+      "IRCTC",
+      "MYNTRA"
+    ]
+  }
 }

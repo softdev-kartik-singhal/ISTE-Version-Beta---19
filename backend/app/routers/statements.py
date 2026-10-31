@@ -1,7 +1,7 @@
 """Statement endpoints: upload a file, load the demo data, list what has been imported."""
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 
-from app.config import BASE_DIR, MAX_UPLOAD_BYTES
+from app.config import DEMO_DIR, MAX_UPLOAD_BYTES
 from app.db import get_conn
 from app.services.ingest import FileAlreadyUploaded, default_user_id, ingest
 from app.services.parser import StatementRejected
@@ -9,7 +9,6 @@ from app.services.summary import statements_payload
 
 router = APIRouter(prefix="/api")
 
-DEMO_DIR = BASE_DIR / "demo_data"
 DEMO_SETS = ("eight_months", "eight_months_complete", "short_2mo")
 
 

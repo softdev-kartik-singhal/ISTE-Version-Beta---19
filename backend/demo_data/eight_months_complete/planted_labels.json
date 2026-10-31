@@ -1,0 +1,1716 @@
+{
+ "rows": [
+  {
+   "last4": "1234",
+   "date": "2026-02-01",
+   "amountPaise": -2800000,
+   "description": "UPI/RENT/MR SHARMA LANDLORD",
+   "balancePaise": 12200000,
+   "category": "Rent"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-02-01",
+   "amountPaise": -108500,
+   "description": "UPI/DMART/2051802512",
+   "balancePaise": 12091500,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-02-02",
+   "amountPaise": -127600,
+   "description": "UPI/BIGBASKET/1402418010",
+   "balancePaise": 11963900,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-02-03",
+   "amountPaise": -2000000,
+   "description": "NEFT/SELF TRANSFER TO KOTAK 5678",
+   "balancePaise": 9963900,
+   "category": "Transfer"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-02-07",
+   "amountPaise": -1450000,
+   "description": "ACH D-HDFC LTD-EMI-LN00482",
+   "balancePaise": 8513900,
+   "category": "EMI"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-02-14",
+   "amountPaise": 12000000,
+   "description": "NEFT CR-ACME TECH PVT LTD-ANNUAL BONUS FY25",
+   "balancePaise": 20513900,
+   "category": "Bonus"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-02-15",
+   "amountPaise": -162800,
+   "description": "BESCOM ELECTRICITY BILL",
+   "balancePaise": 20351100,
+   "category": "Bills & Utilities"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-02-24",
+   "amountPaise": -166400,
+   "description": "UPI/BIGBASKET/9963334018",
+   "balancePaise": 20184700,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-02-28",
+   "amountPaise": 9500000,
+   "description": "NEFT CR-ACME TECH PVT LTD-SALARY",
+   "balancePaise": 29684700,
+   "category": "Salary"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-03-01",
+   "amountPaise": -2800000,
+   "description": "UPI/RENT/MR SHARMA LANDLORD",
+   "balancePaise": 26884700,
+   "category": "Rent"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-03-03",
+   "amountPaise": -2000000,
+   "description": "NEFT/SELF TRANSFER TO KOTAK 5678",
+   "balancePaise": 24884700,
+   "category": "Transfer"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-03-07",
+   "amountPaise": -1450000,
+   "description": "ACH D-HDFC LTD-EMI-LN00482",
+   "balancePaise": 23434700,
+   "category": "EMI"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-03-11",
+   "amountPaise": -148900,
+   "description": "UPI/DMART/1667779376",
+   "balancePaise": 23285800,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-03-14",
+   "amountPaise": -145400,
+   "description": "BESCOM ELECTRICITY BILL",
+   "balancePaise": 23140400,
+   "category": "Bills & Utilities"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-03-18",
+   "amountPaise": -171900,
+   "description": "UPI/BIGBASKET/2801823908",
+   "balancePaise": 22968500,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-03-19",
+   "amountPaise": -166500,
+   "description": "UPI/DMART/4460967357",
+   "balancePaise": 22802000,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-03-28",
+   "amountPaise": 9500000,
+   "description": "NEFT CR-ACME TECH PVT LTD-SALARY",
+   "balancePaise": 32302000,
+   "category": "Salary"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-04-01",
+   "amountPaise": -2800000,
+   "description": "UPI/RENT/MR SHARMA LANDLORD",
+   "balancePaise": 29502000,
+   "category": "Rent"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-04-03",
+   "amountPaise": -2000000,
+   "description": "NEFT/SELF TRANSFER TO KOTAK 5678",
+   "balancePaise": 27502000,
+   "category": "Transfer"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-04-07",
+   "amountPaise": -1450000,
+   "description": "ACH D-HDFC LTD-EMI-LN00482",
+   "balancePaise": 26052000,
+   "category": "EMI"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-04-10",
+   "amountPaise": -158900,
+   "description": "BESCOM ELECTRICITY BILL",
+   "balancePaise": 25893100,
+   "category": "Bills & Utilities"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-04-10",
+   "amountPaise": -94200,
+   "description": "UPI/DMART/3479708607",
+   "balancePaise": 25798900,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-04-13",
+   "amountPaise": -174000,
+   "description": "UPI/BIGBASKET/9776552803",
+   "balancePaise": 25624900,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-04-18",
+   "amountPaise": -193000,
+   "description": "UPI/BIGBASKET/2625792787",
+   "balancePaise": 25431900,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-04-28",
+   "amountPaise": 9500000,
+   "description": "NEFT CR-ACME TECH PVT LTD-SALARY",
+   "balancePaise": 34931900,
+   "category": "Salary"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-05-01",
+   "amountPaise": -2800000,
+   "description": "UPI/RENT/MR SHARMA LANDLORD",
+   "balancePaise": 32131900,
+   "category": "Rent"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-05-03",
+   "amountPaise": -2000000,
+   "description": "NEFT/SELF TRANSFER TO KOTAK 5678",
+   "balancePaise": 30131900,
+   "category": "Transfer"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-05-07",
+   "amountPaise": -1450000,
+   "description": "ACH D-HDFC LTD-EMI-LN00482",
+   "balancePaise": 28681900,
+   "category": "EMI"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-05-10",
+   "amountPaise": -186600,
+   "description": "BESCOM ELECTRICITY BILL",
+   "balancePaise": 28495300,
+   "category": "Bills & Utilities"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-05-21",
+   "amountPaise": -152700,
+   "description": "UPI/DMART/5993561321",
+   "balancePaise": 28342600,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-05-25",
+   "amountPaise": -127600,
+   "description": "UPI/DMART/5231494220",
+   "balancePaise": 28215000,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-05-28",
+   "amountPaise": 9500000,
+   "description": "NEFT CR-ACME TECH PVT LTD-SALARY",
+   "balancePaise": 37715000,
+   "category": "Salary"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-05-28",
+   "amountPaise": -172800,
+   "description": "UPI/BIGBASKET/6927597015",
+   "balancePaise": 37542200,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-06-01",
+   "amountPaise": -2800000,
+   "description": "UPI/RENT/MR SHARMA LANDLORD",
+   "balancePaise": 34742200,
+   "category": "Rent"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-06-03",
+   "amountPaise": -2000000,
+   "description": "NEFT/SELF TRANSFER TO KOTAK 5678",
+   "balancePaise": 32742200,
+   "category": "Transfer"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-06-07",
+   "amountPaise": -1450000,
+   "description": "ACH D-HDFC LTD-EMI-LN00482",
+   "balancePaise": 31292200,
+   "category": "EMI"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-06-11",
+   "amountPaise": -194600,
+   "description": "BESCOM ELECTRICITY BILL",
+   "balancePaise": 31097600,
+   "category": "Bills & Utilities"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-06-14",
+   "amountPaise": -8200000,
+   "description": "POS CROMA ELECTRONICS BLR",
+   "balancePaise": 22897600,
+   "category": "Shopping"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-06-15",
+   "amountPaise": -86500,
+   "description": "UPI/DMART/1240251661",
+   "balancePaise": 22811100,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-06-23",
+   "amountPaise": -113400,
+   "description": "UPI/BIGBASKET/4131575764",
+   "balancePaise": 22697700,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-06-26",
+   "amountPaise": -93500,
+   "description": "UPI/DMART/7017956955",
+   "balancePaise": 22604200,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-06-28",
+   "amountPaise": 9500000,
+   "description": "NEFT CR-ACME TECH PVT LTD-SALARY",
+   "balancePaise": 32104200,
+   "category": "Salary"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-07-01",
+   "amountPaise": -2800000,
+   "description": "UPI/RENT/MR SHARMA LANDLORD",
+   "balancePaise": 29304200,
+   "category": "Rent"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-07-03",
+   "amountPaise": -2000000,
+   "description": "NEFT/SELF TRANSFER TO KOTAK 5678",
+   "balancePaise": 27304200,
+   "category": "Transfer"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-07-07",
+   "amountPaise": -1450000,
+   "description": "ACH D-HDFC LTD-EMI-LN00482",
+   "balancePaise": 25854200,
+   "category": "EMI"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-07-11",
+   "amountPaise": -256100,
+   "description": "BESCOM ELECTRICITY BILL",
+   "balancePaise": 25598100,
+   "category": "Bills & Utilities"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-07-15",
+   "amountPaise": -130500,
+   "description": "UPI/BIGBASKET/2137651678",
+   "balancePaise": 25467600,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-07-23",
+   "amountPaise": -211600,
+   "description": "UPI/DMART/7439149233",
+   "balancePaise": 25256000,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-07-24",
+   "amountPaise": -154100,
+   "description": "UPI/DMART/7801222128",
+   "balancePaise": 25101900,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-07-28",
+   "amountPaise": 9500000,
+   "description": "NEFT CR-ACME TECH PVT LTD-SALARY",
+   "balancePaise": 34601900,
+   "category": "Salary"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-08-01",
+   "amountPaise": -2800000,
+   "description": "UPI/RENT/MR SHARMA LANDLORD",
+   "balancePaise": 31801900,
+   "category": "Rent"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-08-03",
+   "amountPaise": -2000000,
+   "description": "NEFT/SELF TRANSFER TO KOTAK 5678",
+   "balancePaise": 29801900,
+   "category": "Transfer"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-08-06",
+   "amountPaise": -158800,
+   "description": "UPI/DMART/3561557300",
+   "balancePaise": 29643100,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-08-07",
+   "amountPaise": -1450000,
+   "description": "ACH D-HDFC LTD-EMI-LN00482",
+   "balancePaise": 28193100,
+   "category": "EMI"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-08-11",
+   "amountPaise": -168300,
+   "description": "BESCOM ELECTRICITY BILL",
+   "balancePaise": 28024800,
+   "category": "Bills & Utilities"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-08-13",
+   "amountPaise": -193300,
+   "description": "UPI/DMART/7567496105",
+   "balancePaise": 27831500,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-08-17",
+   "amountPaise": -208500,
+   "description": "UPI/DMART/1470939445",
+   "balancePaise": 27623000,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-08-28",
+   "amountPaise": 9500000,
+   "description": "NEFT CR-ACME TECH PVT LTD-SALARY",
+   "balancePaise": 37123000,
+   "category": "Salary"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-09-01",
+   "amountPaise": -2800000,
+   "description": "UPI/RENT/MR SHARMA LANDLORD",
+   "balancePaise": 34323000,
+   "category": "Rent"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-09-03",
+   "amountPaise": -2000000,
+   "description": "NEFT/SELF TRANSFER TO KOTAK 5678",
+   "balancePaise": 32323000,
+   "category": "Transfer"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-09-07",
+   "amountPaise": -1450000,
+   "description": "ACH D-HDFC LTD-EMI-LN00482",
+   "balancePaise": 30873000,
+   "category": "EMI"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-09-10",
+   "amountPaise": -80600,
+   "description": "UPI/DMART/5974249674",
+   "balancePaise": 30792400,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-09-16",
+   "amountPaise": -142300,
+   "description": "BESCOM ELECTRICITY BILL",
+   "balancePaise": 30650100,
+   "category": "Bills & Utilities"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-09-22",
+   "amountPaise": -102800,
+   "description": "UPI/BIGBASKET/8047877267",
+   "balancePaise": 30547300,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-09-24",
+   "amountPaise": -183900,
+   "description": "UPI/DMART/4272602734",
+   "balancePaise": 30363400,
+   "category": "Groceries"
+  },
+  {
+   "last4": "1234",
+   "date": "2026-09-28",
+   "amountPaise": 9500000,
+   "description": "NEFT CR-ACME TECH PVT LTD-SALARY",
+   "balancePaise": 39863400,
+   "category": "Salary"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-02-01",
+   "amountPaise": -56400,
+   "description": "UPI/SWIGGY/9285415473",
+   "balancePaise": 3943600,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-02-02",
+   "amountPaise": -174300,
+   "description": "UPI/INDIAN OIL/9894264595",
+   "balancePaise": 3769300,
+   "category": "Fuel"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-02-02",
+   "amountPaise": -148200,
+   "description": "UPI/BLINKIT/4275703684",
+   "balancePaise": 3621100,
+   "category": "Groceries"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-02-03",
+   "amountPaise": 2000000,
+   "description": "NEFT CR-HDFC BANK 1234-SELF TRANSFER",
+   "balancePaise": 5621100,
+   "category": "Transfer"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-02-03",
+   "amountPaise": -40300,
+   "description": "UPI/UBER INDIA/9680276057",
+   "balancePaise": 5580800,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-02-05",
+   "amountPaise": -11900,
+   "description": "SPOTIFY INDIA",
+   "balancePaise": 5568900,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-02-05",
+   "amountPaise": 4900000,
+   "description": "IMPS CR-FREELANCE CLIENT 3",
+   "balancePaise": 10468900,
+   "category": "Freelance"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-02-08",
+   "amountPaise": -74700,
+   "description": "UPI/SWIGGY/1338258951",
+   "balancePaise": 10394200,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-02-08",
+   "amountPaise": -48200,
+   "description": "UPI/UBER INDIA/1030884438",
+   "balancePaise": 10346000,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-02-12",
+   "amountPaise": -64900,
+   "description": "NETFLIX.COM",
+   "balancePaise": 10281100,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-02-15",
+   "amountPaise": -48000,
+   "description": "UPI/ZOMATO/1519709079",
+   "balancePaise": 10233100,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-02-18",
+   "amountPaise": -75000,
+   "description": "UPI/SWIGGY/7867414708",
+   "balancePaise": 10158100,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-02-18",
+   "amountPaise": -63200,
+   "description": "UPI/SWIGGY/6633778586",
+   "balancePaise": 10094900,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-02-20",
+   "amountPaise": -7500,
+   "description": "APPLE ICLOUD",
+   "balancePaise": 10087400,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-02-21",
+   "amountPaise": -41500,
+   "description": "UPI/SWIGGY/5951406973",
+   "balancePaise": 10045900,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-02-21",
+   "amountPaise": -58300,
+   "description": "UPI/UBER INDIA/1983297492",
+   "balancePaise": 9987600,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-02-27",
+   "amountPaise": -73600,
+   "description": "UPI/SWIGGY/1540137296",
+   "balancePaise": 9914000,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-03-03",
+   "amountPaise": 2000000,
+   "description": "NEFT CR-HDFC BANK 1234-SELF TRANSFER",
+   "balancePaise": 11914000,
+   "category": "Transfer"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-03-05",
+   "amountPaise": -11900,
+   "description": "SPOTIFY INDIA",
+   "balancePaise": 11902100,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-03-07",
+   "amountPaise": -43700,
+   "description": "UPI/ZOMATO/5897045684",
+   "balancePaise": 11858400,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-03-09",
+   "amountPaise": -73400,
+   "description": "UPI/ZOMATO/3030106617",
+   "balancePaise": 11785000,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-03-09",
+   "amountPaise": -70300,
+   "description": "UPI/ZOMATO/4965395580",
+   "balancePaise": 11714700,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-03-09",
+   "amountPaise": -113400,
+   "description": "UPI/IRCTC/4817161971",
+   "balancePaise": 11601300,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-03-12",
+   "amountPaise": -64900,
+   "description": "NETFLIX.COM",
+   "balancePaise": 11536400,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-03-15",
+   "amountPaise": -66200,
+   "description": "UPI/SWIGGY/1422701550",
+   "balancePaise": 11470200,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-03-16",
+   "amountPaise": -242400,
+   "description": "UPI/INDIAN OIL/9008612465",
+   "balancePaise": 11227800,
+   "category": "Fuel"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-03-20",
+   "amountPaise": -7500,
+   "description": "APPLE ICLOUD",
+   "balancePaise": 11220300,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-03-22",
+   "amountPaise": -67000,
+   "description": "UPI/ZOMATO/6816663775",
+   "balancePaise": 11153300,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-03-24",
+   "amountPaise": -44600,
+   "description": "UPI/ZOMATO/1469306919",
+   "balancePaise": 11108700,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-03-25",
+   "amountPaise": -36800,
+   "description": "UPI/UBER INDIA/6009268066",
+   "balancePaise": 11071900,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-03-26",
+   "amountPaise": -34900,
+   "description": "UPI/ZOMATO/1817804383",
+   "balancePaise": 11037000,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-03-26",
+   "amountPaise": -39600,
+   "description": "UPI/UBER INDIA/9807209816",
+   "balancePaise": 10997400,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-03-27",
+   "amountPaise": -59400,
+   "description": "UPI/UBER INDIA/5161807235",
+   "balancePaise": 10938000,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-03-28",
+   "amountPaise": -80300,
+   "description": "UPI/ZEPTO/9378300168",
+   "balancePaise": 10857700,
+   "category": "Groceries"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-02",
+   "amountPaise": 1950000,
+   "description": "IMPS CR-FREELANCE CLIENT 4",
+   "balancePaise": 12807700,
+   "category": "Freelance"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-02",
+   "amountPaise": -76400,
+   "description": "UPI/SWIGGY/7803990970",
+   "balancePaise": 12731300,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-02",
+   "amountPaise": -199100,
+   "description": "UPI/MAKEMYTRIP/3487936523",
+   "balancePaise": 12532200,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-03",
+   "amountPaise": 2000000,
+   "description": "NEFT CR-HDFC BANK 1234-SELF TRANSFER",
+   "balancePaise": 14532200,
+   "category": "Transfer"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-03",
+   "amountPaise": 2540000,
+   "description": "IMPS CR-FREELANCE CLIENT 2",
+   "balancePaise": 17072200,
+   "category": "Freelance"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-03",
+   "amountPaise": -37200,
+   "description": "UPI/SWIGGY/6305160342",
+   "balancePaise": 17035000,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-05",
+   "amountPaise": -11900,
+   "description": "SPOTIFY INDIA",
+   "balancePaise": 17023100,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-05",
+   "amountPaise": -59500,
+   "description": "UPI/UBER INDIA/7258731893",
+   "balancePaise": 16963600,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-07",
+   "amountPaise": -57100,
+   "description": "UPI/SWIGGY/3328710672",
+   "balancePaise": 16906500,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-12",
+   "amountPaise": -64900,
+   "description": "NETFLIX.COM",
+   "balancePaise": 16841600,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-14",
+   "amountPaise": -22400,
+   "description": "UPI/UBER INDIA/9309500117",
+   "balancePaise": 16819200,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-15",
+   "amountPaise": -111300,
+   "description": "UPI/BLINKIT/5708505701",
+   "balancePaise": 16707900,
+   "category": "Groceries"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-19",
+   "amountPaise": -33300,
+   "description": "UPI/SWIGGY/9760623742",
+   "balancePaise": 16674600,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-20",
+   "amountPaise": -7500,
+   "description": "APPLE ICLOUD",
+   "balancePaise": 16667100,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-22",
+   "amountPaise": -55300,
+   "description": "UPI/ZOMATO/1664847319",
+   "balancePaise": 16611800,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-22",
+   "amountPaise": -32200,
+   "description": "UPI/UBER INDIA/6320115677",
+   "balancePaise": 16579600,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-25",
+   "amountPaise": -213600,
+   "description": "UPI/INDIAN OIL/5334976883",
+   "balancePaise": 16366000,
+   "category": "Fuel"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-26",
+   "amountPaise": -81900,
+   "description": "UPI/ZOMATO/6520103410",
+   "balancePaise": 16284100,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-04-28",
+   "amountPaise": -44000,
+   "description": "UPI/SWIGGY/3181106786",
+   "balancePaise": 16240100,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-01",
+   "amountPaise": -44600,
+   "description": "UPI/UBER INDIA/4311931853",
+   "balancePaise": 16195500,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-03",
+   "amountPaise": 2000000,
+   "description": "NEFT CR-HDFC BANK 1234-SELF TRANSFER",
+   "balancePaise": 18195500,
+   "category": "Transfer"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-03",
+   "amountPaise": -29500,
+   "description": "UPI/ZOMATO/8856990236",
+   "balancePaise": 18166000,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-03",
+   "amountPaise": -235400,
+   "description": "UPI/INDIAN OIL/3343292475",
+   "balancePaise": 17930600,
+   "category": "Fuel"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-04",
+   "amountPaise": -86900,
+   "description": "UPI/SWIGGY/6464693977",
+   "balancePaise": 17843700,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-05",
+   "amountPaise": -11900,
+   "description": "SPOTIFY INDIA",
+   "balancePaise": 17831800,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-06",
+   "amountPaise": -55700,
+   "description": "UPI/ZEPTO/5829913186",
+   "balancePaise": 17776100,
+   "category": "Groceries"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-07",
+   "amountPaise": -30200,
+   "description": "UPI/ZOMATO/7393195616",
+   "balancePaise": 17745900,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-09",
+   "amountPaise": -40200,
+   "description": "UPI/UBER INDIA/8478529823",
+   "balancePaise": 17705700,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-10",
+   "amountPaise": -81700,
+   "description": "UPI/SWIGGY/3271782991",
+   "balancePaise": 17624000,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-10",
+   "amountPaise": -36800,
+   "description": "UPI/SWIGGY/5871743247",
+   "balancePaise": 17587200,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-12",
+   "amountPaise": -64900,
+   "description": "NETFLIX.COM",
+   "balancePaise": 17522300,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-12",
+   "amountPaise": -62800,
+   "description": "UPI/SWIGGY/4776436931",
+   "balancePaise": 17459500,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-18",
+   "amountPaise": -38500,
+   "description": "UPI/SWIGGY/7467725516",
+   "balancePaise": 17421000,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-18",
+   "amountPaise": -149900,
+   "description": "UPI/SWIGGY INSTAMART/ORD-SIM98231",
+   "balancePaise": 17271100,
+   "category": "Groceries"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-18",
+   "amountPaise": -149900,
+   "description": "UPI/SWIGGY INSTAMART/ORD-SIM98231",
+   "balancePaise": 17121200,
+   "category": "Groceries"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-20",
+   "amountPaise": -7500,
+   "description": "APPLE ICLOUD",
+   "balancePaise": 17113700,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-20",
+   "amountPaise": 970000,
+   "description": "IMPS CR-FREELANCE CLIENT 1",
+   "balancePaise": 18083700,
+   "category": "Freelance"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-21",
+   "amountPaise": -144100,
+   "description": "UPI/MYNTRA/6717782551",
+   "balancePaise": 17939600,
+   "category": "Shopping"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-05-23",
+   "amountPaise": -17700,
+   "description": "UPI/UBER INDIA/3409076656",
+   "balancePaise": 17921900,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-06-01",
+   "amountPaise": -50400,
+   "description": "UPI/SWIGGY/9292791081",
+   "balancePaise": 17871500,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-06-03",
+   "amountPaise": 2000000,
+   "description": "NEFT CR-HDFC BANK 1234-SELF TRANSFER",
+   "balancePaise": 19871500,
+   "category": "Transfer"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-06-05",
+   "amountPaise": -11900,
+   "description": "SPOTIFY INDIA",
+   "balancePaise": 19859600,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-06-07",
+   "amountPaise": -61200,
+   "description": "UPI/SWIGGY/3864457210",
+   "balancePaise": 19798400,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-06-09",
+   "amountPaise": -28900,
+   "description": "UPI/SWIGGY/5759234471",
+   "balancePaise": 19769500,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-06-10",
+   "amountPaise": -61600,
+   "description": "UPI/ZOMATO/4696689457",
+   "balancePaise": 19707900,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-06-12",
+   "amountPaise": -64900,
+   "description": "NETFLIX.COM",
+   "balancePaise": 19643000,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-06-12",
+   "amountPaise": -29200,
+   "description": "UPI/SWIGGY/2845919895",
+   "balancePaise": 19613800,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-06-15",
+   "amountPaise": -13200,
+   "description": "UPI/UBER INDIA/1977515194",
+   "balancePaise": 19600600,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-06-16",
+   "amountPaise": -102600,
+   "description": "UPI/BLINKIT/3615585002",
+   "balancePaise": 19498000,
+   "category": "Groceries"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-06-20",
+   "amountPaise": -7500,
+   "description": "APPLE ICLOUD",
+   "balancePaise": 19490500,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-06-22",
+   "amountPaise": -26200,
+   "description": "UPI/UBER INDIA/7006365648",
+   "balancePaise": 19464300,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-06-25",
+   "amountPaise": -49200,
+   "description": "UPI/ZOMATO/4218981849",
+   "balancePaise": 19415100,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-06-28",
+   "amountPaise": -67200,
+   "description": "UPI/SWIGGY/4482238042",
+   "balancePaise": 19347900,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-06-28",
+   "amountPaise": -53800,
+   "description": "UPI/UBER INDIA/1955345537",
+   "balancePaise": 19294100,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-06-28",
+   "amountPaise": -215600,
+   "description": "UPI/INDIAN OIL/6493800024",
+   "balancePaise": 19078500,
+   "category": "Fuel"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-02",
+   "amountPaise": -80100,
+   "description": "UPI/ZOMATO/9597198563",
+   "balancePaise": 18998400,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-03",
+   "amountPaise": 2000000,
+   "description": "NEFT CR-HDFC BANK 1234-SELF TRANSFER",
+   "balancePaise": 20998400,
+   "category": "Transfer"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-04",
+   "amountPaise": -69600,
+   "description": "UPI/ZOMATO/8672650595",
+   "balancePaise": 20928800,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-04",
+   "amountPaise": -53100,
+   "description": "UPI/ZEPTO/8879154690",
+   "balancePaise": 20875700,
+   "category": "Groceries"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-05",
+   "amountPaise": -11900,
+   "description": "SPOTIFY INDIA",
+   "balancePaise": 20863800,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-09",
+   "amountPaise": -28900,
+   "description": "UPI/SWIGGY/9519284858",
+   "balancePaise": 20834900,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-09",
+   "amountPaise": -249900,
+   "description": "UPI/AMAZON PAY/ORD-402-1111",
+   "balancePaise": 20585000,
+   "category": "Shopping"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-09",
+   "amountPaise": -249900,
+   "description": "UPI/AMAZON PAY/ORD-402-2222",
+   "balancePaise": 20335100,
+   "category": "Shopping"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-12",
+   "amountPaise": -64900,
+   "description": "NETFLIX.COM",
+   "balancePaise": 20270200,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-14",
+   "amountPaise": -33500,
+   "description": "UPI/UBER INDIA/1546696950",
+   "balancePaise": 20236700,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-18",
+   "amountPaise": 4070000,
+   "description": "IMPS CR-FREELANCE CLIENT 4",
+   "balancePaise": 24306700,
+   "category": "Freelance"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-19",
+   "amountPaise": -181100,
+   "description": "UPI/INDIAN OIL/4580822352",
+   "balancePaise": 24125600,
+   "category": "Fuel"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-20",
+   "amountPaise": -7500,
+   "description": "APPLE ICLOUD",
+   "balancePaise": 24118100,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-20",
+   "amountPaise": -51000,
+   "description": "UPI/SWIGGY/3476426797",
+   "balancePaise": 24067100,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-20",
+   "amountPaise": -69600,
+   "description": "UPI/IRCTC/3917363757",
+   "balancePaise": 23997500,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-22",
+   "amountPaise": -32100,
+   "description": "UPI/SWIGGY/6859286614",
+   "balancePaise": 23965400,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-22",
+   "amountPaise": -37700,
+   "description": "UPI/ZOMATO/7971399399",
+   "balancePaise": 23927700,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-22",
+   "amountPaise": -43500,
+   "description": "UPI/UBER INDIA/4877520294",
+   "balancePaise": 23884200,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-24",
+   "amountPaise": -46100,
+   "description": "UPI/UBER INDIA/7473041886",
+   "balancePaise": 23838100,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-07-27",
+   "amountPaise": -36800,
+   "description": "UPI/ZOMATO/5033992825",
+   "balancePaise": 23801300,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-02",
+   "amountPaise": -210300,
+   "description": "UPI/MAKEMYTRIP/4603899328",
+   "balancePaise": 23591000,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-03",
+   "amountPaise": 2000000,
+   "description": "NEFT CR-HDFC BANK 1234-SELF TRANSFER",
+   "balancePaise": 25591000,
+   "category": "Transfer"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-05",
+   "amountPaise": -11900,
+   "description": "SPOTIFY INDIA",
+   "balancePaise": 25579100,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-05",
+   "amountPaise": -73600,
+   "description": "UPI/SWIGGY/1198486416",
+   "balancePaise": 25505500,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-08",
+   "amountPaise": -43000,
+   "description": "UPI/SWIGGY/2825989011",
+   "balancePaise": 25462500,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-11",
+   "amountPaise": 2800000,
+   "description": "IMPS CR-FREELANCE CLIENT 2",
+   "balancePaise": 28262500,
+   "category": "Freelance"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-12",
+   "amountPaise": -64900,
+   "description": "NETFLIX.COM",
+   "balancePaise": 28197600,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-14",
+   "amountPaise": -113900,
+   "description": "UPI/BLINKIT/7771532252",
+   "balancePaise": 28083700,
+   "category": "Groceries"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-15",
+   "amountPaise": -77300,
+   "description": "UPI/ZOMATO/3901796894",
+   "balancePaise": 28006400,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-15",
+   "amountPaise": -43300,
+   "description": "UPI/UBER INDIA/9123612497",
+   "balancePaise": 27963100,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-16",
+   "amountPaise": -54000,
+   "description": "UPI/SWIGGY/3829742424",
+   "balancePaise": 27909100,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-17",
+   "amountPaise": -45300,
+   "description": "UPI/ZOMATO/2333241445",
+   "balancePaise": 27863800,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-19",
+   "amountPaise": -65900,
+   "description": "UPI/SWIGGY/6944142262",
+   "balancePaise": 27797900,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-20",
+   "amountPaise": -7500,
+   "description": "APPLE ICLOUD",
+   "balancePaise": 27790400,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-20",
+   "amountPaise": -89400,
+   "description": "UPI/SWIGGY/7250964836",
+   "balancePaise": 27701000,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-22",
+   "amountPaise": -107000,
+   "description": "UPI/MYNTRA/8306405716",
+   "balancePaise": 27594000,
+   "category": "Shopping"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-26",
+   "amountPaise": -24700,
+   "description": "UPI/UBER INDIA/9805620900",
+   "balancePaise": 27569300,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-27",
+   "amountPaise": 2980000,
+   "description": "IMPS CR-FREELANCE CLIENT 3",
+   "balancePaise": 30549300,
+   "category": "Freelance"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-27",
+   "amountPaise": -241800,
+   "description": "UPI/INDIAN OIL/7648059419",
+   "balancePaise": 30307500,
+   "category": "Fuel"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-08-28",
+   "amountPaise": -53000,
+   "description": "UPI/UBER INDIA/2960488639",
+   "balancePaise": 30254500,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-01",
+   "amountPaise": -80100,
+   "description": "UPI/ZOMATO/8884394611",
+   "balancePaise": 30174400,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-03",
+   "amountPaise": 2000000,
+   "description": "NEFT CR-HDFC BANK 1234-SELF TRANSFER",
+   "balancePaise": 32174400,
+   "category": "Transfer"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-03",
+   "amountPaise": -59300,
+   "description": "UPI/ZOMATO/6302109556",
+   "balancePaise": 32115100,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-05",
+   "amountPaise": -11900,
+   "description": "SPOTIFY INDIA",
+   "balancePaise": 32103200,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-07",
+   "amountPaise": 2900000,
+   "description": "IMPS CR-FREELANCE CLIENT 4",
+   "balancePaise": 35003200,
+   "category": "Freelance"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-07",
+   "amountPaise": -73800,
+   "description": "UPI/ZOMATO/7767538527",
+   "balancePaise": 34929400,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-09",
+   "amountPaise": -70000,
+   "description": "UPI/SWIGGY/6322520473",
+   "balancePaise": 34859400,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-11",
+   "amountPaise": -48600,
+   "description": "UPI/SWIGGY/1594312071",
+   "balancePaise": 34810800,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-12",
+   "amountPaise": -64900,
+   "description": "NETFLIX.COM",
+   "balancePaise": 34745900,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-13",
+   "amountPaise": -31500,
+   "description": "UPI/SWIGGY/4034047118",
+   "balancePaise": 34714400,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-14",
+   "amountPaise": -31300,
+   "description": "UPI/ZOMATO/7296096954",
+   "balancePaise": 34683100,
+   "category": "Food & Dining"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-14",
+   "amountPaise": -29200,
+   "description": "UPI/UBER INDIA/5419627962",
+   "balancePaise": 34653900,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-14",
+   "amountPaise": -172000,
+   "description": "INTL POS STRIPE CURSOR AI",
+   "balancePaise": 34481900,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-15",
+   "amountPaise": -242800,
+   "description": "UPI/INDIAN OIL/3294043548",
+   "balancePaise": 34239100,
+   "category": "Fuel"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-20",
+   "amountPaise": -7500,
+   "description": "APPLE ICLOUD",
+   "balancePaise": 34231600,
+   "category": "Subscriptions"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-22",
+   "amountPaise": -55000,
+   "description": "UPI/UBER INDIA/4110335359",
+   "balancePaise": 34176600,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-24",
+   "amountPaise": -25900,
+   "description": "UPI/UBER INDIA/3096929657",
+   "balancePaise": 34150700,
+   "category": "Travel & Commute"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-25",
+   "amountPaise": -46500,
+   "description": "UPI/ZEPTO/6075962803",
+   "balancePaise": 34104200,
+   "category": "Groceries"
+  },
+  {
+   "last4": "5678",
+   "date": "2026-09-28",
+   "amountPaise": -140500,
+   "description": "UPI/IRCTC/7969648149",
+   "balancePaise": 33963700,
+   "category": "Travel & Commute"
+  }
+ ]
+}

@@ -34,11 +34,11 @@ def money(paise):
 
 
 def with_balances(opening, events):
-    """Sort events by date (stable) and attach the running balance."""
+    """Sort events (date, text, signed paise, true category) by date (stable) and attach the running balance."""
     rows, bal = [], opening
-    for day, text, amt in sorted(events, key=lambda e: e[0]):
+    for day, text, amt, label in sorted(events, key=lambda e: e[0]):
         bal += amt
-        rows.append((day, text, amt, bal))
+        rows.append((day, text, amt, bal, label))
     return rows
 
 
@@ -48,9 +48,13 @@ def upi(rng, merchant):
 
 
 def spread(rng, y, m, count, lo, hi, merchants):
-    """`count` small spends on random days of the month (days 1-28)."""
-    return [(date(y, m, rng.randint(1, 28)), upi(rng, rng.choice(merchants)), -rupees(rng.randint(lo, hi)))
-            for _ in range(count)]
+    """`count` small spends on random days of the month (days 1-28). merchants = [(name, true category)]."""
+    out = []
+    for _ in range(count):
+        day = rng.randint(1, 28)
+        name, label = rng.choice(merchants)
+        out.append((date(y, m, day), upi(rng, name), -rupees(rng.randint(lo, hi)), label))
+    return out
 
 
 def bank_a_events(rng):
@@ -58,15 +62,15 @@ def bank_a_events(rng):
     ev = []
     for y, m in MONTHS:
         ev += [
-            (date(y, m, 1), "UPI/RENT/MR SHARMA LANDLORD", -rupees(28000)),             # rent
-            (date(y, m, 3), "NEFT/SELF TRANSFER TO KOTAK 5678", -rupees(20000)),        # own-account transfer
-            (date(y, m, 7), "ACH D-HDFC LTD-EMI-LN00482", -rupees(14500)),              # EMI
-            (date(y, m, 28), "NEFT CR-ACME TECH PVT LTD-SALARY", rupees(95000)),        # salary
-            (date(y, m, rng.randint(10, 16)), "BESCOM ELECTRICITY BILL", -rupees(rng.randint(1400, 2600))),
+            (date(y, m, 1), "UPI/RENT/MR SHARMA LANDLORD", -rupees(28000), "Rent"),
+            (date(y, m, 3), "NEFT/SELF TRANSFER TO KOTAK 5678", -rupees(20000), "Transfer"),   # own-account transfer
+            (date(y, m, 7), "ACH D-HDFC LTD-EMI-LN00482", -rupees(14500), "EMI"),
+            (date(y, m, 28), "NEFT CR-ACME TECH PVT LTD-SALARY", rupees(95000), "Salary"),
+            (date(y, m, rng.randint(10, 16)), "BESCOM ELECTRICITY BILL", -rupees(rng.randint(1400, 2600)), "Bills & Utilities"),
         ]
-        ev += spread(rng, y, m, 3, 800, 2200, ["BIGBASKET", "DMART"])
-    ev.append((date(2026, 2, 14), "NEFT CR-ACME TECH PVT LTD-ANNUAL BONUS FY25", rupees(120000)))  # one-off
-    ev.append((date(2026, 6, 14), "POS CROMA ELECTRONICS BLR", -rupees(82000)))                    # large purchase
+        ev += spread(rng, y, m, 3, 800, 2200, [("BIGBASKET", "Groceries"), ("DMART", "Groceries")])
+    ev.append((date(2026, 2, 14), "NEFT CR-ACME TECH PVT LTD-ANNUAL BONUS FY25", rupees(120000), "Bonus"))  # one-off
+    ev.append((date(2026, 6, 14), "POS CROMA ELECTRONICS BLR", -rupees(82000), "Shopping"))                  # large purchase
     return ev
 
 
@@ -76,24 +80,47 @@ def bank_b_events(rng):
     freelance_per_month = [1, 0, 2, 1, 0, 1, 2, 1]  # irregular on purpose; Mar and Jun have none
     for (y, m), n in zip(MONTHS, freelance_per_month):
         ev += [
-            (date(y, m, 3), "NEFT CR-HDFC BANK 1234-SELF TRANSFER", rupees(20000)),     # other side of the transfer
-            (date(y, m, 5), "SPOTIFY INDIA", -rupees(119)),
-            (date(y, m, 12), "NETFLIX.COM", -rupees(649)),
-            (date(y, m, 20), "APPLE ICLOUD", -rupees(75)),
+            (date(y, m, 3), "NEFT CR-HDFC BANK 1234-SELF TRANSFER", rupees(20000), "Transfer"),  # other side of the transfer
+            (date(y, m, 5), "SPOTIFY INDIA", -rupees(119), "Subscriptions"),
+            (date(y, m, 12), "NETFLIX.COM", -rupees(649), "Subscriptions"),
+            (date(y, m, 20), "APPLE ICLOUD", -rupees(75), "Subscriptions"),
         ]
         for _ in range(n):  # freelance credits: random day, random amount
             ev.append((date(y, m, rng.randint(2, 27)), f"IMPS CR-FREELANCE CLIENT {rng.randint(1, 4)}",
-                       rupees(rng.randint(60, 550) * 100)))
-        ev += spread(rng, y, m, 7, 250, 900, ["SWIGGY", "ZOMATO"])
-        ev += spread(rng, y, m, 3, 120, 600, ["UBER INDIA"])
-        ev += spread(rng, y, m, 1, 1500, 2500, ["INDIAN OIL"])
+                       rupees(rng.randint(60, 550) * 100), "Freelance"))
+        ev += spread(rng, y, m, 7, 250, 900, [("SWIGGY", "Food & Dining"), ("ZOMATO", "Food & Dining")])
+        ev += spread(rng, y, m, 3, 120, 600, [("UBER INDIA", "Travel & Commute")])
+        ev += spread(rng, y, m, 1, 1500, 2500, [("INDIAN OIL", "Fuel")])
     # Real duplicate charge: same order ref twice, same day, bank deducted both.
-    ev += [(date(2026, 5, 18), "UPI/SWIGGY INSTAMART/ORD-SIM98231", -rupees(1499))] * 2
+    ev += [(date(2026, 5, 18), "UPI/SWIGGY INSTAMART/ORD-SIM98231", -rupees(1499), "Groceries")] * 2
     # Genuine second payment: same amount, same day, but two different order refs.
-    ev += [(date(2026, 7, 9), "UPI/AMAZON PAY/ORD-402-1111", -rupees(2499)),
-           (date(2026, 7, 9), "UPI/AMAZON PAY/ORD-402-2222", -rupees(2499))]
+    ev += [(date(2026, 7, 9), "UPI/AMAZON PAY/ORD-402-1111", -rupees(2499), "Shopping"),
+           (date(2026, 7, 9), "UPI/AMAZON PAY/ORD-402-2222", -rupees(2499), "Shopping")]
     # New merchant: appears once, in the final month.
-    ev.append((date(2026, 9, 14), "INTL POS STRIPE CURSOR AI", -rupees(1720)))
+    ev.append((date(2026, 9, 14), "INTL POS STRIPE CURSOR AI", -rupees(1720), "Subscriptions"))
+    return ev
+
+
+# Merchants the keyword rules do not know, with their true category and the months (Feb=0 .. Sep=7)
+# they appear in. Amounts stay small so they do not trigger the "large purchase" flag.
+HARD_MERCHANTS = [
+    ("BLINKIT", "Groceries", (500, 1500), (0, 2, 4, 6)),
+    ("ZEPTO", "Groceries", (400, 1200), (1, 3, 5, 7)),
+    ("MAKEMYTRIP", "Travel & Commute", (1800, 2400), (2, 6)),
+    ("IRCTC", "Travel & Commute", (600, 1500), (1, 5, 7)),
+    ("MYNTRA", "Shopping", (900, 1900), (3, 6)),
+]
+
+
+def hard_events(rng):
+    """Spends the rules get wrong on purpose (they fall to 'Other'); a merchant correction fixes every row.
+    Uses its own random stream so the rest of the data is unchanged."""
+    ev = []
+    for name, label, (lo, hi), month_idx in HARD_MERCHANTS:
+        for i in month_idx:
+            y, m = MONTHS[i]
+            day = rng.randint(1, 28)
+            ev.append((date(y, m, day), upi(rng, name), -rupees(rng.randint(lo, hi)), label))
     return ev
 
 
@@ -102,11 +129,11 @@ def short_events(rng):
     ev = []
     for y, m in SHORT_MONTHS:
         ev += [
-            (date(y, m, 1), "UPI/RENT/MS IYER LANDLORD", -rupees(18000)),
-            (date(y, m, 5), "NETFLIX.COM", -rupees(649)),
-            (date(y, m, 28), "NEFT CR-BRIGHT LABS-SALARY", rupees(52000)),
+            (date(y, m, 1), "UPI/RENT/MS IYER LANDLORD", -rupees(18000), "Rent"),
+            (date(y, m, 5), "NETFLIX.COM", -rupees(649), "Subscriptions"),
+            (date(y, m, 28), "NEFT CR-BRIGHT LABS-SALARY", rupees(52000), "Salary"),
         ]
-        ev += spread(rng, y, m, 4, 300, 1500, ["SWIGGY", "BIGBASKET"])
+        ev += spread(rng, y, m, 4, 300, 1500, [("SWIGGY", "Food & Dining"), ("BIGBASKET", "Groceries")])
     return ev
 
 
@@ -116,7 +143,7 @@ def write_bank_a_style(path, acct, rows):
         w = csv.writer(f)
         w.writerow(["Account No", acct])
         w.writerow(["Date", "Narration", "Withdrawal Amt", "Deposit Amt", "Closing Balance"])
-        for day, text, amt, bal in rows:
+        for day, text, amt, bal, _label in rows:
             w.writerow([day.strftime("%d/%m/%Y"), text,
                         money(-amt) if amt < 0 else "", money(amt) if amt > 0 else "", money(bal)])
 
@@ -127,8 +154,17 @@ def write_bank_b_style(path, acct, rows):
         w = csv.writer(f)
         w.writerow(["Account No", acct])
         w.writerow(["Transaction Date", "Description", "Amount", "Dr/Cr", "Balance"])
-        for day, text, amt, bal in rows:
+        for day, text, amt, bal, _label in rows:
             w.writerow([day.isoformat(), text, money(abs(amt)), "DR" if amt < 0 else "CR", money(bal)])
+
+
+def write_labels(path, rows_by_account):
+    """planted_labels.json: the TRUE category of every row, keyed the way the database stores it
+    (account last 4, date, amount, description, balance). Used only to measure categorisation accuracy."""
+    out = [{"last4": acct[-4:], "date": day.isoformat(), "amountPaise": amt, "description": text,
+            "balancePaise": bal, "category": label}
+           for acct, rows in rows_by_account for day, text, amt, bal, label in rows]
+    path.write_text(json.dumps({"rows": out}, indent=1))
 
 
 def generate(out_dir):
@@ -146,7 +182,7 @@ def generate(out_dir):
 
     # Bank B: balances are computed on the full ledger, THEN the gap rows are dropped,
     # so the balance visibly jumps across the missing 10 days.
-    rows_b_full = with_balances(rupees(40000), bank_b_events(rng))
+    rows_b_full = with_balances(rupees(40000), bank_b_events(rng) + hard_events(random.Random(SEED + 1)))
     rows_b = [r for r in rows_b_full if not GAP_START <= r[0] <= GAP_END]
     write_bank_b_style(out / "eight_months/bank_b_feb_sep.csv", ACCT_B, rows_b)
 
@@ -159,6 +195,10 @@ def generate(out_dir):
 
     rows_c = with_balances(rupees(60000), short_events(rng))
     write_bank_a_style(out / "short_2mo/bank_c_aug_sep.csv", ACCT_C, rows_c)
+
+    write_labels(out / "eight_months/planted_labels.json", [(ACCT_A, rows_a), (ACCT_B, rows_b)])
+    write_labels(out / "eight_months_complete/planted_labels.json", [(ACCT_A, rows_a), (ACCT_B, rows_b_full)])
+    write_labels(out / "short_2mo/planted_labels.json", [(ACCT_C, rows_c)])
 
     manifest = {
         "overlapping_exports": {"files": ["bank_a_feb_jul.csv", "bank_a_jul_sep.csv"],
@@ -174,6 +214,7 @@ def generate(out_dir):
         "rent": {"bank": "bank_a", "day_of_month": 1, "paise": rupees(28000)},
         "subscriptions": {"bank": "bank_b", "merchants": ["SPOTIFY INDIA", "NETFLIX.COM", "APPLE ICLOUD"]},
         "irregular_freelance_months_with_none": ["2026-03", "2026-06"],
+        "hard_to_categorise": {"bank": "bank_b", "merchants": [m[0] for m in HARD_MERCHANTS]},
     }
     (out / "planted_cases.json").write_text(json.dumps(manifest, indent=2))
     return manifest

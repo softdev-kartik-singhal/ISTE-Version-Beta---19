@@ -29,3 +29,10 @@ def client(db_path):
     app.dependency_overrides[get_conn] = override
     yield TestClient(app)
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def complete(client):
+    """Demo account with the 8-month gap-free dataset loaded."""
+    client.post("/api/demo-data?set=eight_months_complete")
+    return client
