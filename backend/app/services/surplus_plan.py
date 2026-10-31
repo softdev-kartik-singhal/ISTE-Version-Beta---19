@@ -7,8 +7,7 @@ from statistics import median
 
 from app.config import (EMERGENCY_FUND_MONTHS, ESSENTIAL_CATEGORIES, SURPLUS_DEFAULT_SPLIT, SURPLUS_SPLIT_PRESETS,
                         VARIABLE_MONTHS)
-from app.services.insights import category_by_month, planning_surplus
-from app.services.stats import percentile
+from app.services.insights import category_by_month, surplus_range
 
 DISCLAIMER = ("For learning only. These are arithmetic on your own statements, not advice. "
               "Consider speaking to a qualified adviser before making financial decisions.")
@@ -49,8 +48,7 @@ def surplus_plan(ledger, inp, split=SURPLUS_DEFAULT_SPLIT):
     baseline = sum(i["monthlyPaise"] for i in items)
     target, saved = EMERGENCY_FUND_MONTHS * baseline, inp.start_cash
     shortfall = max(0, target - saved)
-    surplus = planning_surplus(ledger, inp)
-    typical, slow, fast = (int(percentile(surplus, p)) for p in (50, 25, 75))
+    typical, slow, fast = surplus_range(ledger, inp)
     def option(pct):
         to_fund = round(typical * pct / 100)
         return {"splitPct": pct, "monthlyToEmergencyPaise": to_fund, "monthlyToOtherGoalsPaise": typical - to_fund,

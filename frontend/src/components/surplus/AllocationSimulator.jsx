@@ -24,7 +24,7 @@ export default function AllocationSimulator({ allocation, committed, onExport, o
         <div className="flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-lg">
           <span className="font-label-sm text-label-sm text-on-surface-variant uppercase">Available Monthly Surplus:</span>
           <span className="font-currency-md text-currency-md font-bold text-primary">{formatCurrency(allocation.monthlySurplus)}</span>
-          <span className="font-label-sm text-[10px] text-outline">(trailing median)</span>
+          <span className="font-label-sm text-[10px] text-outline"></span>
         </div>
       </div>
 

@@ -1,149 +1,133 @@
-// Goals screen: portfolio KPIs, goal cards with feasibility, create/edit dialog, timeline adjustment and export.
+// Goals: a gullak that fills as you save. A hero (your goals at a glance), one card per goal, finished goals,
+// two helpful nudges, and a three-step sheet for new goals. The server decides every status; this page only shows them.
 import { useState } from 'react';
-import { Plus, Share, ShieldCheck, SlidersHorizontal } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import confetti from 'canvas-confetti';
+import { Trophy } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
 import { useToast } from '../hooks/useToast';
-import { getGoals, saveGoal } from '../services/api';
+import { deleteGoal, getGoals, saveGoal } from '../services/api';
 import PageTip from '../tour/PageTip';
 import PageState from '../components/ui/PageState';
-import { downloadCsv } from '../utils/download';
-import { realisticMonths } from '../utils/goalMath';
-import GoalSummaryCards from '../components/goals/GoalSummaryCards';
-import GoalCard from '../components/goals/GoalCard';
-import GoalDialog from '../components/dialogs/GoalDialog';
 import Toast from '../components/ui/Toast';
-import { formatCurrency } from '../utils/formatCurrency';
+import GoalsHero from '../components/goals/GoalsHero';
+import GoalCard from '../components/goals/GoalCard';
+import DoneCard from '../components/goals/DoneCard';
+import Nudges from '../components/goals/Nudges';
+import EmptyGoals from '../components/goals/EmptyGoals';
+import CalcDrawer from '../components/goals/CalcDrawer';
+import NewGoalSheet from '../components/goals/NewGoalSheet';
+import { AddMoneyDialog, DeleteGoalDialog } from '../components/goals/GoalDialogs';
+import '../components/goals/goals.css';
 
-const summaryFor = (data) => data.summary; // the server recomputes the totals after every change
+const CELEBRATED = 'sg_goals_celebrated';
+
+// A short confetti burst the first time a goal reaches 100% (never again for the same goal, and none for reduced motion).
+function celebrate(id) {
+  try {
+    const done = JSON.parse(localStorage.getItem(CELEBRATED) || '[]');
+    if (done.includes(id)) return;
+    localStorage.setItem(CELEBRATED, JSON.stringify([...done, id]));
+  } catch {
+    /* storage unavailable: celebrate anyway */
+  }
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  confetti({ particleCount: 110, spread: 75, startVelocity: 38, ticks: 140, origin: { y: 0.6 }, zIndex: 2000000000 });
+}
 
 export default function Goals() {
   const api = useApi(getGoals);
-  const [dialog, setDialog] = useState(null); // null | { goal?: existing goal }
+  const navigate = useNavigate();
+  const [sheet, setSheet] = useState(null); // { goal?, preset? }
+  const [adding, setAdding] = useState(null);
+  const [calc, setCalc] = useState(null);
+  const [removing, setRemoving] = useState(null);
   const [toast, showToast] = useToast();
 
   if (!api.ready) return <PageState state={api} />;
-  const data = api.data;
-  const goals = data.goals;
-  const average = data.surplus.average;
+  const { goals, view, nudges, totals } = api.data;
+  const live = goals.filter((g) => g.statusCode !== 'funded');
+  const done = goals.filter((g) => g.statusCode === 'funded');
 
-  // Saves on the server (target date = latest statement month + months left); the page then refreshes itself.
-  async function save(values, message) {
+  // The same body the server stores, with changed values on top.
+  const asSave = (g, changes) => ({ id: g.id, name: g.rawName, target: g.target, saved: g.saved, date: g.targetDate, category: g.category, priority: g.priority, ...changes });
+
+  async function saveFromSheet(values) {
+    await saveGoal(values);
+    showToast(values.id ? `Saved changes to ${values.name}` : `Goal created: ${values.name}`);
+    setSheet(null);
+  }
+
+  async function addMoney(goal, amount) {
+    const saved = Math.min(goal.target, goal.saved + amount);
     try {
-      await saveGoal(values, data.asOf);
-      showToast(message);
+      await saveGoal(asSave(goal, { saved }));
+      showToast(`Added to ${goal.name}`);
+      if (saved >= goal.target) celebrate(goal.id);
     } catch (err) {
       showToast(err.message);
     }
-    setDialog(null);
+    setAdding(null);
   }
 
-  function saveDialog(values) {
-    const existing = dialog.goal;
-    save({ ...values, id: existing?.id, priority: existing?.priority || 'Medium' }, existing ? `Updated "${values.name}"` : `Goal created: "${values.name}"`);
+  async function markComplete(goal) {
+    try {
+      await saveGoal(asSave(goal, { saved: goal.target }));
+      showToast(`${goal.name} is complete`);
+      celebrate(goal.id);
+    } catch (err) {
+      showToast(err.message);
+    }
   }
 
-  // Unreachable goals jump straight to the realistic date; others open the editor on the timeline.
-  function adjust(goal) {
-    if (goal.status !== 'unreachable') return setDialog({ goal });
-    const months = realisticMonths(goal.target - goal.saved, average);
-    save({ ...goal, monthsLeft: months }, `"${goal.name}" moved to a ${months}-month timeline`);
+  async function remove(goal) {
+    try {
+      await deleteGoal(goal.id);
+      showToast(`Deleted ${goal.name}`);
+    } catch (err) {
+      showToast(err.message);
+    }
+    setRemoving(null);
   }
 
-  function exportGoals() {
-    downloadCsv(
-      'smartgullak-goals.csv',
-      goals.map((g) => ({ goal: g.name, category: g.category, target: g.target, saved: g.saved, monthly_needed: g.monthlyNeeded, horizon: g.horizon, status: g.statusLabel })),
-    );
-    showToast('Goals exported as CSV');
-  }
-
-  const draft = data.draft;
-  const initial = dialog?.goal
-    ? { name: dialog.goal.name, target: dialog.goal.target, monthsLeft: dialog.goal.monthsLeft, category: dialog.goal.category, saved: dialog.goal.saved }
-    : { name: draft.name, target: Number(draft.target.replace(/,/g, '')), monthsLeft: 3, category: draft.classification, saved: Number(draft.seed.replace(/,/g, '')) };
+  const ask = (g) => navigate('/ask', { state: { question: `Can I afford ₹${Math.round(g.remaining)} for ${g.rawName} in ${g.monthsLeft} months?` } });
 
   return (
-    <main className="w-full pt-16 px-space-lg py-space-lg flex-1 bg-background">
+    <main className="relative min-h-screen bg-[#f5f7fb] pt-16 pb-24 font-['Inter',system-ui,sans-serif] lg:pb-10">
       <PageTip id="goals" text="Add a goal to see how many months it takes with your monthly leftover." />
-      <div className="flex flex-col w-full pb-space-2xl">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-md mb-space-lg">
-          <div className="flex flex-col max-w-2xl">
-            <div className="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-1">
-              <span>Capital Planning</span>
-              <span>•</span>
-              <span className="text-primary font-semibold">Deterministic Surplus Model</span>
-            </div>
-            <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">Financial Goals</h1>
-            <p className="font-body-md text-body-md text-on-surface-variant mt-0.5 leading-relaxed">
-              Targeted capital allocation calculated against your real liquid monthly surplus{' '}
-              <span className="font-currency-sm text-currency-sm font-semibold text-on-surface">({formatCurrency(data.surplus.average)} avg</span> /{' '}
-              <span className="font-currency-sm text-currency-sm text-on-surface-variant">{formatCurrency(data.surplus.floor)} conservative floor)</span>.
-            </p>
-          </div>
-          <div className="flex items-center gap-space-sm shrink-0">
-            <button
-              className="px-4 py-2 bg-surface-container-lowest text-on-surface font-label-md text-label-md rounded-lg shadow-sm hover:bg-surface-container-low transition-colors flex items-center gap-1.5 cursor-pointer"
-              onClick={exportGoals}
-            >
-              <Share size={18} className="text-on-surface-variant" />
-              <span>Export Goals</span>
-            </button>
-            <button
-              className="px-4 py-2 bg-primary-container text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:bg-primary transition-all flex items-center gap-1.5 cursor-pointer"
-              onClick={() => setDialog({})}
-            >
-              <Plus size={18} />
-              <span>New Goal</span>
-            </button>
-          </div>
-        </div>
+      <div className="mx-auto max-w-[1360px] space-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        {goals.length === 0
+          ? <EmptyGoals onStart={(tile) => setSheet({ preset: tile })} />
+          : <GoalsHero goals={live} view={view} totals={totals} onNew={() => setSheet({})} />}
 
-        <GoalSummaryCards summary={summaryFor(data, goals)} />
+        <Nudges nudges={nudges} />
 
-        <div className="flex items-center justify-between mb-space-md">
-          <div className="flex items-center gap-space-sm">
-            <h2 className="font-headline-sm text-headline-sm text-on-surface">Capital Milestones</h2>
-            <span className="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">{goals.length} Scheduled</span>
-          </div>
-          <div className="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm">
-            <SlidersHorizontal size={16} className="text-primary" />
-            <span>Ranked by strict chronological maturity</span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-space-lg mb-space-xl">
-          {[...goals]
-            .sort((a, b) => a.monthsLeft - b.monthsLeft)
-            .map((goal) => (
-              <GoalCard key={goal.id} goal={goal} onEdit={() => setDialog({ goal })} onAdjust={() => adjust(goal)} />
+        {live.length > 0 && (
+          <section className="grid grid-cols-1 gap-5 lg:grid-cols-2" aria-label="Goals in progress">
+            {live.map((g, i) => (
+              <GoalCard
+                key={g.id} goal={g} index={i}
+                onAdd={() => setAdding(g)} onEdit={() => setSheet({ goal: g })} onCalc={() => setCalc(g)}
+                onAsk={() => ask(g)} onComplete={() => markComplete(g)} onDelete={() => setRemoving(g)}
+              />
             ))}
-        </div>
+          </section>
+        )}
 
-        <div className="bg-surface-container-low rounded-xl p-space-md flex items-center justify-between gap-space-md">
-          <div className="flex items-center gap-space-sm">
-            <div className="w-8 h-8 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary shrink-0">
-              <ShieldCheck size={18} />
+        {done.length > 0 && (
+          <section aria-labelledby="done-goals">
+            <h2 id="done-goals" className="mb-3 flex items-center gap-2 text-[18px] font-bold text-[#0b2545]"><Trophy size={19} className="text-amber-500" aria-hidden="true" /> Done</h2>
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {done.map((g, i) => <DoneCard key={g.id} goal={g} index={i} onDelete={() => setRemoving(g)} />)}
             </div>
-            <p className="font-body-sm text-body-sm text-on-surface-variant leading-normal">
-              <strong className="font-semibold text-on-surface">Deterministic Engine Integrity:</strong> Goal feasibility evaluations run directly
-              against verified multi-account aggregates (HDFC, ICICI, Kotak). Internal bank transfers and credit sweeps are mathematically excluded
-              from surplus computations.
-            </p>
-          </div>
-          <span className="hidden sm:inline-flex font-label-sm text-label-sm text-outline shrink-0">Revision ID: {data.revisionId}</span>
-        </div>
-
-        <GoalDialog
-          key={dialog ? dialog.goal?.id || 'new' : 'closed'}
-          open={dialog !== null}
-          editing={Boolean(dialog?.goal)}
-          initial={initial}
-          classifications={data.classifications}
-          averageSurplus={average}
-          onClose={() => setDialog(null)}
-          onSave={saveDialog}
-        />
+          </section>
+        )}
       </div>
+
+      {sheet && <NewGoalSheet key={sheet.goal?.id || sheet.preset?.key || 'new'} goal={sheet.goal} preset={sheet.preset} onClose={() => setSheet(null)} onSave={saveFromSheet} />}
+      {adding && <AddMoneyDialog goal={adding} onClose={() => setAdding(null)} onAdd={(amount) => addMoney(adding, amount)} />}
+      {removing && <DeleteGoalDialog goal={removing} onClose={() => setRemoving(null)} onDelete={() => remove(removing)} />}
+      {calc && <CalcDrawer goal={calc} view={view} onClose={() => setCalc(null)} />}
       <Toast message={toast} />
     </main>
   );

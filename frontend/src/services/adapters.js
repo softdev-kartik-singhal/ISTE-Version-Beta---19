@@ -1,6 +1,7 @@
 // Turns the backend's responses (money in paise, ISO dates) into the shapes the screens were built for
 // (money in rupees, display strings). Pure functions: no fetching here.
 import { formatCurrency } from '../utils/formatCurrency';
+import { titleCase } from '../utils/text';
 
 export const r = (paise) => paise / 100;
 const date = (iso) => new Date(`${iso.slice(0, 10)}T00:00:00`);
@@ -255,39 +256,30 @@ export { suggestions };
 
 // ---------- Goals ----------
 
-const GOAL_STATUS = { funded: 'onTrack', on_track: 'onTrack', tight: 'tight', off_track: 'unreachable', overdue: 'unreachable', unknown: 'tight' };
-export const GOAL_CLASSES = ['Work & Equipment', 'Travel', 'Home', 'Education', 'Health', 'Other'];
+// The server decides every status (see backend/app/services/goals.py); this only converts paise to rupees and tidies names.
+const goalView = (v) => ({ total: r(v.totalNeedPaise), count: v.goalCount, low: r(v.lowPaise), usual: r(v.usualPaise), good: r(v.goodPaise), bucket: v.bucket, summary: v.summary });
 
-// Last day of the month that is `months` after the latest statement's month: the target date sent to the server.
-export function goalDate(asOf, months) {
-  const d = date(`${asOf.slice(0, 7)}-01`);
-  return new Date(d.getFullYear(), d.getMonth() + months + 1, 0).toLocaleDateString('en-CA');
+export function toGoal(x) {
+  return {
+    id: x.id, rawName: x.name, name: titleCase(x.name), category: x.category || 'Other', priority: x.priority,
+    target: r(x.targetPaise), saved: r(x.savedPaise), remaining: r(x.remainingPaise), percent: Math.min(100, x.percentFunded),
+    targetDate: x.targetDate, monthsFromToday: x.monthsFromToday, monthsLeft: x.monthsLeft, monthlyNow: r(x.monthlyNowPaise),
+    statusCode: x.statusCode, statusLine: x.statusLine, earliestMonth: x.earliestMonth,
+  };
 }
 
-export function toGoals(g, plan) {
-  const avg = r(plan.surplus.typicalPaise);
-  const s = g.summary;
+export function toGoals(g) {
   return {
     asOf: g.asOf,
-    surplus: { average: avg, floor: r(plan.surplus.lowPaise) },
-    summary: {
-      portfolio: { count: s.count, fundedPercent: s.fundedPercent, saved: r(s.savedPaise), target: r(s.targetPaise) },
-      commitment: { required: r(s.monthlyRequiredPaise), medianSurplus: s.typicalSurplusPaise == null ? avg : r(s.typicalSurplusPaise), shortfall: r(s.shortfallPaise ?? 0), spare: r(s.sparePaise ?? 0), allOnTrack: s.allOnTrack },
-      viability: { solvent: s.onTrack, total: s.count, bufferStatus: `${plan.emergencyFund.monthsCovered ?? 0} months of essentials in cash`, emergencyFloor: r(plan.emergencyFund.targetPaise) },
-    },
-    goals: g.goals.map((x) => ({
-      id: x.id, name: x.name, category: x.category || 'Other', priority: x.priority || 'Medium', status: GOAL_STATUS[x.status], statusLabel: x.statusText,
-      target: r(x.targetPaise), saved: r(x.savedPaise), percentFunded: x.percentFunded.toFixed(1), monthlyNeeded: r(x.monthlyNeededPaise),
-      horizon: `${monthLabel(x.targetDate.slice(0, 7))} (${plural(x.monthsLeft, 'month')} remaining)`, monthsLeft: x.monthsLeft, analysisIcon: 'chart',
-      analysis: x.remainingPaise
-        ? [`${x.statusText} You need ${formatCurrency(r(x.monthlyNeededPaise))} a month; your typical monthly surplus is ${formatCurrency(avg)}.`]
-        : [x.statusText],
-      actionLabel: GOAL_STATUS[x.status] === 'unreachable' ? 'Adjust Timeline' : 'Edit Goal',
-    })),
-    revisionId: `As of ${day(g.asOf)}`,
-    classifications: GOAL_CLASSES,
-    draft: { name: '', target: '', classification: GOAL_CLASSES[0], horizon: '', seed: '0', preview: {} },
+    goals: g.goals.map(toGoal),
+    view: goalView(g.view),
+    nudges: g.nudges.map((n) => ({ kind: n.kind, text: n.text })),
+    totals: { saved: r(g.summary.savedPaise), target: r(g.summary.targetPaise), percent: g.summary.fundedPercent },
   };
+}
+
+export function toGoalPreview(p) {
+  return { monthly: r(p.monthlyNowPaise), months: p.monthsFromToday, statusCode: p.statusCode, statusLine: p.statusLine, view: goalView(p.view) };
 }
 
 // ---------- Surplus Plan ----------

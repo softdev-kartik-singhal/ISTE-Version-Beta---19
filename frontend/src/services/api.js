@@ -1,7 +1,6 @@
 // Data access layer: every screen reads and writes through here, and only here, using the signed-in user's session token.
 // Backend answers are reshaped for the screens by adapters.js.
-import { setGoalBase } from '../utils/goalMath';
-import { goalDate, monthLabel, suggestions, toFlags, toGoals, toMoneyFlow, toSafeguards, toStatements, toSurplusPlan, toTrackRecord, toTransactions, toTrends } from './adapters';
+import { monthLabel, suggestions, toFlags, toGoalPreview, toGoals, toMoneyFlow, toSafeguards, toStatements, toSurplusPlan, toTrackRecord, toTransactions, toTrends } from './adapters';
 import { toHome } from './homeView';
 import { toChangeView } from './askView';
 import { toSurvival } from './survivalView';
@@ -327,20 +326,30 @@ export async function askWhatIf(amountRupees, targetMonth, cancel, emiRupees) {
 // ---------- goals, surplus plan, track record ----------
 
 export async function getGoals() {
-  const [g, plan] = await Promise.all([request('/api/goals'), request('/api/surplus-plan')]);
-  if (plan.insufficientHistory) return notReady('Goals are checked against your surplus, which needs at least one complete month of statements.');
-  setGoalBase(g.asOf);
-  return toGoals(g, plan);
+  const g = await request('/api/goals');
+  if (!g.view) return notReady('Goals are checked against your surplus, which needs at least one complete month of statements.');
+  return toGoals(g);
 }
 
-// values: { id?, name, target, saved, monthsLeft, category, priority } in rupees and months from the latest statement.
-export async function saveGoal(values, asOf) {
-  const body = {
-    name: values.name, targetPaise: Math.round(values.target * 100), savedPaise: Math.round(values.saved * 100),
-    targetDate: goalDate(asOf, values.monthsLeft), category: values.category, priority: values.priority,
-  };
-  await request(values.id ? `/api/goals/${values.id}` : '/api/goals', { method: values.id ? 'PUT' : 'POST', body });
+const goalBody = (v) => ({
+  name: v.name, targetPaise: Math.round(v.target * 100), savedPaise: Math.round(v.saved * 100),
+  targetDate: v.date, category: v.category, priority: v.priority,
+});
+
+// values: { id?, name, target, saved, date (YYYY-MM-DD), category, priority } in rupees.
+export async function saveGoal(values) {
+  await request(values.id ? `/api/goals/${values.id}` : '/api/goals', { method: values.id ? 'PUT' : 'POST', body: goalBody(values) });
   invalidate();
+}
+
+export async function deleteGoal(id) {
+  await request(`/api/goals/${id}`, { method: 'DELETE' });
+  invalidate();
+}
+
+// The monthly amount and status for a goal that is not saved yet (`excludeId` = the goal being edited).
+export async function previewGoal(values, excludeId) {
+  return toGoalPreview(await request(`/api/goals/preview${excludeId ? `?exclude=${excludeId}` : ''}`, { method: 'POST', body: goalBody(values) }));
 }
 
 export async function getSurplusPlan() {

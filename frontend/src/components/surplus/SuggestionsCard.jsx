@@ -1,7 +1,7 @@
 // "Suggestions for you": an optional About-you form, then AI-assisted product-type suggestions.
 // The server builds an anonymous profile (bands and labels only) and checks the AI's answer; this card only displays it.
 import { useEffect, useState } from 'react';
-import { ChevronDown, Gauge, LoaderCircle, Lock, RefreshCw, ShieldCheck, Sparkles, TriangleAlert } from 'lucide-react';
+import { CalendarClock, ChevronDown, CircleCheck, ClipboardCheck, Gauge, LoaderCircle, Lock, RefreshCw, ShieldCheck, Sparkles, TriangleAlert } from 'lucide-react';
 import { getSuggestions, getSuggestionsAbout, saveSuggestionsAbout } from '../../services/api';
 
 const FIELDS = [
@@ -17,7 +17,14 @@ const RISK = {
   high: { icon: TriangleAlert, cls: 'bg-error-container/60 text-error', text: 'Higher risk' },
 };
 const STAGES = ['Building your private profile', 'Asking the AI', 'Checking suggestions'];
-const SELECT = 'h-10 pl-3 pr-8 rounded-lg bg-surface-container-low font-body-sm text-body-sm text-on-surface appearance-none cursor-pointer focus:outline-none focus:ring-1 focus:ring-primary-container';
+const SELECT = 'w-full h-11 pl-3.5 pr-9 rounded-xl bg-white border border-slate-200 text-[15px] text-slate-900 appearance-none cursor-pointer hover:border-slate-300 focus:outline-none focus:border-[#1d4ed8] focus:ring-2 focus:ring-[#1d4ed8]/20';
+
+// 'fixed deposit (under 1 year)' -> title 'Fixed deposit' + detail 'under 1 year'. The model returns lowercase names.
+const sentence = (text) => text.charAt(0).toUpperCase() + text.slice(1);
+function splitName(name) {
+  const m = name.match(/^(.*?)\s*\((.*)\)\s*$/);
+  return m ? { title: sentence(m[1]), detail: m[2] } : { title: sentence(name), detail: '' };
+}
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // The saved answer (true/false/string) <-> the select's text value.
@@ -60,71 +67,84 @@ export default function SuggestionsCard() {
         <div className="w-9 h-9 rounded-lg bg-secondary-fixed/60 text-primary flex items-center justify-center shrink-0"><Sparkles size={20} /></div>
         <div>
           <h2 className="font-headline-sm text-headline-sm text-on-surface">Suggestions for you</h2>
-          <p className="font-body-sm text-body-sm text-secondary">Product types that fit your situation, picked from a private profile of labels and bands.</p>
+          <p className="text-[14px] text-slate-600 mt-0.5">Product types that fit your situation, picked from a private profile of labels and bands.</p>
         </div>
       </div>
 
-      <div className="rounded-lg bg-surface-container-low/60 p-space-md space-y-space-sm">
-        <p className="font-label-md text-label-md text-on-surface font-semibold">About you <span className="font-normal text-secondary">(optional)</span></p>
-        <div className="flex flex-wrap gap-space-md">
+      <div className="rounded-xl bg-surface-container-low/60 p-5 sm:p-6 space-y-5">
+        <p className="text-[16px] font-semibold text-on-surface">About you <span className="font-normal text-secondary">(optional)</span></p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           {FIELDS.map((f) => (
-            <label key={f.name} className="flex flex-col gap-1 font-label-sm text-label-sm text-secondary">
+            <label key={f.name} className="flex flex-col gap-1.5 text-[13px] font-medium text-slate-600">
               {f.label}
-              <select className={SELECT} value={toText(f, about[f.name])} onChange={(e) => setAbout({ ...about, [f.name]: fromText(f, e.target.value) })}>
-                <option value="">Prefer not to say</option>
-                {f.options.map((o) => <option key={o} value={o}>{o}</option>)}
-              </select>
+              <span className="relative">
+                <select className={SELECT} value={toText(f, about[f.name])} onChange={(e) => setAbout({ ...about, [f.name]: fromText(f, e.target.value) })}>
+                  <option value="">Prefer not to say</option>
+                  {f.options.map((o) => <option key={o} value={o}>{sentence(o)}</option>)}
+                </select>
+                <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true" />
+              </span>
             </label>
           ))}
         </div>
-        <button className="h-10 px-space-lg rounded-lg bg-primary-container text-white hover:bg-primary font-label-md text-label-md flex items-center gap-2 shadow-sm disabled:opacity-60" disabled={busy} onClick={() => run(false)}>
+        <button className="h-11 px-6 rounded-xl bg-primary-container text-white hover:bg-primary text-[15px] font-semibold flex items-center gap-2 shadow-sm disabled:opacity-60" disabled={busy} onClick={() => run(false)}>
           {busy ? <LoaderCircle size={18} className="animate-spin" /> : <Sparkles size={18} />}
           <span>{busy ? STAGES[stage] : result ? 'Update suggestions' : 'Get suggestions'}</span>
         </button>
         {busy && (
-          <ol className="flex flex-wrap gap-x-space-md gap-y-1 font-label-sm text-label-sm">
+          <ol className="flex flex-wrap gap-x-5 gap-y-1 text-[13px]">
             {STAGES.map((s, i) => (
               <li key={s} className={i <= stage ? 'text-primary font-semibold' : 'text-outline'}>{i + 1}. {s}</li>
             ))}
           </ol>
         )}
-        {error && <p className="font-body-sm text-body-sm text-error">{error}</p>}
+        {error && <p className="text-[14px] text-error">{error}</p>}
       </div>
 
       {result?.insufficientHistory && (
-        <p className="font-body-sm text-body-sm text-secondary">Upload at least one complete month of statements to get suggestions.</p>
+        <p className="text-[14px] text-slate-600">Upload at least one complete month of statements to get suggestions.</p>
       )}
 
       {result && !result.insufficientHistory && (
         <>
           <div className="flex flex-wrap items-center justify-between gap-space-sm">
-            <p className="font-label-sm text-label-sm text-secondary">
+            <p className="text-[14px] text-slate-600">
               {result.source === 'rules' ? result.note : result.cached ? 'AI suggestions (saved from an earlier request)' : 'AI suggestions, checked by our rules'}
             </p>
-            <button className="font-label-md text-label-md text-primary hover:underline flex items-center gap-1 disabled:opacity-60" disabled={busy} onClick={() => run(true)}>
+            <button className="text-[14px] font-semibold text-primary hover:underline flex items-center gap-1.5 disabled:opacity-60" disabled={busy} onClick={() => run(true)}>
               <RefreshCw size={15} /> Refresh suggestions
             </button>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-space-md">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             {result.suggestions.map((s) => {
               const risk = RISK[s.risk_level] || RISK.low;
+              const { title, detail } = splitName(s.product_type);
               return (
-                <article key={s.product_type} className="rounded-xl bg-surface-container-low/50 p-space-md space-y-space-sm">
-                  <div className="flex items-start justify-between gap-space-sm">
-                    <h3 className="font-headline-sm text-[16px] text-on-surface font-semibold">{s.product_type}</h3>
-                    <span className="px-2 py-0.5 rounded-full bg-primary-container text-white font-label-sm text-label-sm shrink-0">Priority {s.priority}</span>
+                <article key={s.product_type} className="rounded-2xl bg-white border border-slate-200/80 shadow-sm p-6 flex flex-col gap-5">
+                  <header className="flex items-start gap-4">
+                    <span className="w-9 h-9 shrink-0 rounded-full bg-primary-container text-white text-[15px] font-bold flex items-center justify-center" aria-label={`Priority ${s.priority}`}>{s.priority}</span>
+                    <div className="min-w-0">
+                      <h3 className="text-[19px] leading-snug font-semibold text-on-surface">{title}</h3>
+                      {detail && <p className="text-[14px] text-slate-500 mt-0.5">{sentence(detail)}</p>}
+                    </div>
+                  </header>
+
+                  <div className="flex flex-wrap gap-2">
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[13px] font-medium ${risk.cls}`}><risk.icon size={14} aria-hidden="true" /> {risk.text}</span>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[13px] font-medium bg-slate-100 text-slate-700"><CalendarClock size={14} aria-hidden="true" /> Suits goals {s.suits_goal_horizon}</span>
                   </div>
-                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-label-sm text-label-sm ${risk.cls}`}><risk.icon size={13} /> {risk.text}</span>
-                  <div>
-                    <p className="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Why this fits you</p>
-                    <p className="font-body-sm text-body-sm text-on-surface">{s.why_it_fits}</p>
+
+                  <div className="space-y-4">
+                    <section>
+                      <h4 className="flex items-center gap-2 text-[14px] font-semibold text-on-surface"><CircleCheck size={16} className="text-emerald-600" aria-hidden="true" /> Why this fits you</h4>
+                      <p className="mt-1 pl-6 text-[15px] leading-relaxed text-slate-700">{s.why_it_fits}</p>
+                    </section>
+                    <section>
+                      <h4 className="flex items-center gap-2 text-[14px] font-semibold text-on-surface"><ClipboardCheck size={16} className="text-primary" aria-hidden="true" /> Check before choosing</h4>
+                      <p className="mt-1 pl-6 text-[15px] leading-relaxed text-slate-700">{s.what_to_check}</p>
+                    </section>
                   </div>
-                  <div>
-                    <p className="font-label-sm text-label-sm text-secondary uppercase tracking-wider">What to check before choosing</p>
-                    <p className="font-body-sm text-body-sm text-on-surface">{s.what_to_check}</p>
-                  </div>
-                  <p className="font-label-sm text-label-sm text-secondary">Suits goals: {s.suits_goal_horizon}</p>
                 </article>
               );
             })}
@@ -138,15 +158,15 @@ export default function SuggestionsCard() {
             {showShared && (
               <div className="px-space-md pb-space-md space-y-space-xs">
                 <pre className="rounded-lg bg-surface p-space-sm font-currency-sm text-[12px] text-on-surface overflow-x-auto">{JSON.stringify(result.profile, null, 2)}</pre>
-                <p className="font-body-sm text-body-sm text-secondary">{result.privacyNote}</p>
-                {!result.sharedWithAI && <p className="font-label-sm text-label-sm text-secondary">Nothing was sent this time (a saved answer or the rule-based set was used). This is the profile that would be shared.</p>}
+                <p className="text-[14px] text-slate-600">{result.privacyNote}</p>
+                {!result.sharedWithAI && <p className="text-[13px] text-slate-500">Nothing was sent this time (a saved answer or the rule-based set was used). This is the profile that would be shared.</p>}
               </div>
             )}
           </div>
         </>
       )}
 
-      <p className="font-label-sm text-label-sm text-on-surface-variant">
+      <p className="text-[13px] leading-relaxed text-slate-500">
         Educational suggestions of product types, not advice on specific products. For personal advice, consult a SEBI-registered investment adviser or IRDAI-licensed insurance adviser.
       </p>
     </section>

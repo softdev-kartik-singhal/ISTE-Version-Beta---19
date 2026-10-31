@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 
 from app.db import get_conn
 from app.routers.overview import context
-from app.services.goals import assess, portfolio, valid_date
+from app.services.goals import assess, goal_view, nudges, portfolio, valid_date
 from app.deps import account_filter, current_user_id
 
 router = APIRouter(prefix="/api")
@@ -35,7 +35,9 @@ def as_row(body, goal_id=None):
 def listing(conn, user_id, account_id=None):
     ledger, inp = context(conn, user_id, account_id)
     entries = assess(inp, ledger, goal_rows(conn, user_id))
-    return {"goals": entries, "summary": portfolio(entries, inp, ledger), "asOf": inp.as_of.isoformat()}
+    view = goal_view(entries, ledger, inp)
+    return {"goals": entries, "summary": portfolio(entries, inp, ledger), "asOf": inp.as_of.isoformat(),
+            "view": view, "nudges": nudges(entries, inp, view)}
 
 
 @router.get("/goals")
@@ -44,12 +46,15 @@ def list_goals(conn=Depends(get_conn), user_id: int = Depends(current_user_id), 
 
 
 @router.post("/goals/preview")
-def preview_goal(body: GoalIn, conn=Depends(get_conn), user_id: int = Depends(current_user_id), account_id=Depends(account_filter)):
-    """Assess a goal that is not saved yet, together with the existing ones."""
+def preview_goal(body: GoalIn, exclude: int | None = None, conn=Depends(get_conn), user_id: int = Depends(current_user_id),
+                 account_id=Depends(account_filter)):
+    """Assess a goal that is not saved yet, together with the existing ones. `exclude` = the goal being edited,
+    so the old version of it is not counted next to the new one."""
     ledger, inp = context(conn, user_id, account_id)
     draft = as_row(body)
-    entries = assess(inp, ledger, goal_rows(conn, user_id) + [draft])
-    return next(e for e in entries if e["id"] is None)
+    entries = assess(inp, ledger, [g for g in goal_rows(conn, user_id) if g["id"] != exclude] + [draft])
+    view = goal_view(entries, ledger, inp)
+    return {**next(e for e in entries if e["id"] is None), "view": view}
 
 
 @router.post("/goals", status_code=201)

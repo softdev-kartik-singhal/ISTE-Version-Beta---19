@@ -66,6 +66,13 @@ def planning_surplus(ledger, inp):
     return [m["surplusPaise"] - m["oneOffPaise"] for m in series]
 
 
+def surplus_range(ledger, inp):
+    """(usual, low, good) monthly surplus in paise: the median, 25th and 75th percentile of the planning surplus.
+    One definition for the Surplus Plan and for Goals, so the two pages quote the same numbers."""
+    surplus = planning_surplus(ledger, inp)
+    return tuple(int(percentile(surplus, p)) for p in (50, 25, 75))
+
+
 def biggest(ledger, month, income):
     """Largest single credit (income=True) or debit in a month, for the best/toughest reasons."""
     rows = [r for r in ledger if r["month"] == month and (r["amount_paise"] > 0) == income]
