@@ -4,6 +4,7 @@ import { Plus, Share, ShieldCheck, SlidersHorizontal } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
 import { useToast } from '../hooks/useToast';
 import { getGoals, saveGoal } from '../services/api';
+import PageTip from '../tour/PageTip';
 import PageState from '../components/ui/PageState';
 import { downloadCsv } from '../utils/download';
 import { realisticMonths } from '../utils/goalMath';
@@ -63,6 +64,7 @@ export default function Goals() {
 
   return (
     <main className="w-full pt-16 px-space-lg py-space-lg flex-1 bg-background">
+      <PageTip id="goals" text="Add a goal to see how many months it takes with your monthly leftover." />
       <div className="flex flex-col w-full pb-space-2xl">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-md mb-space-lg">
           <div className="flex flex-col max-w-2xl">

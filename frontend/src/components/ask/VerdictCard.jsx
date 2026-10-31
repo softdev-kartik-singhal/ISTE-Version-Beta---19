@@ -12,7 +12,7 @@ export default function VerdictCard({ verdict }) {
   const { confidence, metrics } = verdict;
   const tone = TONES[verdict.tone || 'caution'];
   return (
-    <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
+    <div data-tour="verdict" className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md pb-space-md bg-surface-container-low/40 p-space-md rounded-xl">
         <div className="space-y-2">
           <div className="flex items-center gap-space-sm flex-wrap">

@@ -20,6 +20,7 @@ def init_db(conn: sqlite3.Connection) -> None:
     """Create all tables (safe to run repeatedly)."""
     drop_old_forecast_log(conn)
     conn.executescript(SCHEMA_FILE.read_text())
+    add_tour_columns(conn)
     seed_rules(conn)
     conn.commit()
 
@@ -29,6 +30,15 @@ def drop_old_forecast_log(conn):
     columns = [r["name"] for r in conn.execute("PRAGMA table_info(forecast_log)")]
     if columns and "entry_hash" not in columns:
         conn.execute("DROP TABLE forecast_log")
+
+
+def add_tour_columns(conn):
+    """Databases made before the tour existed get the two tour columns; their users are marked as having done it."""
+    columns = [r["name"] for r in conn.execute("PRAGMA table_info(users)")]
+    if "tour_completed" not in columns:
+        conn.execute("ALTER TABLE users ADD COLUMN tour_completed INTEGER NOT NULL DEFAULT 0")
+        conn.execute("ALTER TABLE users ADD COLUMN tour_step INTEGER NOT NULL DEFAULT 0")
+        conn.execute("UPDATE users SET tour_completed = 1")
 
 
 def seed_rules(conn):

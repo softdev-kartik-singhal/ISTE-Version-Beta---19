@@ -26,6 +26,7 @@ export default function LiquidityCards({ liquidity }) {
       />
       <LiquidityCard
         label="Money left this month"
+        tour="money-left"
         icon={PiggyBank}
         iconClass="text-secondary"
         value={formatCurrency(liquidity.moneyLeftMonth)}

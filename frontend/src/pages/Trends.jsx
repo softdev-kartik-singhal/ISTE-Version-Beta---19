@@ -5,6 +5,7 @@ import { useApi } from '../hooks/useApi';
 import { useToast } from '../hooks/useToast';
 import { getTrends } from '../services/api';
 import { downloadCsv } from '../utils/download';
+import PageTip from '../tour/PageTip';
 import PageState from '../components/ui/PageState';
 import TrendsHeader from '../components/trends/TrendsHeader';
 import TrendSummaryCards from '../components/trends/TrendSummaryCards';
@@ -42,6 +43,7 @@ export default function Trends() {
 
   return (
     <main className="relative pt-16 min-h-screen bg-[#F7F9FC]">
+      <PageTip id="trends" text="Spot the categories that grew the most compared with your usual month." />
       <div className="flex flex-col w-full">
         <div className="px-space-xl py-space-lg space-y-space-lg max-w-[1440px] mx-auto w-full">
           <TrendsHeader periods={data.periods} period={selected} onPeriodChange={setPeriod} onExport={exportTrends} />

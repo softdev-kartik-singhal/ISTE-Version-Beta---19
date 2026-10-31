@@ -38,13 +38,14 @@ export default function QuestionBox({ initialQuestion, presets, accounts, busy, 
         </div>
       </div>
       <div className="bg-surface-container-lowest rounded-xl p-space-md shadow-sm space-y-space-md">
-        <form onSubmit={ask} className="relative flex flex-col lg:flex-row items-stretch gap-space-sm">
+        <form onSubmit={ask} data-tour="ask-box" className="relative flex flex-col lg:flex-row items-stretch gap-space-sm">
           <div className="relative flex-1 flex items-center">
             <Brain size={22} className="absolute left-3.5 text-secondary" />
             <input
               className="w-full h-12 pl-12 pr-4 bg-surface rounded-lg font-body-lg text-body-lg text-on-surface focus:outline-none focus:bg-surface-container-lowest shadow-inner"
               placeholder={`e.g. ${presets[0]}`}
               type="text"
+              data-tour="ask-input"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
             />
@@ -52,6 +53,7 @@ export default function QuestionBox({ initialQuestion, presets, accounts, busy, 
           <div className="flex items-center gap-space-sm">
             <button
               type="submit"
+              data-tour="ask-submit"
               disabled={busy}
               className={`h-12 px-space-lg rounded-lg bg-primary-container hover:bg-primary text-on-primary font-headline-sm text-body-md font-semibold transition-all flex items-center justify-center gap-2 shadow-sm active:scale-[0.99] ${busy ? 'opacity-75' : ''}`}
             >

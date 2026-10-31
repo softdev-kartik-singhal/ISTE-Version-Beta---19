@@ -1,6 +1,6 @@
 """Auth, session, privacy, export and delete."""
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from fastapi import HTTPException
 
@@ -8,7 +8,7 @@ from app import config
 from app.db import get_conn
 from app.deps import current_session, current_user_id
 from app.services import auth
-from app.services.account import delete_everything, export_data, privacy_payload, session_payload
+from app.services.account import delete_everything, export_data, privacy_payload, save_tour, session_payload
 from app.services.card import check_fresh, consume_fresh
 
 router = APIRouter(prefix="/api")
@@ -75,6 +75,17 @@ def verify_password(body: PasswordIn, session=Depends(current_session), conn=Dep
 @router.get("/session")
 def get_session(user_id: int = Depends(current_user_id), conn=Depends(get_conn)):
     return session_payload(conn, user_id)
+
+
+class TourIn(BaseModel):
+    completed: bool = False
+    step: int = Field(0, ge=0, le=50)
+
+
+@router.put("/tour")
+def put_tour(body: TourIn, user_id: int = Depends(current_user_id), conn=Depends(get_conn)):
+    """Save tour progress. completed=true also covers 'skipped'; completed=false with step=0 replays it."""
+    return save_tour(conn, user_id, body.completed, body.step)
 
 
 @router.get("/privacy")

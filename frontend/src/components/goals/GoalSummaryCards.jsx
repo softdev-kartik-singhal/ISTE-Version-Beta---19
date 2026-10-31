@@ -6,7 +6,7 @@ import { formatCurrency } from '../../utils/formatCurrency';
 export default function GoalSummaryCards({ summary }) {
   const { portfolio, commitment, viability } = summary;
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-space-md mb-space-xl">
+    <div data-tour="plan-goals" className="grid grid-cols-1 md:grid-cols-3 gap-space-md mb-space-xl">
       <div className="bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col justify-between relative overflow-hidden">
         <div className="flex items-start justify-between">
           <div className="flex flex-col">

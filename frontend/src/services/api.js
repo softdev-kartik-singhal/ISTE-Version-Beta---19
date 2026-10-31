@@ -96,7 +96,15 @@ export async function getSession() {
     lastSynced: formatSynced(s.lastSyncedAt),
     syncSummary: banks.length ? `${banks.join(', ')} synced` : 'No statements uploaded yet',
     flagCount: s.flagCount,
+    tour: s.tour,
   };
+}
+
+// Saves how far the first-time tour got. completed=true also means skipped; completed=false, step=0 replays it.
+export async function saveTour(completed, step) {
+  const tour = await request('/api/tour', { method: 'PUT', body: { completed, step } });
+  invalidate();
+  return tour;
 }
 
 // ---------- privacy, export, delete ----------

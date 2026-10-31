@@ -5,9 +5,9 @@ const BASE = 'flex items-center justify-between px-3 py-2 rounded-lg transition-
 const IDLE = 'text-white/80 hover:bg-white/10 hover:text-white';
 const ACTIVE = 'bg-primary-container text-white font-semibold';
 
-export default function SidebarLink({ to, icon: Icon, label, badge }) {
+export default function SidebarLink({ to, icon: Icon, label, badge, tour }) {
   return (
-    <NavLink to={to} className={({ isActive }) => `${BASE} ${isActive ? ACTIVE : IDLE}`}>
+    <NavLink to={to} data-tour={tour} className={({ isActive }) => `${BASE} ${isActive ? ACTIVE : IDLE}`}>
       <div className="flex items-center gap-2.5">
         <Icon size={18} />
         <span className="font-body-md text-body-md">{label}</span>

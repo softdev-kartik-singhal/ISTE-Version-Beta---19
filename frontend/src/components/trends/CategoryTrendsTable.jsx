@@ -12,7 +12,7 @@ export default function CategoryTrendsTable({ categories, month }) {
   const visible = categories.filter((c) => c.name.toLowerCase().includes(query.toLowerCase()));
 
   return (
-    <div className="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm">
+    <div data-tour="spending-cards" className="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm pb-space-md">
         <div>
           <h3 className="font-headline-sm text-headline-sm text-on-surface">Category Trends &amp; Variances</h3>

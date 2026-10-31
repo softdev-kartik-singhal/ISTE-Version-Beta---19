@@ -47,7 +47,7 @@ const RESULT_TONES = {
 
 export default function WaterfallTable({ waterfall }) {
   return (
-    <div className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
+    <div data-tour="how-calc" className="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-md">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-sm">
         <div>
           <div className="flex items-center gap-2">

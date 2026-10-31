@@ -103,6 +103,8 @@ export default function Statements() {
               <button
                 className="h-10 px-space-md rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container-low transition-colors font-label-md text-label-md flex items-center gap-2 shadow-sm"
                 onClick={loadDemo}
+                data-tour="demo-btn"
+                data-state={demoState}
                 disabled={demoState !== 'idle'}
               >
                 {demo.icon}

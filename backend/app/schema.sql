@@ -6,7 +6,9 @@ CREATE TABLE IF NOT EXISTS users (
     email         TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,           -- bcrypt, never the password
     profile       TEXT,
-    created_at    TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at    TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    tour_completed INTEGER NOT NULL DEFAULT 0,  -- 1 once the first-time tour is finished or skipped
+    tour_step      INTEGER NOT NULL DEFAULT 0   -- the step to resume from if the user left midway
 );
 
 -- Only the last 4 digits of an account number are ever stored.

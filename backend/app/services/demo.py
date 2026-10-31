@@ -9,7 +9,10 @@ def ensure_demo_user(conn):
     row = conn.execute("SELECT id FROM users WHERE email = ?", (config.DEMO_EMAIL,)).fetchone()
     if row:
         return row["id"]
-    return auth.signup(conn, config.DEMO_NAME, config.DEMO_EMAIL, config.DEMO_PASSWORD, "Salaried + Freelance")["user"]["id"]
+    user_id = auth.signup(conn, config.DEMO_NAME, config.DEMO_EMAIL, config.DEMO_PASSWORD, "Salaried + Freelance")["user"]["id"]
+    conn.execute("UPDATE users SET tour_completed = 1 WHERE id = ?", (user_id,))  # the shared demo account skips the tour
+    conn.commit()
+    return user_id
 
 
 def ensure_demo_data(conn, user_id):

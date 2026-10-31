@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { askAnswer, getAskSetup, parseQuestion, toAsk } from '../services/api';
+import PageTip from '../tour/PageTip';
 import PageState from '../components/ui/PageState';
 import QuestionBox from '../components/ask/QuestionBox';
 import VerdictCard from '../components/ask/VerdictCard';
@@ -64,6 +65,7 @@ export default function Ask() {
 
   return (
     <main className="relative pt-16 min-h-screen bg-[#F7F9FC]">
+      <PageTip id="ask" text="Try: Can I afford ₹20,000 next month?" />
       <div className="flex flex-col w-full">
         <div className="p-space-lg max-w-[1400px] mx-auto w-full space-y-space-xl">
           <QuestionBox initialQuestion={question} presets={setup.data.presets} accounts={setup.data.accounts} busy={busy} onAsk={understand} />
@@ -83,7 +85,7 @@ export default function Ask() {
                   Month
                   <input className={FIELD} type="month" value={fields.month} onChange={(e) => setFields({ ...fields, month: e.target.value })} />
                 </label>
-                <button className="h-10 px-space-lg rounded-lg bg-primary-container text-on-primary font-label-md text-label-md disabled:opacity-60" disabled={busy || !Number(fields.amount) || !fields.month} onClick={confirm}>
+                <button className="h-10 px-space-lg rounded-lg bg-primary-container text-on-primary font-label-md text-label-md disabled:opacity-60" disabled={busy || !Number(fields.amount) || !fields.month} onClick={confirm} data-tour="ask-confirm">
                   Confirm and calculate
                 </button>
               </div>

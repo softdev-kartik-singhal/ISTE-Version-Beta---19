@@ -5,7 +5,7 @@ import { CloudUpload, Database, FolderOpen, Lock, Shield } from 'lucide-react';
 export default function UploadHero({ onLoadDemo, onChooseFiles, onDropFiles }) {
   const [dragging, setDragging] = useState(false);
   return (
-    <section className="relative bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden p-space-xl transition-all">
+    <section data-tour="upload-area" className="relative bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden p-space-xl transition-all">
       <div className="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-secondary-container/20 blur-3xl pointer-events-none" />
       <div
         className={`relative rounded-xl p-space-2xl flex flex-col items-center justify-center text-center transition-colors ${dragging ? 'bg-secondary-fixed/40' : 'bg-surface-container-low/60'}`}
