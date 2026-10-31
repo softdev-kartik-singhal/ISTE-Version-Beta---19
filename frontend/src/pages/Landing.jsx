@@ -9,7 +9,6 @@ import HeroSection from '../components/landing/HeroSection';
 import AffordabilitySimulator from '../components/landing/AffordabilitySimulator';
 import BenefitGrid from '../components/landing/BenefitGrid';
 import ComparisonMatrix from '../components/landing/ComparisonMatrix';
-import NfcCardTeaser from '../components/landing/NfcCardTeaser';
 import PricingSection from '../components/landing/PricingSection';
 import LandingFooter from '../components/landing/LandingFooter';
 import FormDialog from '../components/ui/FormDialog';
@@ -36,7 +35,6 @@ export default function Landing() {
           <AffordabilitySimulator sim={data.simulator} />
           <BenefitGrid />
           <ComparisonMatrix />
-          <NfcCardTeaser />
           <PricingSection plans={data.plans} onContact={() => setContactOpen(true)} />
           <section className="px-6 lg:px-12 py-space-2xl bg-surface">
             <div className="max-w-5xl mx-auto rounded-xl bg-surface-container-high p-8 lg:p-14 text-center space-y-6 shadow-sm">

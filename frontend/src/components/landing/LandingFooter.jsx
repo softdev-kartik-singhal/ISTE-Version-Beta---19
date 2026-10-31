@@ -38,9 +38,6 @@ export default function LandingFooter({ onNavigate }) {
             <button className="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" onClick={() => onNavigate('comparison')}>
               Privacy Policy
             </button>
-            <button className="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" onClick={() => onNavigate('security')}>
-              Security Disclosures
-            </button>
             <button className="font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors" onClick={() => onNavigate('features')}>
               Terms of Service
             </button>

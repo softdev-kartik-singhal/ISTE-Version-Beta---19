@@ -2,6 +2,11 @@
 
 The first eight are the cases the team has to defend; the rest cover the remaining planted cases.
 """
+
+"""One test per planted case in demo_data/README.md, each through the public API as a signed-in user.
+
+The first eight are the cases the team has to defend; the rest cover the remaining planted cases.
+"""
 import sqlite3
 from collections import Counter
 

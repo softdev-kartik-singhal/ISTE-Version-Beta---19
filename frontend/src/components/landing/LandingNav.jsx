@@ -7,7 +7,6 @@ const LINKS = [
   { id: 'waterfall-demo', label: 'How It Works' },
   { id: 'pricing', label: 'Pricing' },
   { id: 'comparison', label: 'Privacy' },
-  { id: 'security', label: 'Security' },
 ];
 
 export default function LandingNav({ active, onNavigate }) {
