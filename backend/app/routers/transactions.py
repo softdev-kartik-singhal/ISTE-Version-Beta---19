@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 
 from app.db import get_conn
+from app.services.cash import mark_cash_transfers
 from app.services.corrections import apply_correction, undo_correction
 from app.deps import current_user_id
 from app.services.merchant import ref_of
@@ -39,6 +40,7 @@ def list_transactions(q: str = "", category: int | None = None, account: int | N
                       direction: str | None = Query(None, pattern="^(debit|credit)$"),
                       limit: int = Query(100, le=500), offset: int = 0, conn=Depends(get_conn), user_id: int = Depends(current_user_id)):
     """Filtered, newest first. `summary` totals ignore transfers and confirmed duplicates."""
+    mark_cash_transfers(conn, user_id)  # ATM withdrawals / cash deposits show as transfers
     where, args = ["a.user_id = ?"], [user_id]
     for clause, value in [("(t.description LIKE ? OR t.merchant LIKE ?)", f"%{q}%" if q else None),
                           ("t.category_id = ?", category), ("t.account_id = ?", account),
@@ -55,14 +57,15 @@ def list_transactions(q: str = "", category: int | None = None, account: int | N
                         " COALESCE(SUM(CASE WHEN t.amount_paise < 0 THEN -t.amount_paise END), 0) AS outflow "
                         + sql + " AND t.kind = 'normal'", args).fetchone()
     rows = conn.execute("SELECT t.id, t.txn_date, t.description, t.merchant, t.amount_paise, t.balance_paise, t.kind,"
-                        " t.category_id, c.name AS category, a.id AS account_id, a.bank, a.last4 " + sql +
+                        " t.category_id, t.source, t.note, c.name AS category, a.id AS account_id, a.bank, a.last4 " + sql +
                         " ORDER BY t.txn_date DESC, t.id DESC LIMIT ? OFFSET ?", args + [limit, offset]).fetchall()
     return {"total": total, "summary": {"inflowPaise": sums["inflow"], "outflowPaise": sums["outflow"]},
             "transactions": [{"id": r["id"], "date": r["txn_date"], "description": r["description"],
                               "merchant": r["merchant"], "amountPaise": r["amount_paise"],
                               "balancePaise": r["balance_paise"], "kind": r["kind"], "categoryId": r["category_id"],
                               "category": r["category"], "accountId": r["account_id"], "bank": r["bank"],
-                              "last4": r["last4"], "channel": channel_of(r["description"]),
+                              "last4": r["last4"], "channel": "Cash" if r["source"] == "manual" else channel_of(r["description"]),
+                              "source": r["source"], "note": r["note"],
                               "reference": ref_of(r["description"])} for r in rows]}
 
 

@@ -116,11 +116,24 @@ PDF_ACCOUNT = re.compile(r"Account No:?\s*(\S+)", re.I)
 PDF_OPENING = re.compile(r"Opening Balance\s+([\d,]+\.\d{2})", re.I)
 
 
+def reject(reason):
+    raise StatementRejected(reason)
+
+
 def parse_pdf(data):
-    """Parse an HDFC-layout PDF statement; reject any other layout."""
+    """Parse an HDFC PDF statement; reject any other layout.
+
+    A real HDFC e-statement (a column table + a STATEMENT SUMMARY) is read by word position in hdfc_pdf.py.
+    The older one-line-per-row layout below is still accepted."""
+    from app.services import hdfc_pdf  # imported here: hdfc_pdf builds the Row/Statement types defined in this file
     try:
         with pdfplumber.open(io.BytesIO(data)) as pdf:
             text = "\n".join(page.extract_text() or "" for page in pdf.pages)
+            if text.strip() and "HDFC BANK" in text.upper() and hdfc_pdf.has_table(pdf):
+                last4, rows = hdfc_pdf.parse(pdf, text, reject, Row)
+                return Statement("HDFC", last4, rows)
+    except StatementRejected:
+        raise
     except Exception:
         raise StatementRejected("PDF could not be opened (corrupt or password-protected).")
     if not text.strip():
@@ -129,7 +142,8 @@ def parse_pdf(data):
         raise StatementRejected("Unsupported PDF layout: only HDFC Bank PDF statements are supported.")
     account, opening = PDF_ACCOUNT.search(text), PDF_OPENING.search(text)
     if not account or not opening:
-        raise StatementRejected("PDF is missing the 'Account No' or 'Opening Balance' line.")
+        raise StatementRejected("We could not find the account number on the statement." if not account else
+                                "We could not find the opening balance on the statement.")
 
     rows, previous = [], to_paise(opening.group(1))
     for line in text.splitlines():

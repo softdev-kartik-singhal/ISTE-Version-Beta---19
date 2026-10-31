@@ -2,7 +2,7 @@
 import { Pencil } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatCurrency';
 
-const ACCOUNT_DOTS = { HDFC: 'bg-primary-container', ICICI: 'bg-primary', Kotak: 'bg-secondary' };
+const ACCOUNT_DOTS = { HDFC: 'bg-primary-container', ICICI: 'bg-primary', Kotak: 'bg-secondary', 'Cash wallet': 'bg-emerald-600' };
 
 export default function TransactionRow({ tx, selected, onToggle, onEditCategory }) {
   const credit = tx.amount > 0;
@@ -20,19 +20,21 @@ export default function TransactionRow({ tx, selected, onToggle, onEditCategory 
           <div className="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary font-bold text-sm">{tx.initials}</div>
           <div>
             <div className="font-label-md text-label-md font-semibold text-on-surface flex items-center gap-2">
-              <span>{tx.merchant}</span>
-              <span className="px-1.5 py-0.2 rounded bg-surface-container font-label-sm text-label-sm text-secondary">{tx.channel}</span>
+              <span>{tx.manual ? (tx.amount > 0 ? 'Cash received' : 'Cash spent') : tx.merchant}</span>
+              {tx.manual ? (
+                <span className="px-1.5 py-0.2 rounded bg-secondary-fixed font-label-sm text-label-sm text-on-secondary-fixed">Cash · added by you</span>
+              ) : (
+                <span className="px-1.5 py-0.2 rounded bg-surface-container font-label-sm text-label-sm text-secondary">{tx.channel}</span>
+              )}
             </div>
-            <div className="font-label-sm text-label-sm text-secondary">{tx.reference}</div>
+            <div className="font-label-sm text-label-sm text-secondary">{tx.manual ? tx.note || '' : tx.reference}</div>
           </div>
         </div>
       </td>
       <td className="py-4 px-space-md">
         <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-surface font-label-sm text-label-sm text-on-surface">
           <span className={`w-2 h-2 rounded-full ${ACCOUNT_DOTS[tx.bank]}`} />
-          <span>
-            {tx.bank} ••{tx.last4}
-          </span>
+          <span>{tx.cash ? 'Cash wallet' : `${tx.bank} ••${tx.last4}`}</span>
         </div>
       </td>
       <td className="py-4 px-space-md">

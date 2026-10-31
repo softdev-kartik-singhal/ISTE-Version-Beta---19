@@ -13,8 +13,10 @@ import TransactionTable from '../components/transactions/TransactionTable';
 import ChangeCategoryDialog from '../components/dialogs/ChangeCategoryDialog';
 import UndoToast from '../components/transactions/UndoToast';
 import Toast from '../components/ui/Toast';
+import CashButton from '../cash/CashButton';
+import { useCash } from '../cash/cashContext';
 
-const accountLabel = (tx) => `${tx.bank} ••${tx.last4}`;
+const accountLabel = (tx) => (tx.cash ? 'Cash wallet' : `${tx.bank} ••${tx.last4}`);
 function matches(tx, filters) {
   const text = `${tx.merchant} ${tx.reference} ${tx.category} ${Math.abs(tx.amount)}`.toLowerCase();
   if (filters.query && !text.includes(filters.query.toLowerCase())) return false;
@@ -22,6 +24,7 @@ function matches(tx, filters) {
   if (filters.category !== 'all' && tx.category !== filters.category) return false;
   if (filters.flow === 'Debits' && tx.amount > 0) return false;
   if (filters.flow === 'Credits' && tx.amount < 0) return false;
+  if (filters.flow === 'Cash only' && !tx.cash) return false;
   return true;
 }
 
@@ -34,6 +37,7 @@ export default function Transactions() {
   const [editing, setEditing] = useState(null);
   const [undo, setUndo] = useState(null); // { batchId, message } of the last category change
   const [toast, showToast] = useToast();
+  const { openCash } = useCash();
 
   // The account picked in the top bar filters this page too; so does a search typed there.
   useEffect(() => {
@@ -70,6 +74,13 @@ export default function Transactions() {
     setEditing(null);
   }
 
+  // A cash row typed in by the user opens the cash sheet (amount, category, date, note, delete) instead of the category dialog.
+  function editCash(tx) {
+    const received = tx.amount > 0;
+    openCash({ entry: { id: tx.id, type: received ? 'received' : 'spent', amountPaise: Math.round(Math.abs(tx.amount) * 100), category: tx.category,
+      sourceType: received ? tx.shortName.slice(5).toLowerCase() : null, date: tx.isoDate, note: tx.note || '' } });
+  }
+
   // Bulk Categorize works on the ticked rows, or the first visible row if nothing is ticked.
   function openBulk() {
     const first = rows.find((tx) => selectedIds.includes(tx.id)) || visible[0];
@@ -97,6 +108,7 @@ export default function Transactions() {
               <p className="font-body-sm text-body-sm text-secondary">Unified ledger of every statement you uploaded, with transfers between your own accounts marked and left out of totals.</p>
             </div>
             <div className="flex items-center gap-space-sm flex-wrap">
+              <CashButton className="hidden md:flex" />
               <button
                 className="h-10 px-space-md rounded-lg bg-surface-container-lowest text-on-surface font-label-md text-label-md flex items-center gap-2 hover:bg-surface-container-low transition-colors shadow-sm"
                 onClick={exportCsv}
@@ -129,6 +141,7 @@ export default function Transactions() {
             onToggleRow={toggleRow}
             onToggleAll={toggleAll}
             onEditCategory={setEditing}
+            onEditCash={editCash}
           />
         </div>
 

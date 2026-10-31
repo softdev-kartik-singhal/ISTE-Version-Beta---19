@@ -143,3 +143,48 @@ SENSITIVE_WINDOW_SECONDS = 60
 DEVICE_SECRET = os.environ.get("SMARTGULLAK_DEVICE_SECRET")
 # Mixed into the card-UID hash. Card UIDs are short, so a plain hash could be guessed; the pepper is not in the database.
 CARD_PEPPER = os.environ.get("SMARTGULLAK_CARD_PEPPER", "dev-only-change-me")
+
+# --- Suggestions for you (AI) ------------------------------------------------------------
+# Only an anonymised profile of bands and labels ever reaches the AI (see services/suggest_profile.py).
+# Provider: "gemini" (default) or "ollama" (a local model, nothing leaves the machine). Keys come from the environment.
+AI_PROVIDER = os.environ.get("SMARTGULLAK_AI_PROVIDER", "gemini")
+AI_TIMEOUT_SECONDS = 8                   # slower than this -> rule-based suggestions instead
+GEMINI_MODEL = os.environ.get("SMARTGULLAK_GEMINI_MODEL", "gemini-2.0-flash")
+GEMINI_API_KEY = os.environ.get("SMARTGULLAK_GEMINI_API_KEY") or os.environ.get("GEMINI_API_KEY")
+OLLAMA_URL = os.environ.get("SMARTGULLAK_OLLAMA_URL", "http://localhost:11434")
+OLLAMA_MODEL = os.environ.get("SMARTGULLAK_OLLAMA_MODEL", "llama3.1")
+MAX_SUGGESTIONS = 5
+
+# Monthly surplus bands, in rupees: (upper limit, label). The first band whose limit is above the amount wins.
+SURPLUS_BANDS = [(5_000, "under ₹5k"), (10_000, "₹5k–10k"), (20_000, "₹10k–20k"), (50_000, "₹20k–50k")]
+SURPLUS_BAND_TOP, SURPLUS_BAND_NEGATIVE = "over ₹50k", "negative"
+# Goal horizons in months: under 12 = "under 1 year", up to 60 = "1–5 years", more = "5+ years".
+HORIZON_SHORT_MONTHS, HORIZON_MEDIUM_MONTHS = 12, 60
+# Goal types the AI may see. Anything else is sent as "Other" (goal names are free text, so they never leave).
+GOAL_TYPES = ["Work & Equipment", "Travel", "Home", "Education", "Health", "Other"]
+
+# Words in a transaction's merchant text that reveal a signal. Matched here in our code only; the text itself is never sent.
+LIFE_INSURANCE_WORDS = ["LIFE INSURANCE", "TERM PLAN", "TERM INSURANCE", "LIC", "LIFE PREMIUM"]
+HEALTH_INSURANCE_WORDS = ["HEALTH INSURANCE", "HEALTH PREMIUM", "MEDICLAIM", "HEALTH POLICY"]
+HIGH_COST_DEBT_WORDS = ["CREDIT CARD", "CC INTEREST", "FINANCE CHARGE", "PERSONAL LOAN", "PL EMI", "LATE PAYMENT FEE"]
+SIGNAL_MONTHS = 6                         # look at this many latest months for the EMI / insurance / debt signals
+
+# Brand, company, scheme and app names we never let through in a suggestion (checked as whole words, any case).
+BRAND_WORDS = [
+    "HDFC", "ICICI", "SBI", "AXIS", "KOTAK", "PNB", "IDFC", "YES BANK", "BANDHAN", "CANARA", "BARODA", "LIC", "TATA", "BAJAJ",
+    "MAX LIFE", "STAR HEALTH", "CARE HEALTH", "NIVA", "BUPA", "ACKO", "DIGIT", "POLICYBAZAAR", "MIRAE", "NIPPON", "PARAG PARIKH",
+    "UTI", "QUANT", "ZERODHA", "GROWW", "UPSTOX", "PAYTM", "PHONEPE", "GOOGLE PAY", "GPAY", "COIN", "KUVERA", "JAR", "SMALLCASE",
+    "NIFTY", "SENSEX", "NSDL", "ATAL PENSION", "SCSS", "ELSS", "SMART GULLAK", "SMARTGULLAK",
+]
+# Words that promise something; a suggestion using them is dropped.
+PROMISE_PATTERNS = [r"guarantee", r"assured", r"risk[- ]free", r"double your", r"will earn", r"will grow", r"sure[- ]shot"]
+
+# --- Cash wallet ---------------------------------------------------------------------------
+# Bank narrations (whole words, case-insensitive, punctuation ignored) that mean cash left or entered the bank.
+ATM_WITHDRAWAL_WORDS = ["ATM WDL", "ATW", "NWD", "CASH WITHDRAWAL", "CASH WDL"]
+CASH_DEPOSIT_WORDS = ["CASH DEP", "BY CASH"]
+# Cash still in the wallet this many days after a withdrawal is counted as spending nobody recorded.
+CASH_UNRECORDED_DAYS = 30
+CASH_BANK, CASH_LAST4 = "Cash wallet", "CASH"       # how the wallet appears as an account
+UNRECORDED_CATEGORY = "Cash — not recorded"
+CASH_SOURCES = ["gift", "salary in cash", "freelance", "other"]   # kinds of cash received

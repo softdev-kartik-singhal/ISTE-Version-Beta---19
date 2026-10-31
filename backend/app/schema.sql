@@ -65,7 +65,9 @@ CREATE TABLE IF NOT EXISTS transactions (
     category_id   INTEGER REFERENCES categories(id),
     kind          TEXT NOT NULL DEFAULT 'normal' CHECK (kind IN ('normal', 'transfer', 'duplicate')),
     -- hash(account, date, amount, balance, description): identical = same bank row
-    fingerprint   TEXT NOT NULL UNIQUE
+    fingerprint   TEXT NOT NULL UNIQUE,
+    source        TEXT NOT NULL DEFAULT 'statement',  -- 'manual' = typed in by the user (cash wallet)
+    note          TEXT                                -- the user's own note on a manual row; never sent to the AI
 );
 CREATE INDEX IF NOT EXISTS idx_txn_account_date ON transactions(account_id, txn_date);
 
@@ -174,3 +176,20 @@ INSERT OR IGNORE INTO categories (name, kind) VALUES
     ('Subscriptions', 'expense'), ('Food & Dining', 'expense'), ('Groceries', 'expense'),
     ('Travel & Commute', 'expense'), ('Fuel', 'expense'), ('Shopping', 'expense'), ('Other', 'expense'),
     ('Transfer', 'transfer');
+
+-- Optional "About you" answers for the suggestions feature. Bands and labels only; stored for this user alone.
+CREATE TABLE IF NOT EXISTS suggestion_about (
+    user_id       INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    age_band      TEXT,
+    dependents    TEXT,
+    risk_comfort  TEXT,
+    employer_health_cover INTEGER,   -- 1 / 0, NULL = not answered
+    has_daughter  INTEGER            -- 1 / 0, NULL = not answered
+);
+
+-- AI answers cached by the hash of the anonymised profile. The profile holds no personal data, so it is safe to share.
+CREATE TABLE IF NOT EXISTS suggestion_cache (
+    profile_hash TEXT PRIMARY KEY,
+    result_json  TEXT NOT NULL,
+    created_at   TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

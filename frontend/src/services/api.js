@@ -307,3 +307,23 @@ export const verifyLedger = () => request('/api/forecast-log/verify');
 export async function getLanding() {
   return (await import('../content/landing')).landing;
 }
+
+// ---- Suggestions for you (Plan). The server builds the anonymous profile itself; the browser never sends money data. ----
+export const getSuggestionsAbout = () => request('/api/suggestions/about');
+export const saveSuggestionsAbout = (answers) => request('/api/suggestions/about', { method: 'PUT', body: answers });
+export const getSuggestions = (refresh = false) => request('/api/suggestions', { method: 'POST', body: { refresh } });
+
+// ---- Cash wallet: cash the bank statements cannot show. Amounts here are paise, like the rest of the API. ----
+export const getCash = () => request('/api/cash');
+
+async function changeCash(path, options) {
+  const result = await request(path, options);
+  invalidate(); // totals, trends and the forecast all include cash
+  return result;
+}
+
+// entry: { type: 'spent' | 'received', amountPaise, category | sourceType, date, note }
+export const addCash = (entry) => changeCash('/api/cash', { method: 'POST', body: entry });
+export const updateCash = (id, changes) => changeCash(`/api/cash/${id}`, { method: 'PATCH', body: changes });
+export const deleteCash = (id) => changeCash(`/api/cash/${id}`, { method: 'DELETE' });
+export const splitWithdrawal = (withdrawalId, parts) => changeCash('/api/cash/split-withdrawal', { method: 'POST', body: { withdrawalId, parts } });

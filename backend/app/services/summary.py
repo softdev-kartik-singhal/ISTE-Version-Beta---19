@@ -19,13 +19,13 @@ def merge_summary(conn, user_id):
     """Totals shown in the reconciliation cards."""
     q = ("SELECT COUNT(*) AS n, COALESCE(SUM(CASE WHEN t.kind = 'transfer' AND t.amount_paise > 0"
          " THEN t.amount_paise END), 0) AS moved FROM transactions t JOIN accounts a ON a.id = t.account_id"
-         " WHERE a.user_id = ?")
+         " WHERE a.user_id = ? AND a.type != 'cash'")
     totals = conn.execute(q, (user_id,)).fetchone()
     pairs = conn.execute("SELECT COUNT(*) AS n FROM transactions t JOIN accounts a ON a.id = t.account_id"
                          " WHERE a.user_id = ? AND t.kind = 'transfer' AND t.amount_paise > 0", (user_id,)).fetchone()["n"]
     skipped = conn.execute("SELECT COALESCE(SUM(f.duplicate_rows), 0) AS n FROM uploaded_files f JOIN accounts a"
                            " ON a.id = f.account_id WHERE a.user_id = ?", (user_id,)).fetchone()["n"]
-    accounts = conn.execute("SELECT COUNT(*) AS n FROM accounts WHERE user_id = ?", (user_id,)).fetchone()["n"]
+    accounts = conn.execute("SELECT COUNT(*) AS n FROM accounts WHERE user_id = ? AND type != 'cash'", (user_id,)).fetchone()["n"]
     return {"records": totals["n"], "duplicatesSkipped": skipped, "transferPairs": pairs,
             "transferPaise": totals["moved"], "accounts": accounts}
 
@@ -50,7 +50,7 @@ def find_gaps(rows):
 def coverage(conn, user_id):
     """Per-account first/last date and gaps."""
     out = []
-    for acct in conn.execute("SELECT id, bank, last4 FROM accounts WHERE user_id = ? ORDER BY id", (user_id,)):
+    for acct in conn.execute("SELECT id, bank, last4 FROM accounts WHERE user_id = ? AND type != 'cash' ORDER BY id", (user_id,)):
         rows = conn.execute("SELECT txn_date, amount_paise, balance_paise FROM transactions WHERE account_id = ?"
                             " ORDER BY txn_date, id", (acct["id"],)).fetchall()
         if not rows:

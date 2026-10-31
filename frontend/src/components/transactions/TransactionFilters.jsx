@@ -1,7 +1,7 @@
 // Transactions search + filter strip: query box, account/category pickers, flow tabs and active-filter pills.
 import { Calendar, ChevronDown, Landmark, Search, Shapes, X } from 'lucide-react';
 
-const FLOW_TABS = ['All', 'Debits', 'Credits'];
+const FLOW_TABS = ['All', 'Debits', 'Credits', 'Cash only'];
 const SELECT = 'appearance-none bg-transparent pr-5 font-label-md text-label-md text-on-surface focus:outline-none cursor-pointer';
 
 export default function TransactionFilters({ filters, onChange, accounts, categories, dateRange }) {

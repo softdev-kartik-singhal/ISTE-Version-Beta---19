@@ -11,6 +11,7 @@ import PageState from '../components/ui/PageState';
 import EmergencyFundStep from '../components/surplus/EmergencyFundStep';
 import OptionCard from '../components/surplus/OptionCard';
 import AllocationSimulator from '../components/surplus/AllocationSimulator';
+import SuggestionsCard from '../components/surplus/SuggestionsCard';
 import StewardshipFooter from '../components/surplus/StewardshipFooter';
 
 export default function SurplusPlan() {
@@ -118,6 +119,7 @@ export default function SurplusPlan() {
           </section>
 
           <AllocationSimulator allocation={data.allocation} committed={committed} onExport={exportPlan} onCommit={commit} />
+          <SuggestionsCard />
           <p className="font-label-sm text-label-sm text-on-surface-variant">{data.disclaimer}</p>
           <StewardshipFooter onMethodology={showMethodology} />
         </div>

@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from app.db import connect, init_db
 from app.services.auth import AuthError
 from app.services.card import CardError
-from app.routers import account, ask, card, goals, insights, overview, statements, transactions, trust
+from app.routers import account, ask, card, cash, goals, insights, overview, statements, suggestions, transactions, trust
 
 
 @asynccontextmanager
@@ -23,12 +23,14 @@ app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173"],  # V
                    allow_methods=["*"], allow_headers=["*"])
 app.include_router(account.router)
 app.include_router(card.router)
+app.include_router(cash.router)
 app.include_router(statements.router)
 app.include_router(transactions.router)
 app.include_router(insights.router)
 app.include_router(ask.router)
 app.include_router(overview.router)
 app.include_router(goals.router)
+app.include_router(suggestions.router)
 app.include_router(trust.router)
 
 

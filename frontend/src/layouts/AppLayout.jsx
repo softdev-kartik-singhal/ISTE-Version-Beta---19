@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { TourProvider } from '../tour/TourProvider';
+import { CashProvider } from '../cash/CashProvider';
 import Sidebar from '../components/layout/Sidebar';
 import TopBar from '../components/layout/TopBar';
 import { useApi } from '../hooks/useApi';
@@ -21,6 +22,7 @@ function Shell() {
 
   return (
     <TourProvider tour={session.tour} userKey={session.user.email}>
+    <CashProvider>
     <div className="bg-surface font-body-md text-body-md text-on-surface min-h-screen">
       <Sidebar session={session} />
       <div className="pl-64">
@@ -31,6 +33,7 @@ function Shell() {
         </div>
       </div>
     </div>
+    </CashProvider>
     </TourProvider>
   );
 }

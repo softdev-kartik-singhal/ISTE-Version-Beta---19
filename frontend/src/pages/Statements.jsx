@@ -5,6 +5,7 @@ import { useApi } from '../hooks/useApi';
 import { useToast } from '../hooks/useToast';
 import { deleteStatement, getStatements, loadDemoData, uploadStatement } from '../services/api';
 import PageState from '../components/ui/PageState';
+import WithdrawalPrompt from '../cash/WithdrawalPrompt';
 import UploadHero from '../components/statements/UploadHero';
 import ReconciliationCard from '../components/statements/ReconciliationCard';
 import CoverageTimeline from '../components/statements/CoverageTimeline';
@@ -129,6 +130,7 @@ export default function Statements() {
             </div>
           </div>
 
+          <WithdrawalPrompt />
           <UploadHero
             onLoadDemo={loadDemo}
             onChooseFiles={() => chooseFiles()}

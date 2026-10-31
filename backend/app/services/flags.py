@@ -21,7 +21,7 @@ def load_rows(conn, user_id):
     return conn.execute(
         "SELECT t.id, t.txn_date, t.amount_paise, t.description, t.merchant, t.kind, c.name AS category,"
         " a.bank, a.last4 FROM transactions t JOIN accounts a ON a.id = t.account_id"
-        " LEFT JOIN categories c ON c.id = t.category_id WHERE a.user_id = ? AND t.kind != 'transfer'"
+        " LEFT JOIN categories c ON c.id = t.category_id WHERE a.user_id = ? AND a.type != 'cash' AND t.kind != 'transfer'"
         " ORDER BY t.txn_date, t.id", (user_id,)).fetchall()
 
 

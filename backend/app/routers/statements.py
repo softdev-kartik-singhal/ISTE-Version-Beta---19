@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from app.config import DEMO_DIR, MAX_UPLOAD_BYTES
 from app.db import get_conn
 from app.deps import current_user_id
+from app.services.cash import mark_cash_transfers
 from app.services.ingest import FileAlreadyUploaded, clear_statements, has_statements, ingest
 from app.services.parser import StatementRejected
 from app.services.recurring import refresh_recurring
@@ -58,6 +59,7 @@ def delete_statement(file_id: int, conn=Depends(get_conn), user_id: int = Depend
     conn.execute("DELETE FROM uploaded_files WHERE id = ?", (file_id,))
     conn.execute("UPDATE transactions SET kind = 'normal' WHERE kind = 'transfer' AND account_id IN"
                  " (SELECT id FROM accounts WHERE user_id = ?)", (user_id,))  # pairs may have lost a side: match again
+    mark_cash_transfers(conn, user_id)  # the reset above also cleared the ATM rows: mark them again
     match_transfers(conn, user_id)
     refresh_recurring(conn, user_id)
     conn.commit()

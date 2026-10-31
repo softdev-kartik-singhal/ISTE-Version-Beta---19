@@ -5,6 +5,7 @@ Transfers between own accounts are not in the ledger (kind != normal), so they n
 from collections import defaultdict
 from statistics import median
 
+from app.services.cash import label
 from app.config import (CONCENTRATION_HIGH_PCT, FIXED_CATEGORIES, INSIGHT_MIN_MONTHS, MONEY_FLOW_TOP_N,
                         TREND_BASELINE_MONTHS)
 from app.services.insights import rs
@@ -37,7 +38,7 @@ def build_graph(rows, top_n):
             if r["merchant"] in keep:
                 node(f"mer:{r['merchant']}", 3, r["merchant"], amount)
                 links[(cat, f"mer:{r['merchant']}")] += amount
-        node(acct, 1, f"{r['bank']} ••{r['last4']}", 0)
+        node(acct, 1, label(r["bank"], r["last4"]), 0)
     for acct_id in [n for n in nodes if n.startswith("acct:")]:  # an account's size = money through it
         nodes[acct_id]["amountPaise"] = sum(v for (a, b), v in links.items() if b == acct_id)
     return list(nodes.values()), [{"from": a, "to": b, "valuePaise": v} for (a, b), v in links.items()]
@@ -70,7 +71,7 @@ def category_detail(ledger, months, month, category, compare):
 def connected_accounts(this, total):
     by = defaultdict(int)
     for r in this:
-        by[f"{r['bank']} ••{r['last4']}"] += -r["amount_paise"]
+        by[label(r["bank"], r["last4"])] += -r["amount_paise"]
     return [{"account": a, "sharePct": round(v * 100 / total)} for a, v in sorted(by.items(), key=lambda kv: -kv[1])] if total else []
 
 

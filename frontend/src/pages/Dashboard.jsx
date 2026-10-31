@@ -11,6 +11,7 @@ import ProjectionCard from '../components/dashboard/ProjectionCard';
 import IncomeSpendingCard from '../components/dashboard/IncomeSpendingCard';
 import SpendingBreakdownCard from '../components/dashboard/SpendingBreakdownCard';
 import AttentionList from '../components/dashboard/AttentionList';
+import CashWalletCard from '../cash/CashWalletCard';
 
 export default function Dashboard() {
   const api = useApi(getDashboard);
@@ -24,6 +25,7 @@ export default function Dashboard() {
           <StaleDataBanner asOf={data.liquidity.asOfIso} />
           <AffordabilityHero defaultQuestion={data.defaultQuestion} quickQuestions={data.quickQuestions} />
           <LiquidityCards liquidity={data.liquidity} />
+          <CashWalletCard />
           <UpcomingPayments payments={data.upcoming} />
 
           {/* What changed this month */}

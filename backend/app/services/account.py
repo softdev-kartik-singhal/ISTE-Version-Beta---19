@@ -7,13 +7,13 @@ from app.services.track_record import verify_chain
 
 
 def account_labels(conn, user_id):
-    rows = conn.execute("SELECT bank, last4 FROM accounts WHERE user_id = ? ORDER BY id", (user_id,)).fetchall()
+    rows = conn.execute("SELECT bank, last4 FROM accounts WHERE user_id = ? AND type != 'cash' ORDER BY id", (user_id,)).fetchall()
     return [f"{r['bank']} ••{r['last4']}" for r in rows]
 
 
 def account_list(conn, user_id):
-    return [{"id": r["id"], "bank": r["bank"], "last4": r["last4"]}
-            for r in conn.execute("SELECT id, bank, last4 FROM accounts WHERE user_id = ? ORDER BY id", (user_id,))]
+    return [{"id": r["id"], "bank": r["bank"], "last4": r["last4"], "type": r["type"]}
+            for r in conn.execute("SELECT id, bank, last4, type FROM accounts WHERE user_id = ? ORDER BY id", (user_id,))]
 
 
 def session_payload(conn, user_id):

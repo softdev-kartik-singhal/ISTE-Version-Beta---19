@@ -10,6 +10,7 @@ from statistics import median
 
 from app.config import (BUFFER_MONTHS, CASES, FIXED_CATEGORIES, MIN_HISTORY_MONTHS, TREND_BASELINE_MONTHS, TREND_FLAT_PCT, TRENDS_MONTHS, UPCOMING_DAYS,
                         INSIGHT_MIN_MONTHS)
+from app.services.cash import WITHIN_STATEMENTS, mark_cash_transfers, unrecorded_rows
 from app.services.money import inr
 from app.services.stats import add_months, month_end, month_of, percentile
 
@@ -23,12 +24,14 @@ def load_ledger(conn, user_id):
     """Every normal transaction of the user, with its account, category and month.
     anomaly=True marks a payment flagged as unusually large: a one-off kept out of "usual" baselines."""
     from app.services.flags import large_flags, load_rows  # local import: flags is a sibling service
+    mark_cash_transfers(conn, user_id)  # ATM withdrawals are transfers to the Cash wallet, not spending
     anomalies = {f["transactionId"] for f in large_flags(load_rows(conn, user_id))}
     rows = conn.execute(
         "SELECT t.id, t.txn_date, t.amount_paise, t.merchant, c.name AS category, a.id AS account_id, a.bank, a.last4"
         " FROM transactions t JOIN accounts a ON a.id = t.account_id LEFT JOIN categories c ON c.id = t.category_id"
-        " WHERE a.user_id = ? AND t.kind = 'normal' ORDER BY t.txn_date, t.id", (user_id,)).fetchall()
-    return [{**dict(r), "month": month_of(r["txn_date"]), "category": r["category"] or "Other", "anomaly": r["id"] in anomalies}
+        " WHERE a.user_id = ? AND t.kind = 'normal' AND " + WITHIN_STATEMENTS + " ORDER BY t.txn_date, t.id", (user_id,)).fetchall()
+    rows = sorted([dict(r) for r in rows] + unrecorded_rows(conn, user_id), key=lambda r: (r["txn_date"], r["id"]))
+    return [{**r, "month": month_of(r["txn_date"]), "category": r["category"] or "Other", "anomaly": r["id"] in anomalies}
             for r in rows]
 
 

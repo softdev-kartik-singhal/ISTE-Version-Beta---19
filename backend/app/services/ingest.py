@@ -3,6 +3,7 @@ import hashlib
 import re
 import sqlite3
 
+from app.services.cash import mark_cash_transfers
 from app.services.categorize import Categorizer
 from app.services.merchant import merchant_of, ref_of
 from app.services.parser import Row, parse_statement
@@ -80,6 +81,7 @@ def ingest(conn, user_id, filename, data):
         skipped = len(statement.rows) - added
         conn.execute("UPDATE uploaded_files SET new_rows = ?, duplicate_rows = ?, duplicate_paise = ?, file_name = ?, file_type = ?"
                      " WHERE id = ?", (added, skipped, skipped_paise, display_name(filename), "pdf" if data.startswith(b"%PDF") else "csv", file_id))
+        mark_cash_transfers(conn, user_id)  # ATM withdrawals / cash deposits are transfers to the Cash wallet
         transfers = match_transfers(conn, user_id)
         refresh_recurring(conn, user_id)  # new rows may complete a pattern
         conn.commit()

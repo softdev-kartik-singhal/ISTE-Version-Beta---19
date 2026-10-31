@@ -175,6 +175,7 @@ export const toTx = (t) => ({
   id: t.id, date: day(t.date), time: t.channel, initials: (t.merchant || '??').slice(0, 2).toUpperCase(), merchant: title(t.merchant || t.description),
   shortName: t.merchant || t.description, channel: t.channel, reference: t.reference || t.description, bank: t.bank, bankName: `${t.bank} Bank`, last4: t.last4,
   category: t.category || 'Other', categoryId: t.categoryId, amount: r(t.amountPaise), kind: t.kind,
+  isoDate: t.date, cash: t.bank === 'Cash wallet', manual: t.source === 'manual', note: t.note,
 });
 
 export function toTransactions(list, categories, flagCount) {

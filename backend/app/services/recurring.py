@@ -61,7 +61,8 @@ def refresh_recurring(conn, user_id):
     rows = conn.execute(
         "SELECT t.id, t.merchant, t.txn_date, t.amount_paise, c.name AS category FROM transactions t"
         " JOIN accounts a ON a.id = t.account_id LEFT JOIN categories c ON c.id = t.category_id"
-        " WHERE a.user_id = ? AND t.kind = 'normal'", (user_id,)).fetchall()
+        " WHERE a.user_id = ? AND t.kind = 'normal' AND NOT (a.type = 'cash' AND t.amount_paise < 0)"  # cash spending is never a standing payment
+, (user_id,)).fetchall()
     conn.execute("DELETE FROM recurring WHERE user_id = ?", (user_id,))
     for i in detect(rows):
         conn.execute("INSERT INTO recurring (user_id, merchant, label, typical_paise, cadence_days, occurrences,"

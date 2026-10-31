@@ -5,6 +5,7 @@ from datetime import date
 
 from app.config import (MIN_HISTORY_MONTHS, MONTH_EDGE_SLACK_DAYS, VARIABLE_HIGH_PCT, VARIABLE_LOW_PCT,
                         VARIABLE_MONTHS)
+from app.services.cash import WITHIN_STATEMENTS, mark_cash_transfers, unrecorded_rows
 from app.services.income import classify_income, income_profile, monthly_income
 from app.services.stats import add_months, month_end, month_of, months_between, percentile
 from app.services.recurring import detect
@@ -64,11 +65,16 @@ def build_inputs(conn, user_id, until=None):
     """Everything the calculation needs. With `until` (an ISO date) only rows up to that day are used
     and recurring payments, gaps and balances are recomputed from those rows alone, so a backtest
     cannot see the future."""
+    mark_cash_transfers(conn, user_id)  # ATM withdrawals are transfers to the Cash wallet, not spending
     query = ("SELECT t.id, t.account_id, t.txn_date, t.amount_paise, t.balance_paise, t.merchant, t.kind,"
              " c.name AS category, a.bank, a.last4 FROM transactions t JOIN accounts a ON a.id = t.account_id"
-             " LEFT JOIN categories c ON c.id = t.category_id WHERE a.user_id = ?")
+             " LEFT JOIN categories c ON c.id = t.category_id WHERE a.user_id = ? AND " + WITHIN_STATEMENTS)
     rows = conn.execute(query + (" AND t.txn_date <= ?" if until else "") + " ORDER BY t.txn_date, t.id",
                         (user_id, until) if until else (user_id,)).fetchall()
+    # Cash left unspent 30+ days after a withdrawal is counted as spending in that month, so the forecast does not assume it exists.
+    ref = date.fromisoformat(until) if until else date.today()
+    rows = sorted([dict(r) for r in rows] + [r for r in unrecorded_rows(conn, user_id, ref) if not until or r["txn_date"] <= until],
+                  key=lambda r: (r["txn_date"], r["id"]))
     if until:
         recurring = detect([dict(r) for r in rows if r["kind"] == "normal"])
         gaps, balances = rows_gaps(rows), rows_balances(rows)
