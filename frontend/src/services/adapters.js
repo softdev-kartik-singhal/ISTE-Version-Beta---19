@@ -243,74 +243,15 @@ export function toMoneyFlow(f, compare) {
 }
 
 // ---------- Ask ----------
+// The answer itself is shaped in askView.js; this is only the "can't answer yet" explanation.
 
-const VERDICT_TONE = { yes: 'safe', risky: 'caution', stretch: 'caution', no: 'risk' };
-const VERDICT_STATUS = { yes: 'Approved • Safe', risky: 'Conditional Approval • Cautionary', stretch: 'Stretch • Best case only', no: 'Not affordable' };
-const CASE_NAMES = ['worst', 'typical', 'best'];
-
-// Checks shown under the answer: the ones that failed are listed with what to do about it.
+// Checks shown when the statements are too incomplete for an answer: what is missing, in plain words.
 export function toSafeguards(missing) {
   return missing.map((m) => ({ status: 'fail', title: { HISTORY: 'Not enough history', INCOME: 'No income found', BALANCE: 'Balance unknown', GAP: 'Missing statement rows' }[m.code], detail: m.message }));
 }
 
 // What the "Can I afford...?" boxes suggest, sized to the user's own surplus.
 export { suggestions };
-
-// answer: POST /api/ask result; recurring: /api/recurring items; includeBonus: show the answer as if the one-off repeated.
-export function toAsk(answer, recurring, includeBonus) {
-  const bonus = answer.bonusScenario;
-  const use = includeBonus && bonus ? bonus : answer;
-  const cases = CASE_NAMES.map((n) => answer.cases[n]);
-  const extra = includeBonus && bonus ? bonus.oneOff.paise : 0;
-  const left = CASE_NAMES.map((n) => (includeBonus && bonus ? bonus.cases[n].leftAfterPurchasePaise : answer.cases[n].leftAfterPurchasePaise));
-  const price = answer.pricePaise;
-  const n = answer.months.length;
-  const code = use.verdict.code;
-  const typical = answer.cases.typical;
-  const spread = typical.incomePaise ? Math.round(((answer.cases.best.incomePaise - answer.cases.worst.incomePaise) / typical.incomePaise) * 100) : 0;
-  const subs = recurring.filter((x) => x.label === 'subscription');
-  const monthlySurplus = (typical.incomePaise - typical.committedPaise - typical.variablePaise) / n;
-  const subsSaved = subs.reduce((s, x) => s + -x.typicalPaise, 0);
-  const upLeft = monthlySurplus - price, optLeft = monthlySurplus + subsSaved - price / 3;
-  const row = (id, kind, title_, detail, values, tag) => ({ id, kind, title: title_, detail, values: values.map(r), ...(tag ? { tag } : {}) });
-  return {
-    verdict: {
-      tone: VERDICT_TONE[code], status: VERDICT_STATUS[code], rule: 'Rule: worst-case income, high spending and a one-month buffer',
-      headline: use.verdict.text,
-      summary: `After the purchase you would have ${formatCurrency(r(left[0]))} in the worst case, ${formatCurrency(r(left[1]))} typically and ${formatCurrency(r(left[2]))} in the best case.`,
-      confidence: { label: answer.confidence.label, segments: { High: 3, Medium: 2, Low: 1 }[answer.confidence.label], incomeVariance: `${spread}%`, note: answer.confidence.reason },
-      metrics: [
-        { label: 'Purchase Amount', value: formatCurrency(r(price)), valueClass: 'text-on-surface', note: 'One-time debit', noteClass: 'text-secondary' },
-        { label: 'Target Horizon', value: `${monthShort(answer.targetMonth)} ${answer.targetMonth.slice(0, 4)}`, valueClass: 'text-on-surface', note: `Cash at the end of ${monthLabel(answer.targetMonth)}`, noteClass: 'text-secondary' },
-        { label: 'Typical Money Left', value: formatCurrency(r(left[1]), { sign: true }), valueClass: left[1] < 0 ? 'text-error' : 'text-primary', note: 'After buffer and purchase', noteClass: 'text-secondary' },
-        { label: 'Worst Case Left', value: formatCurrency(r(left[0]), { sign: true }), valueClass: left[0] < 0 ? 'text-error' : 'text-primary', note: left[0] < 0 ? 'Buffer would be breached' : 'Buffer stays intact', noteClass: left[0] < 0 ? 'text-error' : 'text-secondary' },
-      ],
-    },
-    waterfall: {
-      period: monthLabel(answer.targetMonth), scenarios: ['(low income, high spending)', '(median baseline)', '(high income, low spending)'],
-      rows: [
-        row('balance', 'balance', 'Current cash', 'Latest balance across your accounts', cases.map((c) => c.startingCashPaise)),
-        row('income', 'income', 'Expected income', `${plural(n, 'month')} of income: 10th percentile, median, 90th percentile${extra ? ' + the one-off repeated once' : ''}`, cases.map((c) => c.incomePaise + extra)),
-        row('committed', 'expense', 'Committed payments', answer.committed.map((c) => title(c.merchant)).join(', ') || 'None found', cases.map((c) => -c.committedPaise), 'Recurring'),
-        row('variable', 'expense', 'Everyday spending', 'Per-category median of the last 3 months (75th percentile worst case, 25th best)', cases.map((c) => -c.variablePaise)),
-        row('buffer', 'buffer', 'Safety buffer', 'One month of committed payments, kept untouched', cases.map((c) => -c.bufferPaise), 'Reserved'),
-        row('purchase', 'purchase', 'This purchase', 'One-time deduction', cases.map(() => -price), 'Evaluated'),
-      ],
-      result: left.map((v) => ({ value: r(v), tone: v < 0 ? 'bad' : 'good', label: v < 0 ? 'Not covered' : 'Covered' })),
-      bufferNote: 'The buffer is not savings to spend. It is ringfenced so your fixed commitments are still paid if income arrives late.',
-    },
-    bonus: bonus && { lastAmount: r(bonus.oneOff.paise), lastMonth: monthLabel(bonus.oneOff.date.slice(0, 7)), unlockedSurplus: r(bonus.oneOff.paise), simulationMessage: `Simulation active: the ${formatCurrency(r(bonus.oneOff.paise))} one-off income is added once to every scenario.` },
-    whatIf: {
-      baseSurplus: r(monthlySurplus),
-      levers: subs.map((x) => ({ id: x.merchant, icon: 'tv', iconClass: 'bg-error-container/30 text-error', title: `Cancel ${title(x.merchant)}`, detail: `Charged about every ${x.cadenceDays} days`, impact: `+${formatCurrency(r(-x.typicalPaise))}/mo`, impactClass: 'text-emerald-800', saving: r(-x.typicalPaise) })),
-      upfront: { outflow: -r(price), subscriptions: -r(subsSaved), buffer: r(typical.bufferPaise) },
-      optimized: { subsSaved: r(subsSaved), emiOutflow: -Math.round(r(price) / 3), improvement: upLeft < 0 ? `${Math.round(((optLeft - upLeft) / Math.abs(upLeft)) * 100)}% better` : 'about the same' },
-    },
-    safeguards: [
-      { status: 'warn', title: 'Estimates, not promises', detail: 'Built from your past statements only. Anything unusual in the future is not in these numbers.' },
-    ],
-  };
-}
 
 // ---------- Goals ----------
 

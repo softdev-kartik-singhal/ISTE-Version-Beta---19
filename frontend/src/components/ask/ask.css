@@ -1,0 +1,31 @@
+/* Ask page motion. Transform/opacity (and the range bar's position) only, nothing slower than 600ms;
+   prefers-reduced-motion switches all of it off. */
+
+.ask-pop { animation: ask-pop 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+@keyframes ask-pop {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+
+.ask-step { animation: ask-step 320ms ease-out both; animation-delay: var(--delay, 0ms); }
+@keyframes ask-step {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Range-bar markers slide to place; the filled range grows between the bad and good month. */
+.rb-move { transition: left 600ms cubic-bezier(0.2, 0.8, 0.2, 1), bottom 600ms cubic-bezier(0.2, 0.8, 0.2, 1), width 600ms cubic-bezier(0.2, 0.8, 0.2, 1), height 600ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+.ask-card {
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #e6ebf2;
+  box-shadow: 0 1px 2px rgba(11, 37, 69, 0.04), 0 8px 24px -12px rgba(11, 37, 69, 0.12);
+}
+
+.tabular { font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ask-pop, .ask-step { animation: none !important; }
+  .rb-move { transition: none !important; }
+}

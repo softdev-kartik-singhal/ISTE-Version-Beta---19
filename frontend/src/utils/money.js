@@ -20,3 +20,14 @@ export function compactMoney(amount) {
   if (abs >= 1000) return `${sign}₹${Math.round(abs / 1000)}k`;
   return `${sign}₹${Math.round(abs)}`;
 }
+
+// ₹6.85L, ₹42.5k, ₹950: lakh and thousand short forms with up to 2 decimals (for the answer's headline numbers).
+export function shortRupees(amount) {
+  const abs = Math.abs(amount);
+  const sign = amount < 0 ? '-' : '';
+  const trim = (n, d) => n.toFixed(d).replace(/\.?0+$/, '');
+  if (abs >= 1e7) return `${sign}₹${trim(abs / 1e7, 2)}Cr`;
+  if (abs >= 1e5) return `${sign}₹${trim(abs / 1e5, 2)}L`;
+  if (abs >= 1e3) return `${sign}₹${trim(abs / 1e3, 1)}k`;
+  return `${sign}₹${Math.round(abs)}`;
+}
