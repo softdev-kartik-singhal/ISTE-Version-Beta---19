@@ -114,6 +114,18 @@ def device_verify(conn, uid):
     return {"status": "verified", "last4": card["last4"]}
 
 
+def device_tap(conn, uid):
+    """A plain tap from a reader that does not know what the browser is waiting for (the USB bridge).
+    Whichever kind of request is open gets the tap; both open at once would be ambiguous, so refuse."""
+    expire_old(conn)
+    kinds = [r["kind"] for r in conn.execute("SELECT DISTINCT kind FROM card_requests WHERE status = 'pending'")]
+    if not kinds:
+        raise CardError(404, "NO_PENDING_REQUEST", "Nobody is waiting for a card tap.")
+    if len(kinds) > 1:
+        raise CardError(409, "AMBIGUOUS_REQUEST", "More than one person is waiting; try again in a moment.")
+    return device_register(conn, uid) if kinds[0] == "register" else device_verify(conn, uid)
+
+
 # ---------- sensitive actions: password AND card, both recent ----------
 
 def check_fresh(conn, session):

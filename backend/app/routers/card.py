@@ -67,3 +67,9 @@ def device_register(body: UidIn, conn=Depends(get_conn)):
 @router.post("/verify", dependencies=[Depends(require_device)])
 def device_verify(body: UidIn, conn=Depends(get_conn)):
     return card.device_verify(conn, valid_uid(body.uid))
+
+
+@router.post("/tap", dependencies=[Depends(require_device)])
+def device_tap(body: UidIn, conn=Depends(get_conn)):
+    """For readers that just report taps (the USB bridge): answers whichever request is open."""
+    return card.device_tap(conn, valid_uid(body.uid))

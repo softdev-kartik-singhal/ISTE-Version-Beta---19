@@ -228,6 +228,32 @@ def test_request_times_out(client, clock):
     assert client.post("/api/card/register", json={"uid": UID}, headers=DEVICE).status_code == 404
 
 
+def test_plain_tap_answers_whichever_request_is_open(client):
+    """The USB bridge only reports taps: /tap registers when a register request is open, verifies when a verify is."""
+    rid = client.post("/api/card/register/start", json={}).json()["requestId"]
+    r = client.post("/api/card/tap", json={"uid": "73 66 E7 06"}, headers=DEVICE)
+    assert r.status_code == 200 and r.json() == {"status": "registered", "last4": "E706"}
+    assert client.get(f"/api/card/requests/{rid}").json()["status"] == "done"
+    client.post("/api/card/verify/start")
+    assert client.post("/api/card/tap", json={"uid": "73 66 E7 06"}, headers=DEVICE).json()["status"] == "verified"
+    client.post("/api/card/verify/start")
+    r = client.post("/api/card/tap", json={"uid": "B9 76 15 06"}, headers=DEVICE)
+    assert r.status_code == 403 and r.json()["detail"]["code"] == "MISMATCH"
+
+
+def test_plain_tap_needs_the_secret_and_a_waiting_request(client):
+    assert client.post("/api/card/tap", json={"uid": UID}, headers=DEVICE).json()["detail"]["code"] == "NO_PENDING_REQUEST"
+    client.post("/api/card/register/start", json={})
+    assert client.post("/api/card/tap", json={"uid": UID}).status_code == 401
+
+
+def test_plain_tap_refuses_when_both_kinds_are_open(with_card):
+    with_card.post("/api/card/verify/start")
+    with_card.post("/api/card/register/start", json={}, headers=signup(with_card))
+    r = with_card.post("/api/card/tap", json={"uid": UID}, headers=DEVICE)
+    assert r.status_code == 409 and r.json()["detail"]["code"] == "AMBIGUOUS_REQUEST"
+
+
 def test_requests_are_private(client):
     rid = client.post("/api/card/register/start", json={}).json()["requestId"]
     assert client.get(f"/api/card/requests/{rid}", headers=signup(client)).status_code == 404
@@ -376,21 +402,38 @@ def test_session_and_privacy_report_real_facts(complete, db_path):
 
 # ---------- export ----------
 
-def test_export_contains_the_users_data_only(complete):
+def test_export_is_the_analysis_report_of_the_users_data_only(complete):
     other = signup(complete)
     register_card(complete)
     complete.post("/api/goals", json={"name": "Phone", "targetPaise": 8_000_000, "targetDate": "2026-12-31"})
     complete.post("/api/track-record/backtest")
     verify_both(complete)
     data = complete.post("/api/data/export").json()
-    assert len(data["transactions"]) == complete.get("/api/transactions").json()["total"]
-    assert data["goals"] == [{"name": "Phone", "targetPaise": 8_000_000, "savedPaise": 0, "targetDate": "2026-12-31"}]
-    assert len(data["forecastLog"]) == 10
-    row = next(t for t in data["transactions"] if "ORD-SIM98231" in t["description"])
-    assert row["amountPaise"] == -149_900 and row["bank"] == "Kotak" and row["category"] == "Groceries"
-    assert "password" not in str(data).lower() and "sg_" not in str(data)
+    assert data["fileName"].startswith("SmartGullak_Report_") and data["fileName"].endswith(".html")
+    page = data["html"]
+    for heading in ["At a glance", "Month by month", "Where the money goes", "Regular payments", "Things worth a second look",
+                    "Surplus plan", "Goals", "How good our forecasts have been", "What this report is based on", "All transactions"]:
+        assert heading in page
+    total = complete.get("/api/transactions").json()["total"]
+    assert f"({total} rows)" in page                                   # the appendix keeps every transaction
+    assert "Phone" in page and "ORD-SIM98231" in page
+    assert "<script" not in page and "http" not in page                # self-contained: no scripts, nothing fetched
+    assert "password" not in page.lower() and "sg_" not in page
     verify_both(complete, password="another long pass", uid=UID, headers=other)      # the other user has no card: nothing to export
     assert complete.post("/api/data/export", headers=other).status_code == 403
+
+
+def test_report_for_an_account_without_statements(client):
+    register_card(client)
+    verify_both(client)
+    page = client.post("/api/data/export").json()["html"]
+    assert "Not enough data yet" in page and "All transactions" in page
+
+
+def test_report_escapes_text_from_statements():
+    from app.services.report import e, table
+    assert e("<img src=x onerror=alert(1)>") == "&lt;img src=x onerror=alert(1)&gt;"
+    assert "<b>" not in table(["Payee"], [[e("<b>SHOP</b>")]])
 
 
 # ---------- delete ----------

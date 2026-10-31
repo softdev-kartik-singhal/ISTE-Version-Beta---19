@@ -10,7 +10,7 @@ import { USE_MOCK_CARD_READER } from '../config';
 
 const POLL_MS = 1000;
 const TIMEOUT_MS = 60_000; // matches the server's tap window
-const FORCED_ERRORS = { ALREADY_LINKED: 'This NFC UID is registered to another primary account', READER_MISSING: 'Connect reader via USB port or pair via BLE', MISMATCH: 'Tapped card does not match the registered card' };
+const FORCED_ERRORS = { ALREADY_LINKED: 'This NFC UID is registered to another primary account', READER_MISSING: 'No card tap reached SmartGullak. Is the card reader connected?', MISMATCH: 'Tapped card does not match the registered card' };
 // What the server calls a failure -> what the UI calls it.
 const CODE_MAP = { TIMEOUT: 'READER_MISSING', NETWORK: 'READER_MISSING', SUPERSEDED: 'CANCELLED' };
 const MESSAGES = { ...FORCED_ERRORS, CARD_EXISTS: 'This account already has a card.', CANCELLED: 'Cancelled by a newer scan.' };

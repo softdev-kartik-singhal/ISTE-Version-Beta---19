@@ -20,7 +20,7 @@ export default function DataActions({ onExport, onDelete }) {
             onClick={onExport}
           >
             <Download size={18} />
-            <span>Export my data</span>
+            <span>Download my full report</span>
           </button>
           <button
             className="h-10 px-space-md bg-error hover:bg-error/90 text-on-error rounded-lg font-label-md text-label-md flex items-center gap-2 shadow-sm transition-all active:scale-[0.98]"

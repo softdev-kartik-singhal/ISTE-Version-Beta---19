@@ -8,7 +8,7 @@ import { deleteUserData, exportUserData, getPrivacy } from '../services/api';
 import { registerCard } from '../services/cardReader';
 import { USE_MOCK_CARD_READER } from '../config';
 import PageState from '../components/ui/PageState';
-import { downloadCsv } from '../utils/download';
+import { downloadHtml } from '../utils/download';
 import DataPolicyCards from '../components/privacy/DataPolicyCards';
 import HardwareCardPanel from '../components/privacy/HardwareCardPanel';
 import DataActions from '../components/privacy/DataActions';
@@ -22,7 +22,7 @@ export default function Privacy() {
   const data = api.data;
   const navigate = useNavigate();
   const [card, setCard] = useState(null);
-  const [action, setAction] = useState(null); // 'export' | 'delete' | 'replace' | null
+  const [action, setAction] = useState(null); // 'export' | 'delete' | 'replace' | 'register' | null
   const [busy, setBusy] = useState(false);
   const [highlight, setHighlight] = useState(null);
   const [exportSize, setExportSize] = useState('Not exported yet');
@@ -43,10 +43,10 @@ export default function Privacy() {
   async function confirm() {
     setBusy(true);
     if (action === 'export') {
-      const rows = await exportUserData();
-      downloadCsv(data.exportFileName, rows);
-      setExportSize(`${(JSON.stringify(rows).length / 1024).toFixed(1)} KB`);
-      showToast('Your export is ready — download started');
+      const report = await exportUserData();
+      downloadHtml(report.fileName, report.html);
+      setExportSize(`${(report.html.length / 1024).toFixed(1)} KB`);
+      showToast('Your report is ready — download started');
       flash('export');
     } else if (action === 'delete') {
       await deleteUserData();
@@ -54,12 +54,20 @@ export default function Privacy() {
       flash('delete');
       setTimeout(() => navigate('/'), 1800);
     } else {
-      const newCard = await registerCard();
-      setCard({ ...data.card, last4: newCard.last4, added: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) });
-      showToast(`New card •• ${newCard.last4} paired`);
+      try {
+        showPaired(await registerCard());
+      } catch (err) {
+        showToast(err.message);
+      }
     }
     setBusy(false);
     setAction(null);
+  }
+
+  function showPaired(newCard) {
+    const added = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    setCard({ firmware: 'n/a', ...card, last4: newCard.last4, added });
+    showToast(`Card •• ${newCard.last4} paired`);
   }
 
   return (
@@ -97,7 +105,7 @@ export default function Privacy() {
           <HardwareCardPanel
             card={card}
             onReplace={() => setAction('replace')}
-            onRegister={() => setAction('replace')}
+            onRegister={() => setAction('register')}
             onPreviewChange={(registered) => setCard(registered ? data.card : null)}
           />
           <DataActions
@@ -121,6 +129,10 @@ export default function Privacy() {
         busy={busy}
         onClose={() => !busy && setAction(null)}
         onConfirm={confirm}
+        onRegistered={(newCard) => {
+          showPaired(newCard);
+          setAction(null);
+        }}
         onLostCard={() => showToast('Verification link sent to your registered email')}
       />
       <Toast message={toast} />

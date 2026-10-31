@@ -130,16 +130,9 @@ export async function verifyPassword(password) {
   return true;
 }
 
-// Rows for the "Export my data" CSV (needs the password + card steps just completed).
+// The full analysis report as { fileName, html } (needs the password + card steps just completed).
 export async function exportUserData() {
-  const { transactions } = await request('/api/data/export', { method: 'POST' });
-  return transactions.map((t) => ({
-    date: t.date,
-    merchant: t.merchant,
-    account: `${t.bank} ••${t.last4}`,
-    category: t.category,
-    amount: t.amountPaise / 100,
-  }));
+  return request('/api/data/export', { method: 'POST' });
 }
 
 // Deletes the account and everything in it (needs the password + card steps), then forgets the session.
