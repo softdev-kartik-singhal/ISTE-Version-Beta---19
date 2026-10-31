@@ -304,9 +304,6 @@ export const verifyLedger = () => request('/api/forecast-log/verify');
 
 // ---------- landing page ----------
 
-export async function getLanding() {
-  return (await import('../content/landing')).landing;
-}
 
 // ---- Suggestions for you (Plan). The server builds the anonymous profile itself; the browser never sends money data. ----
 export const getSuggestionsAbout = () => request('/api/suggestions/about');
