@@ -1,0 +1,212 @@
+/* Landing page motion and the phone mockup. Everything animates transform/opacity only, and
+   prefers-reduced-motion turns every animation off (see the block at the end). */
+
+.landing {
+  --navy: #0b2545;
+  --blue: #1d4ed8;
+  --phone-w: 320px;
+  --phone-offscreen: 12%; /* 1024-1279px only: share of the phone's width cropped by the right edge of the viewport */
+  --phone-inset: 80px;    /* 1280px and up: gap between the phone's right edge and the right edge of the content column */
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ---------- section entrances ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 500ms ease-out, transform 500ms ease-out;
+  transition-delay: var(--delay, 0ms);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- hero background: soft gradient mesh + dotted grid ---------- */
+.hero-mesh {
+  background:
+    radial-gradient(40% 50% at 15% 20%, rgba(29, 78, 216, 0.18), transparent 70%),
+    radial-gradient(35% 45% at 70% 10%, rgba(11, 37, 69, 0.14), transparent 70%),
+    radial-gradient(45% 55% at 40% 85%, rgba(147, 197, 253, 0.25), transparent 70%);
+  animation: mesh-drift 18s ease-in-out infinite alternate;
+}
+.hero-dots {
+  background-image: radial-gradient(rgba(11, 37, 69, 0.12) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: linear-gradient(to bottom, black 40%, transparent);
+}
+@keyframes mesh-drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(-3%, 2%, 0) scale(1.06); }
+}
+
+.text-gradient {
+  background: linear-gradient(90deg, #1d4ed8, #3b82f6 55%, #0b2545);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- buttons ---------- */
+.lift {
+  transition: transform 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
+}
+.lift:hover { transform: translateY(-2px); }
+.lift:active { transform: translateY(0) scale(0.98); }
+
+/* ---------- phone mockup ---------- */
+/* Desktop: fixed on the right and vertically centred. 1024-1279px: slightly cropped by the viewport edge.
+   1280px and up: fully visible, lined up with the 1280px content column so there is no big gap in the middle. */
+.phone-dock {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  z-index: 20;
+  width: var(--phone-w);
+  transform: translate(var(--phone-offscreen), -50%);
+  transition: opacity 400ms ease;
+}
+.phone-dock.is-hidden { opacity: 0; pointer-events: none; }
+@media (min-width: 1280px) {
+  .phone-dock {
+    right: calc((100vw - 1280px) / 2 + var(--phone-inset));
+    transform: translateY(-50%);
+  }
+}
+.phone-tilt { transform: rotate(-6deg); }
+.phone-float { animation: phone-float 6s ease-in-out infinite; }
+@keyframes phone-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.phone-body {
+  position: relative;
+  aspect-ratio: 9 / 19.5;
+  border-radius: 48px;
+  padding: 10px;
+  background: linear-gradient(145deg, #1e293b, #0f172a 60%, #1e293b);
+  box-shadow:
+    0 40px 80px -20px rgba(11, 37, 69, 0.45),
+    0 18px 36px -18px rgba(11, 37, 69, 0.5),
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.08);
+}
+.phone-btn {
+  position: absolute;
+  width: 4px;
+  border-radius: 2px;
+  background: #1e293b;
+}
+.phone-screen {
+  position: relative;
+  height: 100%;
+  border-radius: 38px;
+  overflow: hidden;
+  background: #f7f9fc;
+}
+.phone-island {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 96px;
+  height: 28px;
+  border-radius: 999px;
+  background: #020617;
+  z-index: 5;
+}
+.phone-glass {
+  position: absolute;
+  inset: 0;
+  border-radius: 38px;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0) 38%);
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* One screen per section; the active one fades and slides in. */
+.phone-view {
+  position: absolute;
+  inset: 0;
+  padding: 52px 16px 16px;
+  opacity: 0;
+  transform: translateX(16px);
+  transition: opacity 450ms ease, transform 450ms ease;
+}
+.phone-view.is-active { opacity: 1; transform: none; }
+
+/* Below 1024px the phone sits under the hero text, fully visible and not fixed. */
+@media (max-width: 1023px) {
+  .phone-dock {
+    position: relative;
+    top: auto;
+    right: auto;
+    transform: none;
+    margin: 2.5rem auto 0;
+    width: 280px;
+  }
+  .phone-dock.is-hidden { opacity: 1; pointer-events: auto; }
+}
+@media (max-width: 639px) {
+  .phone-dock { width: 240px; }
+}
+
+/* ---------- small animated pieces inside screens and cards ---------- */
+.pop-in { animation: pop-in 400ms ease-out both; animation-delay: var(--delay, 0ms); }
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+.drop-in { animation: drop-in 500ms cubic-bezier(0.2, 0.8, 0.2, 1) both; animation-delay: var(--delay, 0ms); }
+@keyframes drop-in {
+  from { opacity: 0; transform: translateY(-24px); }
+  to { opacity: 1; transform: none; }
+}
+.grow-up { transform-origin: bottom; animation: grow-up 600ms ease-out both; animation-delay: var(--delay, 0ms); }
+@keyframes grow-up {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+.caret::after {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: 1em;
+  margin-left: 1px;
+  vertical-align: -2px;
+  background: currentColor;
+  animation: blink 900ms steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+.pulse-ring { animation: pulse-ring 1600ms ease-out infinite; }
+@keyframes pulse-ring {
+  from { transform: scale(0.85); opacity: 0.7; }
+  to { transform: scale(1.5); opacity: 0; }
+}
+.ring-fill { transition: stroke-dashoffset 900ms ease-out; }
+
+/* Feature cards lean toward the cursor (desktop pointers only; set from JS via --rx / --ry). */
+.tilt {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+}
+
+/* Pricing: glowing border on the highlighted plan. */
+.glow {
+  box-shadow: 0 0 0 2px #1d4ed8, 0 20px 50px -12px rgba(29, 78, 216, 0.45);
+}
+
+/* FAQ accordion: animate height with a grid-rows trick. */
+.accordion { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 300ms ease; }
+.accordion.is-open { grid-template-rows: 1fr; }
+.accordion > div { overflow: hidden; }
+
+/* ---------- reduced motion: no floating, typing, count-up or slides; screens switch instantly ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .landing *, .landing *::before, .landing *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+  .tilt { transform: none; }
+}
