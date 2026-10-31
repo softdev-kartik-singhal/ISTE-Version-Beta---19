@@ -28,9 +28,9 @@ export default function UploadHero({ onLoadDemo, onChooseFiles, onDropFiles }) {
           Accepts HDFC PDF statements and CSV exports from HDFC and Kotak.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-space-sm mt-space-md">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-lowest font-label-sm text-label-sm text-secondary shadow-sm">
+          {/* <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-lowest font-label-sm text-label-sm text-secondary shadow-sm">
             <Lock size={15} className="text-primary" /> Password-protected PDFs supported
-          </span>
+          </span> */}
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-lowest font-label-sm text-label-sm text-secondary shadow-sm">
             <Database size={15} className="text-secondary" /> Up to 50MB per file
           </span>

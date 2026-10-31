@@ -52,6 +52,7 @@ CATEGORY_RULES = [
     ("BESCOM", "Bills & Utilities", 10), ("ELECTRICITY", "Bills & Utilities", 5),
     ("NETFLIX", "Subscriptions", 10), ("SPOTIFY", "Subscriptions", 10),
     ("ICLOUD", "Subscriptions", 10), ("CURSOR", "Subscriptions", 10),
+    ("SUBSCRIPTION", "Subscriptions", 5),  # any merchant whose narration says SUBSCRIPTION; named merchants (10) win
     ("INSTAMART", "Groceries", 10), ("BIGBASKET", "Groceries", 10), ("DMART", "Groceries", 10),
     ("SWIGGY", "Food & Dining", 5), ("ZOMATO", "Food & Dining", 5),
     ("UBER", "Travel & Commute", 10), ("INDIAN OIL", "Fuel", 10),
