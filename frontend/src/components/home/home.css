@@ -1,0 +1,70 @@
+/* Home page motion: staggered entrance, hover lift, hero glow, ring fill. Transform/opacity only;
+   prefers-reduced-motion switches all of it off. */
+
+.home-in {
+  animation: home-in 450ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+@keyframes home-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+.home-card {
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #e6ebf2;
+  box-shadow: 0 1px 2px rgba(11, 37, 69, 0.04), 0 8px 24px -12px rgba(11, 37, 69, 0.12);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .home-card.lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 2px 4px rgba(11, 37, 69, 0.05), 0 18px 36px -14px rgba(11, 37, 69, 0.22);
+  }
+}
+
+/* Hero: navy-to-blue gradient with a soft mesh glow and a faint dotted texture. */
+.home-hero {
+  background: linear-gradient(120deg, #0b2545 0%, #12357a 55%, #1d4ed8 100%);
+}
+.home-hero::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(35% 45% at 80% 20%, rgba(96, 165, 250, 0.35), transparent 70%),
+    radial-gradient(30% 40% at 10% 90%, rgba(29, 78, 216, 0.45), transparent 70%);
+  animation: home-glow 16s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+.home-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+}
+@keyframes home-glow {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-4%, 3%, 0) scale(1.05); }
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(8px);
+}
+
+.ring-fill { transition: stroke-dashoffset 1100ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+.tabular { font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  .home-in, .home-hero::before { animation: none !important; }
+  .home-card, .ring-fill { transition: none !important; }
+}

@@ -1,47 +1,61 @@
-// Ask screen: "Can I afford...?" in two steps. First we show what we understood (amount and month) for the user to confirm;
-// only then is the answer calculated: verdict, waterfall, bonus note, what-if levers and data safeguards.
+// Ask: one clear answer first, every step one tap away.
+// Flow: type a question → we show what we understood (amount · month · Edit) → a short staged loader → the answer card.
+// Below it: "Show how we worked it out" (closed), the bonus note (only if there is a one-off income), "Try a change",
+// and the last 3 questions.
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { askAnswer, getAskSetup, parseQuestion, toAsk } from '../services/api';
+import { askAnswer, getAskSetup, parseQuestion } from '../services/api';
+import { monthNote, toAskView, toSubscriptions } from '../services/askView';
 import PageTip from '../tour/PageTip';
 import PageState from '../components/ui/PageState';
-import QuestionBox from '../components/ask/QuestionBox';
-import StaleDataBanner from '../components/ui/StaleDataBanner';
-import VerdictCard from '../components/ask/VerdictCard';
-import WaterfallTable from '../components/ask/WaterfallTable';
-import BonusNote from '../components/ask/BonusNote';
-import WhatIfPanel from '../components/ask/WhatIfPanel';
-import IncompleteDataNotice from '../components/ask/IncompleteDataNotice';
 import Toast from '../components/ui/Toast';
+import AskHero from '../components/ask/AskHero';
+import ConfirmChip from '../components/ask/ConfirmChip';
+import StageLoader from '../components/ask/StageLoader';
+import AnswerCard from '../components/ask/AnswerCard';
+import BonusCard from '../components/ask/BonusCard';
+import ShowHow from '../components/ask/ShowHow';
+import TryAChange from '../components/ask/TryAChange';
+import RecentQuestions from '../components/ask/RecentQuestions';
+import CantAnswer from '../components/ask/CantAnswer';
+import '../components/ask/ask.css';
 import { useApi } from '../hooks/useApi';
 import { useToast } from '../hooks/useToast';
+import { useReducedMotion } from '../hooks/useMotion';
+import { useRecentQuestions } from '../hooks/useRecentQuestions';
 
-const FIELD = 'h-10 px-3 rounded-lg bg-surface-container-low text-on-surface focus:outline-none focus:ring-2 focus:ring-primary-container';
+const LOADER_MS = 1100;
 
 export default function Ask() {
   const location = useLocation();
+  const reduced = useReducedMotion();
   const setup = useApi(getAskSetup);
   const [question, setQuestion] = useState(location.state?.question || '');
-  const [understood, setUnderstood] = useState(null); // what the parser found, waiting for the user's OK
+  const [understood, setUnderstood] = useState(null); // what the parser found; shown as the confirm chip
+  const [asked, setAsked] = useState(0); // counts questions, so the chip starts fresh for each one
   const [fields, setFields] = useState({ amount: '', month: '' });
-  const [result, setResult] = useState(null); // { raw, recurring } or { insufficient, safeguards }
+  const [result, setResult] = useState(null); // { raw, recurring, amount, month, text } or { insufficient, safeguards }
   const [includeBonus, setIncludeBonus] = useState(false);
-  const [busy, setBusy] = useState(false);
+  const [parsing, setParsing] = useState(false);
+  const [calculating, setCalculating] = useState(false);
+  const [recent, remember] = useRecentQuestions();
   const [toast, showToast] = useToast();
 
-  // Step 1: understand the sentence. A question typed on the Dashboard arrives through router state.
+  // Step 1: understand the sentence. A question typed on Home arrives through router state.
   async function understand(text) {
-    setBusy(true);
+    setParsing(true);
     setQuestion(text);
     setResult(null);
+    setIncludeBonus(false);
     try {
       const parsed = await parseQuestion(text);
       setUnderstood(parsed);
       setFields({ amount: parsed.amountPaise ? String(parsed.amountPaise / 100) : '', month: parsed.targetMonth || '' });
+      setAsked((n) => n + 1);
     } catch (err) {
       showToast(err.message);
     }
-    setBusy(false);
+    setParsing(false);
   }
 
   useEffect(() => {
@@ -49,62 +63,67 @@ export default function Ask() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setup.ready]);
 
-  // Step 2: calculate, with the amount and month as confirmed (or corrected) by the user.
-  async function confirm() {
-    setBusy(true);
+  // Step 2: calculate with the amount and month from the chip. The staged loader shows for about 1.1 seconds.
+  async function calculate(values, text = question) {
+    setCalculating(true);
+    setResult(null);
+    setIncludeBonus(false);
+    setFields(values);
     try {
-      setResult(await askAnswer(Number(fields.amount), fields.month));
-      setUnderstood(null);
+      const wait = new Promise((done) => setTimeout(done, reduced ? 0 : LOADER_MS));
+      const [res] = await Promise.all([askAnswer(Number(values.amount), values.month), wait]);
+      const amount = Number(values.amount);
+      setResult({ ...res, amount, month: values.month, text });
+      if (res.raw) remember({ text, amount, month: values.month, state: toAskView(res.raw, false).state });
     } catch (err) {
       showToast(err.message);
     }
-    setBusy(false);
+    setCalculating(false);
+  }
+
+  // A recent question opens its answer again straight away.
+  function reopen(q) {
+    setQuestion(q.text);
+    setUnderstood({ amountCandidates: [] });
+    setAsked((n) => n + 1);
+    calculate({ amount: String(q.amount), month: q.month }, q.text);
   }
 
   if (!setup.ready) return <PageState state={setup} />;
-  const view = result?.raw ? toAsk(result.raw, result.recurring, includeBonus) : null;
+  const view = result?.raw ? toAskView(result.raw, includeBonus) : null;
+  const key = result ? `${result.text}|${result.amount}|${result.month}` : '';
 
   return (
-    <main className="relative pt-16 min-h-screen bg-[#F7F9FC]">
+    <main className="relative pt-16 min-h-screen bg-[#f5f7fb] font-['Inter',system-ui,sans-serif]">
       <PageTip id="ask" text="Try: Can I afford ₹20,000 next month?" />
-      <div className="flex flex-col w-full">
-        <div className="p-space-lg max-w-[1400px] mx-auto w-full space-y-space-xl">
-          <StaleDataBanner asOf={setup.data.asOf} />
-          <QuestionBox initialQuestion={question} presets={setup.data.presets} accounts={setup.data.accounts} busy={busy} onAsk={understand} />
-
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-6 lg:pt-16 lg:pb-10 space-y-6">
+        <AskHero presets={setup.data.presets.slice(1)} accountsLabel={setup.data.accountsLabel} asOf={setup.data.asOf} question={question} setQuestion={setQuestion} busy={parsing || calculating} onAsk={understand}>
           {understood && (
-            <div className="rounded-xl bg-surface-container-lowest shadow-sm p-space-lg space-y-space-sm">
-              <h3 className="font-headline-sm text-headline-sm text-on-surface">Here is what I understood. Please check it.</h3>
-              {understood.amountCandidates.length > 1 && (
-                <p className="font-body-sm text-body-sm text-secondary">I found more than one amount ({understood.amountCandidates.map((c) => c.text).join(', ')}). Enter the one you mean.</p>
-              )}
-              <div className="flex flex-wrap items-end gap-space-md">
-                <label className="flex flex-col gap-1 font-label-md text-label-md text-on-surface">
-                  Amount (₹)
-                  <input className={FIELD} type="number" min="1" value={fields.amount} onChange={(e) => setFields({ ...fields, amount: e.target.value })} />
-                </label>
-                <label className="flex flex-col gap-1 font-label-md text-label-md text-on-surface">
-                  Month
-                  <input className={FIELD} type="month" value={fields.month} onChange={(e) => setFields({ ...fields, month: e.target.value })} />
-                </label>
-                <button className="h-10 px-space-lg rounded-lg bg-primary-container text-on-primary font-label-md text-label-md disabled:opacity-60" disabled={busy || !Number(fields.amount) || !fields.month} onClick={confirm} data-tour="ask-confirm">
-                  Confirm and calculate
-                </button>
-              </div>
-            </div>
+            <ConfirmChip
+              key={asked}
+              fields={fields}
+              candidates={understood.amountCandidates}
+              monthText={fields.month ? monthNote(fields.month, setup.data.asOf) : ''}
+              answered={Boolean(result?.raw)}
+              busy={calculating}
+              onConfirm={(values) => calculate(values)}
+            />
           )}
+        </AskHero>
 
-          {result?.insufficient && <IncompleteDataNotice checks={result.safeguards} />}
-          {view && (
-            <>
-              <VerdictCard verdict={view.verdict} />
-              <WaterfallTable waterfall={view.waterfall} />
-              {view.bonus && <BonusNote bonus={view.bonus} included={includeBonus} onToggle={() => setIncludeBonus(!includeBonus)} />}
-              <WhatIfPanel key={`${result.raw.pricePaise}-${includeBonus}`} whatIf={view.whatIf} />
-              <IncompleteDataNotice checks={view.safeguards} />
-            </>
-          )}
-        </div>
+        {calculating && <StageLoader />}
+        {result?.insufficient && <CantAnswer reason={result.safeguards[0]?.detail || ''} />}
+
+        {view && (
+          <>
+            <AnswerCard key={`answer-${key}`} view={view} celebrateKey={key} ghost={includeBonus ? view.baseLeft : null} ghostLabel="Without the bonus" />
+            {view.bonus && <BonusCard bonus={view.bonus} included={includeBonus} onToggle={() => setIncludeBonus(!includeBonus)} />}
+            <ShowHow cases={view.cases} />
+            <TryAChange key={`change-${key}`} amount={result.amount} month={result.month} monthsAhead={result.raw.months.length} subs={toSubscriptions(result.recurring)} bonusOn={includeBonus} />
+          </>
+        )}
+
+        <RecentQuestions items={recent} onOpen={reopen} />
       </div>
       <Toast message={toast} />
     </main>

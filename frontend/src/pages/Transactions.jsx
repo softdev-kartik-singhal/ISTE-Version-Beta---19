@@ -32,7 +32,8 @@ export default function Transactions() {
   const api = useApi(getTransactions);
   const location = useLocation();
   const { account } = useOutletContext();
-  const [filters, setFilters] = useState({ query: location.state?.query || '', account: 'all', category: 'all', flow: 'All' });
+  // Other screens can open this page pre-filtered with route state { query } or { category }.
+  const [filters, setFilters] = useState({ query: location.state?.query || '', account: 'all', category: location.state?.category || 'all', flow: 'All' });
   const [selectedIds, setSelectedIds] = useState([]);
   const [editing, setEditing] = useState(null);
   const [undo, setUndo] = useState(null); // { batchId, message } of the last category change
@@ -45,6 +46,7 @@ export default function Transactions() {
   }, [account]);
   useEffect(() => {
     if (location.state?.query !== undefined) setFilters((f) => ({ ...f, query: location.state.query }));
+    if (location.state?.category) setFilters((f) => ({ ...f, category: location.state.category }));
   }, [location.state]);
 
   if (!api.ready) return <PageState state={api} />;

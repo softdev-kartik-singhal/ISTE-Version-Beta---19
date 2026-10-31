@@ -22,9 +22,12 @@ def session_payload(conn, user_id):
     accounts = account_labels(conn, user_id)
     last = conn.execute("SELECT MAX(f.uploaded_at) AS at FROM uploaded_files f JOIN accounts a ON a.id = f.account_id"
                         " WHERE a.user_id = ?", (user_id,)).fetchone()["at"]
+    # Date of the newest statement row (bank statements only, not typed-in cash): "Statements up to 28 Sep 2026".
+    up_to = conn.execute("SELECT MAX(t.txn_date) AS d FROM transactions t JOIN accounts a ON a.id = t.account_id"
+                         " WHERE a.user_id = ? AND t.source = 'statement'", (user_id,)).fetchone()["d"]
     return {"user": {"name": user["name"], "email": user["email"], "profile": user["profile"]},
             "accountCount": len(accounts), "accounts": accounts, "accountList": account_list(conn, user_id),
-            "hasData": bool(accounts), "lastSyncedAt": last,
+            "hasData": bool(accounts), "lastSyncedAt": last, "statementsUpTo": up_to,
             "tour": {"completed": bool(user["tour_completed"]), "step": user["tour_step"]},
             "flagCount": flags_payload(conn, user_id)["openCount"]}
 

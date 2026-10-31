@@ -1,9 +1,10 @@
 // Data access layer: every screen reads and writes through here, and only here, using the signed-in user's session token.
 // Backend answers are reshaped for the screens by adapters.js.
 import { setGoalBase } from '../utils/goalMath';
-import { goalDate, monthLabel, suggestions, toDashboard, toFlags, toGoals, toMoneyFlow, toSafeguards, toStatements, toSurplusPlan, toTrackRecord, toTransactions, toTrends } from './adapters';
+import { goalDate, monthLabel, suggestions, toFlags, toGoals, toMoneyFlow, toSafeguards, toStatements, toSurplusPlan, toTrackRecord, toTransactions, toTrends } from './adapters';
+import { toHome } from './homeView';
+import { toChangeView } from './askView';
 
-export { toAsk } from './adapters'; // Ask re-shapes its stored answer when the bonus switch changes
 
 export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 const TOKEN_KEY = 'sg_token';
@@ -93,6 +94,9 @@ export async function getSession() {
     user: { name: s.user.name, email: s.user.email, profile: s.user.profile || '' },
     accountCount: s.accountCount,
     accounts: s.accounts,
+    bankCount: s.accountList.filter((a) => a.type !== 'cash').length,
+    hasCash: s.accountList.some((a) => a.type === 'cash'),
+    statementsUpTo: s.statementsUpTo ? new Date(`${s.statementsUpTo}T00:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : null,
     lastSynced: formatSynced(s.lastSyncedAt),
     syncSummary: banks.length ? `${banks.join(', ')} synced` : 'No statements uploaded yet',
     flagCount: s.flagCount,
@@ -153,11 +157,12 @@ async function notReady(message) {
   return hasData ? { __state: 'insufficient', messages: [message] } : { __state: 'empty' };
 }
 
-export async function getDashboard() {
+// Home: everything the Home page shows, shaped by homeView.js.
+export async function getHome() {
   const d = await request('/api/dashboard');
-  if (d.insufficientHistory) return notReady('The dashboard needs at least one complete month of statements.');
+  if (d.insufficientHistory) return notReady('Home needs at least one complete month of statements.');
   const [trends, flags] = await Promise.all([request('/api/trends'), request('/api/flags')]);
-  return toDashboard(d, trends, flags);
+  return toHome(d, trends, flags);
 }
 
 export async function getStatements() {
@@ -243,7 +248,10 @@ export async function getAskSetup() {
   const [d, s] = await Promise.all([request('/api/dashboard'), request('/api/session')]);
   if (d.insufficientHistory) return notReady('Questions are answered from your statements, which need at least one complete month.');
   const { defaultQuestion, quickQuestions } = suggestions(d.planningSurplusPaise);
-  return { presets: [defaultQuestion, ...quickQuestions], accounts: [...new Set(s.accountList.map((a) => a.bank))], asOf: d.asOf };
+  // Bank accounts and the cash wallet are counted separately: "2 bank accounts + cash".
+  const banks = s.accountList.filter((a) => a.type !== 'cash').length;
+  const accountsLabel = `${banks} bank account${banks === 1 ? '' : 's'}${s.accountList.some((a) => a.type === 'cash') ? ' + cash' : ''}`;
+  return { presets: [defaultQuestion, ...quickQuestions], accountsLabel, asOf: d.asOf };
 }
 
 // Ask, step 1: what we understood from the sentence (amount, month, and what is missing). Nothing is calculated yet.
@@ -257,6 +265,19 @@ export async function askAnswer(amountRupees, targetMonth) {
   const [answer, recurring] = await Promise.all([request('/api/ask', { method: 'POST', body }), request('/api/recurring')]);
   if (answer.status === 'insufficient_data') return { insufficient: true, safeguards: toSafeguards(answer.missing) };
   return { raw: answer, recurring: recurring.items };
+}
+
+// "Try a change": the same answer with some subscriptions cancelled and/or a new EMI added, from the same calculation
+// as the main answer. Returns { before, after, ... } (see toChangeView) or null when the data is not enough.
+export async function askWhatIf(amountRupees, targetMonth, cancel, emiRupees) {
+  const body = {
+    amountPaise: Math.round(amountRupees * 100),
+    targetMonth,
+    cancelRecurring: cancel,
+    ...(emiRupees > 0 ? { addEmi: { name: 'New EMI', amountPaise: Math.round(emiRupees * 100) } } : {}),
+  };
+  const res = await request('/api/what-if', { method: 'POST', body });
+  return res.status === 'answered' ? toChangeView(res) : null;
 }
 
 // ---------- goals, surplus plan, track record ----------

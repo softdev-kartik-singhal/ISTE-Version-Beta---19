@@ -1,58 +1,47 @@
-// Dashboard screen: affordability box, key metrics, upcoming payments, insights, charts and flags.
+// Home: hero (status, money left, Can I afford…?), key numbers, coming up, cash and quick actions, what changed,
+// where the money went, the 8-week balance forecast, the 6-month trend and things to check.
+import { useOutletContext } from 'react-router-dom';
 import { useApi } from '../hooks/useApi';
-import { getDashboard } from '../services/api';
+import { getHome } from '../services/api';
 import PageState from '../components/ui/PageState';
-import AffordabilityHero from '../components/dashboard/AffordabilityHero';
-import StaleDataBanner from '../components/ui/StaleDataBanner';
-import LiquidityCards from '../components/dashboard/LiquidityCards';
-import UpcomingPayments from '../components/dashboard/UpcomingPayments';
-import ChangeInsightCard from '../components/dashboard/ChangeInsightCard';
-import ProjectionCard from '../components/dashboard/ProjectionCard';
-import IncomeSpendingCard from '../components/dashboard/IncomeSpendingCard';
-import SpendingBreakdownCard from '../components/dashboard/SpendingBreakdownCard';
-import AttentionList from '../components/dashboard/AttentionList';
-import CashWalletCard from '../cash/CashWalletCard';
+import HomeSkeleton from '../components/home/HomeSkeleton';
+import HomeHero from '../components/home/HomeHero';
+import KeyNumbers from '../components/home/KeyNumbers';
+import ComingUp from '../components/home/ComingUp';
+import CashAndActions from '../components/home/CashAndActions';
+import WhatChanged from '../components/home/WhatChanged';
+import WhereMoneyWent from '../components/home/WhereMoneyWent';
+import BalanceForecast from '../components/home/BalanceForecast';
+import MonthlyTrend from '../components/home/MonthlyTrend';
+import ThingsToCheck from '../components/home/ThingsToCheck';
+import '../components/home/home.css';
+
+const PAGE = 'relative pt-16 min-h-screen bg-[#f5f7fb]';
+const WRAP = 'max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8 space-y-5 sm:space-y-6';
 
 export default function Dashboard() {
-  const api = useApi(getDashboard);
+  const { session } = useOutletContext();
+  const api = useApi(getHome);
+  if (api.status === 'loading') {
+    return <main className={PAGE}><div className={WRAP}><HomeSkeleton /></div></main>;
+  }
   if (!api.ready) return <PageState state={api} />;
-  const data = api.data;
+  const h = api.data;
 
   return (
-    <main className="relative pt-16 min-h-screen bg-[#F7F9FC]">
-      <div className="max-w-[1440px] mx-auto p-space-xl">
-        <div className="flex flex-col w-full space-y-space-lg">
-          <StaleDataBanner asOf={data.liquidity.asOfIso} />
-          <AffordabilityHero defaultQuestion={data.defaultQuestion} quickQuestions={data.quickQuestions} />
-          <LiquidityCards liquidity={data.liquidity} />
-          <CashWalletCard />
-          <UpcomingPayments payments={data.upcoming} />
-
-          {/* What changed this month */}
-          <section className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="font-headline-sm text-headline-sm text-on-surface">What changed in {data.liquidity.dataMonth}</h3>
-              <span className="font-label-sm text-label-sm text-secondary">Analyzed from {data.analyzedTransactions} transactions</span>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-space-md">
-              {data.changes.map((insight) => (
-                <ChangeInsightCard key={insight.id} insight={insight} />
-              ))}
-            </div>
-          </section>
-
-          {/* Visual analysis & flags */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
-            <div className="lg:col-span-7 flex flex-col gap-space-lg">
-              <ProjectionCard projection={data.projection} />
-              <IncomeSpendingCard data={data.incomeVsSpending} />
-            </div>
-            <div className="lg:col-span-5 flex flex-col gap-space-lg">
-              <SpendingBreakdownCard spending={data.spending} />
-              <AttentionList attention={data.attention} />
-            </div>
-          </div>
+    <main className={`${PAGE} font-['Inter',system-ui,sans-serif]`}>
+      <div className={WRAP}>
+        <HomeHero name={session?.user.name} hero={h.hero} />
+        <KeyNumbers keys={h.keys} />
+        <ComingUp items={h.comingUp} />
+        <CashAndActions />
+        <WhatChanged changes={h.changes} month={h.hero.month} />
+        <div className="grid gap-5 sm:gap-6 lg:grid-cols-2">
+          <WhereMoneyWent spending={h.spending} />
+          <BalanceForecast forecast={h.forecast} />
         </div>
+        <MonthlyTrend trend={h.trend} />
+        <ThingsToCheck checks={h.checks} openCount={h.openFlags} />
       </div>
     </main>
   );
