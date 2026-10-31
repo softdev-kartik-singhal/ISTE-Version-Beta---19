@@ -91,13 +91,10 @@ export default function Statements() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
             <div className="space-y-space-xs">
               <div className="flex items-center gap-space-sm">
-                <h1 className="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight">Bank Statements &amp; Data Ingestion</h1>
+                <h1 className="font-headline-lg text-headline-lg text-on-surface font-semibold tracking-tight">Statements</h1>
                 <span className="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold">Read once, never stored</span>
               </div>
-              <p className="font-body-md text-body-md text-secondary max-w-3xl">
-                Upload official PDF e-statements or CSV exports from your Indian bank accounts. Each file is read once, turned into transactions and discarded; only the last 4 digits of
-                account numbers are kept. Overlaps and transfers between your accounts are reconciled automatically.
-              </p>
+              <p className="font-body-md text-body-md text-secondary max-w-3xl">Add your bank statements here; each file is read once and then thrown away.</p>
             </div>
             <div className="flex items-center gap-space-md shrink-0">
               <button

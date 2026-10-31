@@ -1,6 +1,7 @@
 // Turns the backend's responses (money in paise, ISO dates) into the shapes the screens were built for
 // (money in rupees, display strings). Pure functions: no fetching here.
 import { formatCurrency } from '../utils/formatCurrency';
+import { answerLines, verdictState } from '../utils/verdict';
 
 export const r = (paise) => paise / 100;
 const date = (iso) => new Date(`${iso.slice(0, 10)}T00:00:00`);
@@ -67,8 +68,9 @@ export function toDashboard(d, trends, flags) {
         id: c.name, icon: catIcon(c.name), tone: c.direction === 'up' ? 'warning' : c.direction === 'down' ? 'positive' : 'neutral',
         badge: c.changePct == null ? 'New' : `${c.changePct > 0 ? '+' : ''}${Math.round(c.changePct)}%`, title: c.insight,
         detail: `${formatCurrency(r(c.thisMonthPaise))} this month against a usual ${formatCurrency(r(c.medianPaise))}.`,
+        action: { label: `See ${c.name} spending`, to: '/transactions', state: { category: c.name, flow: 'Debits' } },
       }))
-    : [{ id: 'none', icon: 'info', tone: 'neutral', badge: '—', title: 'Comparisons start after 4 months of statements', detail: 'Once there is enough history, the biggest changes from your usual spending appear here.' }];
+    : [{ id: 'none', icon: 'info', tone: 'neutral', badge: '—', title: 'Comparisons start after 4 months of statements', detail: 'Once there is enough history, the biggest changes from your usual spending appear here.', action: { label: 'Upload more statements', to: '/statements' } }];
   const months = (trends.months || []).slice(-6);
   const totalIn = months.reduce((s, m) => s + m.inflowPaise, 0);
   const sp = d.spending;
@@ -83,11 +85,12 @@ export function toDashboard(d, trends, flags) {
     },
     upcoming,
     analyzedTransactions: d.analyzedTransactions,
+    asOf: d.asOf,
     changes,
     projection: {
       runwayBuffer: r(d.bufferPaise),
-      note: d.projection ? 'Typical case with a worst-to-best range. Income and spending are spread evenly across weeks.' : 'A projection needs 3 complete months of statements.',
-      minRunway: proj.length ? `Lowest typical balance: ${formatCurrency(r(Math.min(...proj.map((w) => w.typical))))}` : '',
+      note: d.projection ? 'Usual case with a low-to-high range. Income and spending are spread evenly across weeks.' : 'A projection needs 3 complete months of statements.',
+      minRunway: proj.length ? `Lowest usual balance: ${formatCurrency(r(Math.min(...proj.map((w) => w.typical))))}` : '',
       weeks: proj.map((w, i) => ({ week: `W${i + 1} ${dayShort(w.weekStart)}`, median: r(w.typical), low: r(w.worst), high: r(w.best) })),
     },
     incomeVsSpending: {
@@ -106,7 +109,7 @@ export function toDashboard(d, trends, flags) {
         id: f.id, icon: f.type === 'duplicate' ? 'warning' : f.type === 'large' ? 'trending' : 'info', iconClass: 'text-tertiary',
         title: { duplicate: 'Possible duplicate charge', large: 'Unusually large spend', 'new-merchant': 'New merchant' }[f.type],
         amount: formatCurrency(r(f.amountPaise)), amountClass: 'text-error', text: [f.reason],
-        primaryAction: { label: 'Review', to: '/flags' }, secondaryAction: 'Dismiss',
+        action: { label: { duplicate: 'Review duplicates', large: 'Review large spends', 'new-merchant': 'Review new merchants' }[f.type], to: '/flags', state: { type: f.type } },
       })),
     },
   };
@@ -215,9 +218,17 @@ export function toFlags(f) {
 const pctText = (p) => `${p > 0 ? '+' : ''}${p.toFixed(1)}%`;
 const VARIANCE = {
   flat: (c) => ({ variance: `${pctText(c.changePct ?? 0)} Neutral`, varianceClass: 'text-secondary font-medium', sparkColor: '#495f82', iconClass: 'bg-surface-container text-primary' }),
-  up: (c) => ({ variance: c.changePct == null ? 'New' : `↑ ${pctText(c.changePct)} Higher`, varianceClass: 'text-tertiary-container font-semibold', sparkColor: '#a73400', iconClass: 'bg-secondary-container/50 text-primary' }),
-  down: (c) => ({ variance: `↓ ${pctText(c.changePct)} Lower`, varianceClass: 'text-primary font-semibold', sparkColor: '#0037b0', iconClass: 'bg-surface-container text-primary' }),
+  up: (c) => ({ variance: c.changePct == null ? 'New' : `↑ ${pctText(c.changePct)} more`, varianceClass: 'text-tertiary-container font-semibold', sparkColor: '#a73400', iconClass: 'bg-secondary-container/50 text-primary' }),
+  down: (c) => ({ variance: `↓ ${pctText(c.changePct)} less`, varianceClass: 'text-primary font-semibold', sparkColor: '#0037b0', iconClass: 'bg-surface-container text-primary' }),
 };
+
+// A finding that names a category opens that category's transactions; any other finding opens Money Flow.
+function findingAction(text, categories) {
+  const named = categories.find((c) => text.toLowerCase().includes(c.name.toLowerCase()));
+  return named
+    ? { label: `See ${named.name} spending`, to: '/transactions', state: { category: named.name, flow: 'Debits' } }
+    : { label: 'See where money went', to: '/money-flow' };
+}
 
 export function toTrends(t, plan, accounts) {
   const months = t.months;
@@ -248,11 +259,12 @@ export function toTrends(t, plan, accounts) {
       const kind = c.direction === 'new' ? 'up' : c.direction;
       return { name: c.name, examples: c.merchants.map(title).join(', '), icon: catIcon(c.name), thisMonth: r(c.thisMonthPaise), median: r(c.medianPaise), direction: kind, sparkline: c.sparklinePaise.slice(-6).map(r), ...VARIANCE[kind](c) };
     }),
-    findings: t.findings.map((text, i) =>
-      i === 0
+    findings: t.findings.map((text, i) => ({
+      ...(i === 0
         ? { icon: 'info', iconClass: 'text-primary', title: text.replace(/\.$/, ''), body: [`${positive} of ${months.length} months ended with money left over.`], progress: { percent: (positive / months.length) * 100, label: `${positive}/${months.length} months` } }
-        : { icon: 'info', iconClass: 'text-primary', title: text, body: [] },
-    ),
+        : { icon: 'info', iconClass: 'text-primary', title: text, body: [] }),
+      action: findingAction(text, t.categories),
+    })),
     runway: cover
       ? { months: `${cover.monthsCovered ?? 0} Months`, detail: `Your cash covers ${formatCurrency(r(cover.monthlyEssentialsPaise))} a month of essentials (rent, EMI, bills, groceries, travel) for that long.` }
       : { months: '—', detail: 'Needs more statement history.' },
@@ -277,7 +289,7 @@ export function toMoneyFlow(f, compare) {
       saved += left;
     }
   }
-  if (saved > 0) nodes.push({ id: 'surplus', column: 2, name: 'Saved / Surplus', amount: r(saved), color: '#059669' });
+  if (saved > 0) nodes.push({ id: 'surplus', column: 2, name: 'Saved / Left over', amount: r(saved), color: '#059669' });
 
   const income = f.incomePaise || 1;
   const fixed = cats.filter((c) => FIXED.includes(c.name)).reduce((s, c) => s + c.amountPaise, 0);
@@ -311,8 +323,7 @@ export function toMoneyFlow(f, compare) {
 
 // ---------- Ask ----------
 
-const VERDICT_TONE = { yes: 'safe', risky: 'caution', stretch: 'caution', no: 'risk' };
-const VERDICT_STATUS = { yes: 'Approved • Safe', risky: 'Conditional Approval • Cautionary', stretch: 'Stretch • Best case only', no: 'Not affordable' };
+const VERDICT_TONE = { yes: 'safe', typical: 'caution', no: 'risk' }; // colours of the confidence meter per verdict state
 const CASE_NAMES = ['worst', 'typical', 'best'];
 
 // Checks shown under the answer: the ones that failed are listed with what to do about it.
@@ -332,36 +343,42 @@ export function toAsk(answer, recurring, includeBonus) {
   const left = CASE_NAMES.map((n) => (includeBonus && bonus ? bonus.cases[n].leftAfterPurchasePaise : answer.cases[n].leftAfterPurchasePaise));
   const price = answer.pricePaise;
   const n = answer.months.length;
-  const code = use.verdict.code;
+  const state = verdictState(use.verdict.code);
+  const worst = answer.cases.worst;
   const typical = answer.cases.typical;
   const spread = typical.incomePaise ? Math.round(((answer.cases.best.incomePaise - answer.cases.worst.incomePaise) / typical.incomePaise) * 100) : 0;
   const subs = recurring.filter((x) => x.label === 'subscription');
   const monthlySurplus = (typical.incomePaise - typical.committedPaise - typical.variablePaise) / n;
   const subsSaved = subs.reduce((s, x) => s + -x.typicalPaise, 0);
   const upLeft = monthlySurplus - price, optLeft = monthlySurplus + subsSaved - price / 3;
-  const row = (id, kind, title_, detail, values, tag) => ({ id, kind, title: title_, detail, values: values.map(r), ...(tag ? { tag } : {}) });
+  const row = (id, kind, title_, detail, values, tag, tip) => ({ id, kind, title: title_, detail, tip, values: values.map(r), ...(tag ? { tag } : {}) });
   return {
     verdict: {
-      tone: VERDICT_TONE[code], status: VERDICT_STATUS[code], rule: 'Rule: worst-case income, high spending and a one-month buffer',
+      state, tone: VERDICT_TONE[state], rule: 'We check it against a low-income month, high spending and one month of bills kept aside',
+      ...answerLines({
+        state, price: r(price), targetMonth: answer.targetMonth, leftUsual: r(left[1]), leftLow: r(left[0]),
+        worstHeadroom: r((includeBonus && bonus ? bonus.cases.worst : worst).headroomPaise),
+        lowPerMonth: r((worst.incomePaise - worst.committedPaise - worst.variablePaise) / n),
+      }),
       headline: use.verdict.text,
       summary: `After the purchase you would have ${formatCurrency(r(left[0]))} in the worst case, ${formatCurrency(r(left[1]))} typically and ${formatCurrency(r(left[2]))} in the best case.`,
       confidence: { label: answer.confidence.label, segments: { High: 3, Medium: 2, Low: 1 }[answer.confidence.label], incomeVariance: `${spread}%`, note: answer.confidence.reason },
       metrics: [
-        { label: 'Purchase Amount', value: formatCurrency(r(price)), valueClass: 'text-on-surface', note: 'One-time debit', noteClass: 'text-secondary' },
-        { label: 'Target Horizon', value: `${monthShort(answer.targetMonth)} ${answer.targetMonth.slice(0, 4)}`, valueClass: 'text-on-surface', note: `Cash at the end of ${monthLabel(answer.targetMonth)}`, noteClass: 'text-secondary' },
-        { label: 'Typical Money Left', value: formatCurrency(r(left[1]), { sign: true }), valueClass: left[1] < 0 ? 'text-error' : 'text-primary', note: 'After buffer and purchase', noteClass: 'text-secondary' },
-        { label: 'Worst Case Left', value: formatCurrency(r(left[0]), { sign: true }), valueClass: left[0] < 0 ? 'text-error' : 'text-primary', note: left[0] < 0 ? 'Buffer would be breached' : 'Buffer stays intact', noteClass: left[0] < 0 ? 'text-error' : 'text-secondary' },
+        { label: 'Price', tip: 'The amount you asked about, taken out once in the month you plan to buy.', value: formatCurrency(r(price)), valueClass: 'text-on-surface', note: 'Paid once', noteClass: 'text-secondary' },
+        { label: 'Month you buy', tip: 'The month in your question; we look at your cash at the end of that month.', value: `${monthShort(answer.targetMonth)} ${answer.targetMonth.slice(0, 4)}`, valueClass: 'text-on-surface', note: `Cash at the end of ${monthLabel(answer.targetMonth)}`, noteClass: 'text-secondary' },
+        { label: 'Left if income is usual', tip: 'Cash now + usual income − regular bills − usual spending − safety buffer − price.', value: formatCurrency(r(left[1]), { sign: true }), valueClass: left[1] < 0 ? 'text-error' : 'text-primary', note: 'After the safety buffer and the purchase', noteClass: 'text-secondary' },
+        { label: 'Left if income is low', tip: 'Same sum using a low-income month (lowest 10%) and high spending (top 25%).', value: formatCurrency(r(left[0]), { sign: true }), valueClass: left[0] < 0 ? 'text-error' : 'text-primary', note: left[0] < 0 ? 'Would eat into your safety buffer' : 'Safety buffer stays untouched', noteClass: left[0] < 0 ? 'text-error' : 'text-secondary' },
       ],
     },
     waterfall: {
-      period: monthLabel(answer.targetMonth), scenarios: ['(low income, high spending)', '(median baseline)', '(high income, low spending)'],
+      period: monthLabel(answer.targetMonth), scenarios: ['(and high spending)', '(and usual spending)', '(and low spending)'],
       rows: [
-        row('balance', 'balance', 'Current cash', 'Latest balance across your accounts', cases.map((c) => c.startingCashPaise)),
-        row('income', 'income', 'Expected income', `${plural(n, 'month')} of income: 10th percentile, median, 90th percentile${extra ? ' + the one-off repeated once' : ''}`, cases.map((c) => c.incomePaise + extra)),
-        row('committed', 'expense', 'Committed payments', answer.committed.map((c) => title(c.merchant)).join(', ') || 'None found', cases.map((c) => -c.committedPaise), 'Recurring'),
-        row('variable', 'expense', 'Everyday spending', 'Per-category median of the last 3 months (75th percentile worst case, 25th best)', cases.map((c) => -c.variablePaise)),
-        row('buffer', 'buffer', 'Safety buffer', 'One month of committed payments, kept untouched', cases.map((c) => -c.bufferPaise), 'Reserved'),
-        row('purchase', 'purchase', 'This purchase', 'One-time deduction', cases.map(() => -price), 'Evaluated'),
+        row('balance', 'balance', 'Current cash', 'Latest balance across your accounts', cases.map((c) => c.startingCashPaise), null, 'The closing balance on your newest statement, added up across accounts.'),
+        row('income', 'income', 'Expected income', `${plural(n, 'month')} of income: if income is low, usual or high${extra ? ' + the one-off repeated once' : ''}`, cases.map((c) => c.incomePaise + extra), null, 'Your monthly income from past statements: a low month (lowest 10%), a usual month (middle), a high month (top 10%), times the months ahead.'),
+        row('committed', 'expense', 'Regular payments', answer.committed.map((c) => title(c.merchant)).join(', ') || 'None found', cases.map((c) => -c.committedPaise), 'Regular', 'Every regular payment (rent, EMIs, subscriptions) that falls due before the end of that month.'),
+        row('variable', 'expense', 'Everyday spending', 'What you usually spend per category (more if spending is high, less if low)', cases.map((c) => -c.variablePaise), null, 'For each category, the middle month of the last 3 (top 25% for high spending, bottom 25% for low), times the months ahead.'),
+        row('buffer', 'buffer', 'Safety buffer', 'One month of committed payments, kept untouched', cases.map((c) => -c.bufferPaise), 'Reserved', 'One month of your regular bills, kept aside so they are paid even if income is late.'),
+        row('purchase', 'purchase', 'This purchase', 'One-time deduction', cases.map(() => -price), 'Evaluated', 'The price from your question.'),
       ],
       result: left.map((v) => ({ value: r(v), tone: v < 0 ? 'bad' : 'good', label: v < 0 ? 'Not covered' : 'Covered' })),
       bufferNote: 'The buffer is not savings to spend. It is ringfenced so your fixed commitments are still paid if income arrives late.',
@@ -406,7 +423,7 @@ export function toGoals(g, plan) {
       target: r(x.targetPaise), saved: r(x.savedPaise), percentFunded: x.percentFunded.toFixed(1), monthlyNeeded: r(x.monthlyNeededPaise),
       horizon: `${monthLabel(x.targetDate.slice(0, 7))} (${plural(x.monthsLeft, 'month')} remaining)`, monthsLeft: x.monthsLeft, analysisIcon: 'chart',
       analysis: x.remainingPaise
-        ? [`${x.statusText} You need ${formatCurrency(r(x.monthlyNeededPaise))} a month; your typical monthly surplus is ${formatCurrency(avg)}.`]
+        ? [`${x.statusText} You need ${formatCurrency(r(x.monthlyNeededPaise))} a month; you usually have left over ${formatCurrency(avg)}.`]
         : [x.statusText],
       actionLabel: GOAL_STATUS[x.status] === 'unreachable' ? 'Adjust Timeline' : 'Edit Goal',
     })),
@@ -433,7 +450,7 @@ export function toSurplusPlan(p) {
       essentials: f.essentials.map((e) => ({ name: e.name, amount: r(e.monthlyPaise) })),
       milestones: [0, 25, 50, 75, 100].map((pc) => ({ amount: r((f.targetPaise * pc) / 100), label: pc === 0 ? 'Start' : `${pc}%` })),
       averageSurplus: r(p.surplus.typicalPaise),
-      etaRange: f.funded ? 'Fully funded' : p.eta.fastestMonths == null ? 'Not reachable at the current surplus' : `${p.eta.fastestMonths} to ${months} months`,
+      etaRange: f.funded ? 'Fully funded' : p.eta.fastestMonths == null ? 'Not reachable with what you usually have left over' : `${p.eta.fastestMonths} to ${months} months`,
       completion: f.funded ? 'Done' : months == null ? '—' : done.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' }),
     },
     options: p.options.map((o) => ({ icon: 'bank', badge: o.risk.split(':')[0], badgeIcon: 'shield', badgeClass: 'bg-secondary-fixed text-on-secondary-fix', title: o.title, description: o.bestFor, lockIn: o.lockIn, bestFor: o.bestFor, footerLabel: 'Risk', footerValue: o.risk })),
@@ -454,7 +471,7 @@ export function toTrackRecord(tr, log, verify, accuracy) {
   const entries = log.filter((e) => e.kind === 'forecast').map((f) => ({ f, a: log.find((e) => e.kind === 'actual' && e.target_month === f.target_month) })).filter((x) => x.a);
   const ledgerRow = ({ f, a }) => {
     const hit = a.actual_paise >= f.worst_paise && a.actual_paise <= f.best_paise;
-    return { timestamp: day(f.made_on), question: `Surplus forecast for ${monthLabel(f.target_month)}`, verdict: hit ? 'In range' : a.actual_paise > f.best_paise ? 'Above range' : 'Below range', verdictType: hit ? 'safe' : a.actual_paise >= f.worst_paise ? 'conditional' : 'risk', projected: r(f.typical_paise), actual: r(a.actual_paise), actualClass: hit ? 'text-primary font-semibold' : 'text-tertiary font-semibold', hash: short(f.entry_hash) };
+    return { timestamp: day(f.made_on), question: `Left-over forecast for ${monthLabel(f.target_month)}`, verdict: hit ? 'In range' : a.actual_paise > f.best_paise ? 'Above range' : 'Below range', verdictType: hit ? 'safe' : a.actual_paise >= f.worst_paise ? 'conditional' : 'risk', projected: r(f.typical_paise), actual: r(a.actual_paise), actualClass: hit ? 'text-primary font-semibold' : 'text-tertiary font-semibold', hash: short(f.entry_hash) };
   };
   const rows = entries.map(ledgerRow).reverse();
   const peak = Math.max(1, ...m.map((x) => Math.max(x.bestPaise, x.actualPaise, 0)));
@@ -465,10 +482,10 @@ export function toTrackRecord(tr, log, verify, accuracy) {
     version: 'hash-chained log',
     integrity: { block: String(log.length), entries: log.length, valid: verify.valid, firstBroken: verify.firstBrokenLink, headHash: verify.headHash || '' },
     kpis: [
-      { label: 'Forecast Accuracy', icon: 'target', value: `${Math.round(s.hitRate * 100)}%`, valueClass: 'text-on-surface', chip: `${hits} of ${m.length} in range`, chipClass: good, note: 'Actual surplus landed between the worst and best case' },
-      { label: 'Average Miss', icon: 'down', value: formatCurrency(r(s.averageMissPaise)), valueClass: 'text-on-surface', chip: 'vs typical case', chipClass: good, note: 'Average distance from the typical forecast' },
-      { label: 'Bias', icon: 'brain', value: formatCurrency(r(s.biasPaise), { sign: true }), valueClass: s.biasPaise < 0 ? 'text-error' : 'text-on-surface', chip: s.biasPaise < 0 ? 'Too optimistic' : 'Too cautious', chipClass: good, note: 'Negative means reality came in lower than forecast' },
-      { label: 'Worst Case Held', icon: 'link', value: `${Math.round(s.worstCaseHeldRate * 100)}%`, valueClass: 'text-on-surface', chip: `${m.filter((x) => x.worstCaseHeld).length} of ${m.length}`, chipClass: good, note: 'Months that were no worse than the worst case' },
+      { label: 'Forecasts in range', tip: 'Months whose real money left over landed between our low and high forecast, out of all months checked.', icon: 'target', value: `${Math.round(s.hitRate * 100)}%`, valueClass: 'text-on-surface', chip: `${hits} of ${m.length} in range`, chipClass: good, note: 'Actual surplus landed between the worst and best case' },
+      { label: 'Usual miss', tip: 'Average gap between our usual forecast and what really happened, ignoring direction.', icon: 'down', value: formatCurrency(r(s.averageMissPaise)), valueClass: 'text-on-surface', chip: 'vs usual forecast', chipClass: good, note: 'Average distance from the usual forecast' },
+      { label: 'Lean', tip: 'Average of (real − forecast): below zero means we tend to forecast too high.', icon: 'brain', value: formatCurrency(r(s.biasPaise), { sign: true }), valueClass: s.biasPaise < 0 ? 'text-error' : 'text-on-surface', chip: s.biasPaise < 0 ? 'Too optimistic' : 'Too cautious', chipClass: good, note: 'Negative means reality came in lower than forecast' },
+      { label: 'Low forecast held', tip: 'Months where reality was no worse than our low forecast, out of all months checked.', icon: 'link', value: `${Math.round(s.worstCaseHeldRate * 100)}%`, valueClass: 'text-on-surface', chip: `${m.filter((x) => x.worstCaseHeld).length} of ${m.length}`, chipClass: good, note: 'Months that were no worse than the low forecast' },
     ],
     finding: {
       headline: `Of our last ${m.length} forecasts, ${hits} landed inside the range.`,

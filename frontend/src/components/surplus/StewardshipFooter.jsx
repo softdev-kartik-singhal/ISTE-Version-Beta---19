@@ -28,12 +28,12 @@ export default function StewardshipFooter({ onMethodology }) {
           </div>
           <div className="flex items-center gap-1 px-2.5 py-1 rounded bg-surface-container-low">
             <LockKeyhole size={14} className="text-primary" />
-            <span>Deterministic Local Calculations</span>
+            <span>Plain arithmetic on your statements</span>
           </div>
         </div>
       </div>
       <div className="pt-space-md bg-surface-container-low/50 -mx-space-lg -mb-space-lg px-space-lg py-3 rounded-b-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-on-surface-variant font-label-sm text-label-sm">
-        <span>© 2025 SmartGullak Inc. Multi-Stream Liquidity Architecture. All numbers computed against connected accounts.</span>
+        <span>© 2025 SmartGullak Inc. All numbers computed against connected accounts.</span>
         <div className="flex items-center gap-4">
           <Link className="hover:text-primary transition-colors" to="/privacy">Privacy Policy</Link>
           <Link className="hover:text-primary transition-colors" to="/track-record">Audit Disclosures</Link>

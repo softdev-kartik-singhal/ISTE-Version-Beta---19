@@ -11,7 +11,6 @@ import GoalSummaryCards from '../components/goals/GoalSummaryCards';
 import GoalCard from '../components/goals/GoalCard';
 import GoalDialog from '../components/dialogs/GoalDialog';
 import Toast from '../components/ui/Toast';
-import { formatCurrency } from '../utils/formatCurrency';
 
 const summaryFor = (data) => data.summary; // the server recomputes the totals after every change
 
@@ -69,14 +68,10 @@ export default function Goals() {
             <div className="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-1">
               <span>Capital Planning</span>
               <span>•</span>
-              <span className="text-primary font-semibold">Deterministic Surplus Model</span>
+              <span className="text-primary font-semibold">From your statements</span>
             </div>
-            <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">Financial Goals</h1>
-            <p className="font-body-md text-body-md text-on-surface-variant mt-0.5 leading-relaxed">
-              Targeted capital allocation calculated against your real liquid monthly surplus{' '}
-              <span className="font-currency-sm text-currency-sm font-semibold text-on-surface">({formatCurrency(data.surplus.average)} avg</span> /{' '}
-              <span className="font-currency-sm text-currency-sm text-on-surface-variant">{formatCurrency(data.surplus.floor)} conservative floor)</span>.
-            </p>
+            <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">Goals</h1>
+            <p className="font-body-md text-body-md text-on-surface-variant mt-0.5 leading-relaxed">Add, edit and check the goals on your Plan.</p>
           </div>
           <div className="flex items-center gap-space-sm shrink-0">
             <button
@@ -123,7 +118,7 @@ export default function Goals() {
               <ShieldCheck size={18} />
             </div>
             <p className="font-body-sm text-body-sm text-on-surface-variant leading-normal">
-              <strong className="font-semibold text-on-surface">Deterministic Engine Integrity:</strong> Goal feasibility evaluations run directly
+              <strong className="font-semibold text-on-surface">How goals are checked:</strong> Goal feasibility evaluations run directly
               against verified multi-account aggregates (HDFC, ICICI, Kotak). Internal bank transfers and credit sweeps are mathematically excluded
               from surplus computations.
             </p>

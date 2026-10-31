@@ -1,5 +1,5 @@
-// Ask screen: "Can I afford...?" in two steps. First we show what we understood (amount and month) for the user to confirm;
-// only then is the answer calculated: verdict, waterfall, bonus note, what-if levers and data safeguards.
+// Ask ("Can I afford it?"): a chip shows what we understood (amount · month · Edit), then the short answer
+// (verdict, one sentence, one suggestion). "Show how" opens every calculation step, the bonus note and "Try a change".
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { askAnswer, getAskSetup, parseQuestion, toAsk } from '../services/api';
@@ -10,17 +10,20 @@ import WaterfallTable from '../components/ask/WaterfallTable';
 import BonusNote from '../components/ask/BonusNote';
 import WhatIfPanel from '../components/ask/WhatIfPanel';
 import IncompleteDataNotice from '../components/ask/IncompleteDataNotice';
+import AnswerSummary from '../components/ask/AnswerSummary';
+import CantAnswer from '../components/ask/CantAnswer';
+import PageHeader from '../components/ui/PageHeader';
+import ShowHow from '../components/ui/ShowHow';
+import ConfirmChip from '../components/ask/ConfirmChip';
 import Toast from '../components/ui/Toast';
 import { useApi } from '../hooks/useApi';
 import { useToast } from '../hooks/useToast';
-
-const FIELD = 'h-10 px-3 rounded-lg bg-surface-container-low text-on-surface focus:outline-none focus:ring-2 focus:ring-primary-container';
 
 export default function Ask() {
   const location = useLocation();
   const setup = useApi(getAskSetup);
   const [question, setQuestion] = useState(location.state?.question || '');
-  const [understood, setUnderstood] = useState(null); // what the parser found, waiting for the user's OK
+  const [understood, setUnderstood] = useState(null); // what the parser found; shown as the confirm chip
   const [fields, setFields] = useState({ amount: '', month: '' });
   const [result, setResult] = useState(null); // { raw, recurring } or { insufficient, safeguards }
   const [includeBonus, setIncludeBonus] = useState(false);
@@ -34,8 +37,11 @@ export default function Ask() {
     setResult(null);
     try {
       const parsed = await parseQuestion(text);
+      const found = { amount: parsed.amountPaise ? String(parsed.amountPaise / 100) : '', month: parsed.targetMonth || '' };
       setUnderstood(parsed);
-      setFields({ amount: parsed.amountPaise ? String(parsed.amountPaise / 100) : '', month: parsed.targetMonth || '' });
+      setFields(found);
+      // Only one clear amount and a month: answer straight away; the chip above lets the user correct it.
+      if (found.amount && found.month && parsed.amountCandidates.length <= 1) return calculate(found);
     } catch (err) {
       showToast(err.message);
     }
@@ -47,12 +53,12 @@ export default function Ask() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setup.ready]);
 
-  // Step 2: calculate, with the amount and month as confirmed (or corrected) by the user.
-  async function confirm() {
+  // Step 2: calculate with the amount and month from the chip (as parsed, or as corrected by the user).
+  async function calculate(values) {
     setBusy(true);
+    setFields(values);
     try {
-      setResult(await askAnswer(Number(fields.amount), fields.month));
-      setUnderstood(null);
+      setResult(await askAnswer(Number(values.amount), values.month));
     } catch (err) {
       showToast(err.message);
     }
@@ -65,39 +71,31 @@ export default function Ask() {
   return (
     <main className="relative pt-16 min-h-screen bg-[#F7F9FC]">
       <div className="flex flex-col w-full">
-        <div className="p-space-lg max-w-[1400px] mx-auto w-full space-y-space-xl">
-          <QuestionBox initialQuestion={question} presets={setup.data.presets} accounts={setup.data.accounts} busy={busy} onAsk={understand} />
+        <div className="p-space-md lg:p-space-xl max-w-5xl mx-auto w-full space-y-space-lg">
+          <PageHeader title="Can I afford it?" />
+          <QuestionBox initialQuestion={question} presets={setup.data.presets} busy={busy} onAsk={understand} />
 
           {understood && (
-            <div className="rounded-xl bg-surface-container-lowest shadow-sm p-space-lg space-y-space-sm">
-              <h3 className="font-headline-sm text-headline-sm text-on-surface">Here is what I understood. Please check it.</h3>
-              {understood.amountCandidates.length > 1 && (
-                <p className="font-body-sm text-body-sm text-secondary">I found more than one amount ({understood.amountCandidates.map((c) => c.text).join(', ')}). Enter the one you mean.</p>
-              )}
-              <div className="flex flex-wrap items-end gap-space-md">
-                <label className="flex flex-col gap-1 font-label-md text-label-md text-on-surface">
-                  Amount (₹)
-                  <input className={FIELD} type="number" min="1" value={fields.amount} onChange={(e) => setFields({ ...fields, amount: e.target.value })} />
-                </label>
-                <label className="flex flex-col gap-1 font-label-md text-label-md text-on-surface">
-                  Month
-                  <input className={FIELD} type="month" value={fields.month} onChange={(e) => setFields({ ...fields, month: e.target.value })} />
-                </label>
-                <button className="h-10 px-space-lg rounded-lg bg-primary-container text-on-primary font-label-md text-label-md disabled:opacity-60" disabled={busy || !Number(fields.amount) || !fields.month} onClick={confirm}>
-                  Confirm and calculate
-                </button>
-              </div>
-            </div>
+            <ConfirmChip
+              key={`${question}-${fields.amount}-${fields.month}`}
+              fields={fields}
+              candidates={understood.amountCandidates}
+              busy={busy}
+              onSubmit={calculate}
+            />
           )}
 
-          {result?.insufficient && <IncompleteDataNotice checks={result.safeguards} />}
+          {result?.insufficient && <CantAnswer reason={result.safeguards[0]?.detail || ''} />}
           {view && (
             <>
-              <VerdictCard verdict={view.verdict} />
-              <WaterfallTable waterfall={view.waterfall} />
-              {view.bonus && <BonusNote bonus={view.bonus} included={includeBonus} onToggle={() => setIncludeBonus(!includeBonus)} />}
-              <WhatIfPanel key={`${result.raw.pricePaise}-${includeBonus}`} whatIf={view.whatIf} />
-              <IncompleteDataNotice checks={view.safeguards} />
+              <AnswerSummary verdict={view.verdict} />
+              <ShowHow>
+                <WaterfallTable waterfall={view.waterfall} />
+                <VerdictCard verdict={view.verdict} />
+                {view.bonus && <BonusNote bonus={view.bonus} included={includeBonus} onToggle={() => setIncludeBonus(!includeBonus)} />}
+                <WhatIfPanel key={`${result.raw.pricePaise}-${includeBonus}`} whatIf={view.whatIf} />
+                <IncompleteDataNotice checks={view.safeguards} />
+              </ShowHow>
             </>
           )}
         </div>

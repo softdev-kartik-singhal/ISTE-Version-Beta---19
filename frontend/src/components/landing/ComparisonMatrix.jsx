@@ -5,12 +5,12 @@ const ROWS = [
   {
     tenet: 'Answering "Can I afford this?"',
     typical: 'Retrospective pie chart showing where money already went.',
-    ours: 'Deterministic forward waterfall based on liquidity cycles.',
+    ours: 'A step-by-step forecast of the cash you will actually have.',
   },
   {
     tenet: 'Handling Freelance / Inconsistent Pay',
     typical: 'Assumes rigid fixed salaries; flags dips as budget failures.',
-    ours: 'Stochastic P10/P50/P90 modeling tailored for mixed income.',
+    ours: 'Answers for a low, usual and high income month, built for mixed income.',
   },
   {
     tenet: 'Data Storage & Credential Sharing',

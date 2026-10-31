@@ -1,6 +1,7 @@
-// 8-week balance projection: median line, variance band, runway buffer and labelled cash events.
+// 8-week balance projection: usual line, low-to-high band, safety buffer and labelled cash events.
 import { Area, CartesianGrid, ComposedChart, Line, ReferenceLine, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import ProjectionEventDot from './ProjectionEventDot';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 const toLakh = (v) => `₹${(v / 100000).toFixed(1)}L`;
 
@@ -31,7 +32,7 @@ export default function CashflowProjectionChart({ weeks, runwayBuffer }) {
           stroke="#ba1a1a"
           strokeDasharray="4 4"
           strokeOpacity={0.6}
-          label={{ value: 'Runway Buffer (₹1,00,000)', position: 'insideTopRight', fill: '#ba1a1a', fontSize: 10, fontWeight: 500 }}
+          label={{ value: `Safety buffer (${formatCurrency(runwayBuffer)})`, position: 'insideTopRight', fill: '#ba1a1a', fontSize: 10, fontWeight: 500 }}
         />
         <Area dataKey="band" stroke="none" fill="url(#corridorGradient)" isAnimationActive={false} />
         <Line

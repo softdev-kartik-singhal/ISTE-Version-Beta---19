@@ -34,7 +34,7 @@ export default function ForecastComparison({ months, scaleMax }) {
       </div>
       <div className="space-y-space-md">
         <div className="hidden sm:grid grid-cols-12 gap-4 text-secondary font-currency-sm text-label-sm px-4">
-          <div className="col-span-3">Forecast Horizon</div>
+          <div className="col-span-3">Forecast for</div>
           <div className="col-span-6 flex justify-between">
             {ticks.map((t) => (
               <span key={t}>{formatCurrency(t)}</span>

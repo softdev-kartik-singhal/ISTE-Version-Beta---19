@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 import MoneyFlowSankey from '../charts/MoneyFlowSankey';
 
 const COLUMNS = [
-  { label: '1. Inflow Sources', dot: 'bg-teal-600' },
+  { label: '1. Money in', dot: 'bg-teal-600' },
   { label: '2. Depositories', dot: 'bg-primary-container' },
   { label: '3. Categories', dot: 'bg-amber-600' },
   { label: '4. Top Merchants', dot: 'bg-indigo-500' },
@@ -32,7 +32,7 @@ const SankeyCard = forwardRef(function SankeyCard({ flow, onNodeClick }, ref) {
             <span className="w-2.5 h-2.5 rounded-full bg-indigo-600" /> Committed / Fixed ({flow.split.fixed})
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Discretionary Variable ({flow.split.variable})
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500" /> Everyday spending ({flow.split.variable})
           </span>
         </div>
         <div className="font-currency-sm text-[12px] text-outline">Rendered via SmartGullak Directed Graph v2.4</div>

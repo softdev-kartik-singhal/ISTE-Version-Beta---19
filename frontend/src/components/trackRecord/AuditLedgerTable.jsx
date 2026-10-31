@@ -1,4 +1,4 @@
-// "Immutable Prediction Audit Ledger" table with a text filter over questions and verdicts.
+// "Every forecast we made (can&apos;t be changed later)" table with a text filter over questions and verdicts.
 import { useState } from 'react';
 import { CheckCheck, ChevronDown, ListFilter } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatCurrency';
@@ -24,7 +24,7 @@ export default function AuditLedgerTable({ ledger, olderLoaded, onLoadEarlier })
     <div className="rounded-xl bg-surface-container-lowest p-space-xl shadow-sm space-y-space-md">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
         <div>
-          <h3 className="font-headline-md text-headline-md text-on-surface">Immutable Prediction Audit Ledger</h3>
+          <h3 className="font-headline-md text-headline-md text-on-surface">Every forecast we made (can&apos;t be changed later)</h3>
           <p className="font-body-sm text-body-sm text-secondary">Every recommendation is hashed at issuance time with input balance &amp; salary assumptions</p>
         </div>
         <div className="flex flex-wrap items-center gap-space-sm">
@@ -56,10 +56,10 @@ export default function AuditLedgerTable({ ledger, olderLoaded, onLoadEarlier })
               <th className="py-3 px-4">Timestamp</th>
               <th className="py-3 px-4">Purchase Question</th>
               <th className="py-3 px-4">Model Verdict</th>
-              <th className="py-3 px-4 text-right">Projected Surplus</th>
-              <th className="py-3 px-4 text-right">Actual Surplus</th>
+              <th className="py-3 px-4 text-right">Forecast left over</th>
+              <th className="py-3 px-4 text-right">Real left over</th>
               <th className="py-3 px-4 font-currency-sm">SHA-256 Anchor</th>
-              <th className="py-3 px-4 text-right">Ledger State</th>
+              <th className="py-3 px-4 text-right">Record check</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-surface-container-low font-body-sm text-body-sm">

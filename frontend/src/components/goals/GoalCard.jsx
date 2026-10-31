@@ -72,7 +72,7 @@ export default function GoalCard({ goal, onEdit, onAdjust }) {
             <h3 className="font-headline-md text-headline-md text-on-surface">{goal.name}</h3>
             <span className="font-currency-md text-currency-md font-semibold text-on-surface">{formatCurrency(goal.target)}</span>
           </div>
-          <span className="font-label-sm text-label-sm text-on-surface-variant mt-0.5">Target Horizon: {goal.horizon}</span>
+          <span className="font-label-sm text-label-sm text-on-surface-variant mt-0.5">Target date: {goal.horizon}</span>
         </div>
 
         <div className="flex flex-col gap-1.5 mb-space-md">

@@ -29,7 +29,13 @@ export default function Transactions() {
   const api = useApi(getTransactions);
   const location = useLocation();
   const { account } = useOutletContext();
-  const [filters, setFilters] = useState({ query: location.state?.query || '', account: 'all', category: 'all', flow: 'All' });
+  // Other screens can open this page pre-filtered by passing { query, category, flow } as route state.
+  const [filters, setFilters] = useState({
+    query: location.state?.query || '',
+    account: 'all',
+    category: location.state?.category || 'all',
+    flow: location.state?.flow || 'All',
+  });
   const [selectedIds, setSelectedIds] = useState([]);
   const [editing, setEditing] = useState(null);
   const [undo, setUndo] = useState(null); // { batchId, message } of the last category change
@@ -40,7 +46,10 @@ export default function Transactions() {
     setFilters((f) => ({ ...f, account }));
   }, [account]);
   useEffect(() => {
-    if (location.state?.query !== undefined) setFilters((f) => ({ ...f, query: location.state.query }));
+    const { query, category, flow } = location.state || {};
+    if (query !== undefined || category || flow) {
+      setFilters((f) => ({ ...f, query: query ?? f.query, category: category || f.category, flow: flow || f.flow }));
+    }
   }, [location.state]);
 
   if (!api.ready) return <PageState state={api} />;
@@ -94,7 +103,7 @@ export default function Transactions() {
                 <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">Transactions</h1>
                 <span className="px-2 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-secondary">{data.totalRecords} records</span>
               </div>
-              <p className="font-body-sm text-body-sm text-secondary">Unified ledger of every statement you uploaded, with transfers between your own accounts marked and left out of totals.</p>
+              <p className="font-body-sm text-body-sm text-secondary">Every payment in and out, from all your statements.</p>
             </div>
             <div className="flex items-center gap-space-sm flex-wrap">
               <button

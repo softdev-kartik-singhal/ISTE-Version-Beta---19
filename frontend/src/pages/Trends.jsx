@@ -56,12 +56,12 @@ export default function Trends() {
               {/* Net surplus velocity */}
               <div className="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm">
                 <div className="flex items-center justify-between">
-                  <span className="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Net Surplus Velocity</span>
+                  <span className="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Change in money left over</span>
                   <Gauge size={18} className="text-secondary" />
                 </div>
                 <div className="mt-2 flex items-baseline gap-2">
                   <span className="font-headline-lg text-headline-lg text-on-surface">{data.runway.months}</span>
-                  <span className="font-label-sm text-label-sm text-primary font-semibold">Emergency Runway</span>
+                  <span className="font-label-sm text-label-sm text-primary font-semibold">Emergency fund lasts</span>
                 </div>
                 <p className="mt-2 font-body-sm text-body-sm text-secondary">{data.runway.detail}</p>
               </div>

@@ -1,4 +1,5 @@
-// Ask cashflow waterfall: step-by-step ledger across Worst / Typical / Best case, ending in net safe surplus.
+// Ask "How we worked it out" table: step by step for low / usual / high income, ending in what is left after the purchase.
+import InfoTip from '../ui/InfoTip';
 import { CircleMinus, CirclePlus, Info, Shield, ShoppingBag, Wallet } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatCurrency';
 
@@ -52,28 +53,28 @@ export default function WaterfallTable({ waterfall }) {
         <div>
           <div className="flex items-center gap-2">
             <Wallet size={22} className="text-primary" />
-            <h3 className="font-headline-md text-headline-md text-on-surface">Cashflow Waterfall Analysis ({waterfall.period})</h3>
+            <h3 className="font-headline-md text-headline-md text-on-surface">How we worked it out ({waterfall.period})</h3>
           </div>
-          <p className="font-body-md text-body-md text-secondary">Step-by-step liquidity breakdown across Worst, Typical, and Best case scenarios.</p>
+          <p className="font-body-md text-body-md text-secondary">Step by step: what comes in, what goes out, and what is left, if income is low, usual or high.</p>
         </div>
         <div className="flex items-center gap-2 text-secondary font-label-sm text-label-sm">
           <span className="w-2 h-2 rounded-full bg-emerald-600" />
-          <span>Normalized against 180-day recurring debits</span>
+          <span>Regular bills taken from your statements</span>
         </div>
       </div>
       <div className="overflow-x-auto rounded-lg bg-surface">
         <table className="w-full text-left font-body-md text-body-md">
           <thead className="bg-surface-container-low font-label-md text-label-md text-secondary uppercase tracking-wider">
             <tr>
-              <th className="py-3 px-space-md font-semibold text-on-surface" scope="col">Item / Cashflow Step</th>
+              <th className="py-3 px-space-md font-semibold text-on-surface" scope="col">Step</th>
               <th className="py-3 px-space-md font-semibold text-right text-secondary" scope="col">
-                Worst Case <span className="block font-label-sm text-label-sm lowercase font-normal">{waterfall.scenarios[0]}</span>
+                If income is low <span className="block font-label-sm text-label-sm lowercase font-normal">{waterfall.scenarios[0]}</span>
               </th>
               <th className="py-3 px-space-md font-semibold text-right text-primary-container bg-surface-container-high/40" scope="col">
-                Typical Case <span className="block font-label-sm text-label-sm lowercase font-normal">{waterfall.scenarios[1]}</span>
+                If income is usual <span className="block font-label-sm text-label-sm lowercase font-normal">{waterfall.scenarios[1]}</span>
               </th>
               <th className="py-3 px-space-md font-semibold text-right text-emerald-800" scope="col">
-                Best Case <span className="block font-label-sm text-label-sm lowercase font-normal">{waterfall.scenarios[2]}</span>
+                If income is high <span className="block font-label-sm text-label-sm lowercase font-normal">{waterfall.scenarios[2]}</span>
               </th>
             </tr>
           </thead>
@@ -87,6 +88,7 @@ export default function WaterfallTable({ waterfall }) {
                     <div className={kind.title}>
                       {kind.icon}
                       <span>{row.title}</span>
+                      {row.tip && <InfoTip text={row.tip} />}
                       {row.tag && <span className={kind.tag}>{row.tag}</span>}
                     </div>
                     <div className={`font-label-sm text-label-sm ${kind.detail || 'text-secondary'}`}>{row.detail}</div>
@@ -101,15 +103,15 @@ export default function WaterfallTable({ waterfall }) {
             })}
             <tr className="bg-surface-container-low font-semibold">
               <td className="py-4 px-space-md">
-                <div className="font-headline-sm text-headline-sm text-on-surface">Net Safe Surplus Remaining</div>
-                <div className="font-label-sm text-label-sm text-secondary font-normal">Buffer-protected liquidity available post-purchase</div>
+                <div className="font-headline-sm text-headline-sm text-on-surface">Left after the purchase</div>
+                <div className="font-label-sm text-label-sm text-secondary font-normal">Cash left once bills, spending, the safety buffer and the price are taken out</div>
               </td>
               {waterfall.result.map((r, i) => {
                 const tone = RESULT_TONES[r.tone];
                 return (
                   <td key={i} className={`py-4 px-space-md text-right ${i === 1 ? 'bg-surface-container-high/50' : ''}`}>
                     <div className={`font-currency-md text-currency-md font-bold ${tone.value}`}>
-                      {formatCurrency(r.value, { sign: true })} {r.value < 0 ? 'DR' : 'CR'}
+                      {formatCurrency(r.value, { sign: true })}
                     </div>
                     <span className={`inline-block mt-1 px-2 py-0.5 rounded-full font-label-sm text-label-sm ${tone.badge}`}>{r.label}</span>
                   </td>
@@ -122,7 +124,7 @@ export default function WaterfallTable({ waterfall }) {
       <div className="flex items-start gap-2.5 p-space-sm bg-surface-container-low/60 rounded-lg text-secondary font-label-sm text-label-sm">
         <Info size={18} className="text-surface-tint shrink-0" />
         <span>
-          <strong>Safety Buffer Logic:</strong> {waterfall.bufferNote}
+          <strong>About the safety buffer:</strong> {waterfall.bufferNote}
         </span>
       </div>
     </div>

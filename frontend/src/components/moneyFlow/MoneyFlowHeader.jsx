@@ -18,17 +18,12 @@ export default function MoneyFlowHeader({ monthLabel, compare, topN, onCompareCh
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-space-sm flex-wrap">
             <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">Money Flow</h1>
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm uppercase tracking-wider font-semibold">
-              Sankey Cashflow Engine
-            </span>
             <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
               <Info size={14} />
-              <span>Own-account transfers excluded</span>
+              <span>Transfers between your own accounts left out</span>
             </div>
           </div>
-          <p className="font-body-sm text-body-sm text-on-surface-variant max-w-2xl">
-            Visualizing path of capital from inflow origin to account depository, expenditure category, and merchant terminal.
-          </p>
+          <p className="font-body-sm text-body-sm text-on-surface-variant max-w-2xl">Where each rupee went: from income, through your accounts, to categories and shops.</p>
         </div>
         <div className="flex items-center gap-space-sm flex-wrap">
           <div className="relative inline-flex items-center bg-surface-container-lowest rounded-lg shadow-sm px-3 py-2 cursor-pointer hover:bg-surface-container-low transition-colors">

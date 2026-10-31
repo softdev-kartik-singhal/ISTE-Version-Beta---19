@@ -12,7 +12,7 @@ export default function NewMerchantFlagCard({ flag, dimmed, onResolve, onChangeC
       accentClass="bg-secondary"
       badge={{ icon: <BadgeAlert size={16} className="text-slate-700" />, label: 'New merchant', className: 'bg-slate-100 text-slate-800' }}
       source={flag.source}
-      tag={{ label: 'Recurring Subscription Candidate', className: 'bg-surface-container text-secondary' }}
+      tag={{ label: 'Maybe a new subscription', className: 'bg-surface-container text-secondary' }}
       reasonIcon={<Sparkles size={20} className="text-secondary shrink-0 mt-0.5" />}
       reason={
         <>

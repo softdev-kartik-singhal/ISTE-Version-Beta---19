@@ -10,11 +10,11 @@ export default function EmergencyFundStep({ fund, showBreakdown, onToggleBreakdo
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
         <div className="flex items-center gap-space-sm">
           <span className="px-2.5 py-1 rounded-full bg-primary-container text-surface-container-lowest font-label-md text-label-md uppercase tracking-wider">Step 1</span>
-          <h2 className="font-headline-md text-headline-md text-on-surface tracking-tight">Emergency fund first: Build your baseline liquidity buffer</h2>
+          <h2 className="font-headline-md text-headline-md text-on-surface tracking-tight">Emergency fund first: cash for a rainy day</h2>
         </div>
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-primary-container animate-pulse" />
-          <span className="font-label-sm text-label-sm font-semibold text-primary uppercase">Priority Allocation Active</span>
+          <span className="font-label-sm text-label-sm font-semibold text-primary uppercase">Comes first</span>
         </div>
       </div>
 
@@ -22,7 +22,7 @@ export default function EmergencyFundStep({ fund, showBreakdown, onToggleBreakdo
         <div className="lg:col-span-5 bg-surface-container-low rounded-xl p-space-md flex flex-col justify-between gap-space-md">
           <div className="flex flex-col gap-1">
             <div className="flex items-center justify-between">
-              <span className="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Target Liquidity Floor</span>
+              <span className="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Emergency fund target</span>
               <button
                 className="font-label-sm text-label-sm text-primary flex items-center gap-1 hover:underline focus:outline-none"
                 onClick={onToggleBreakdown}
@@ -48,7 +48,7 @@ export default function EmergencyFundStep({ fund, showBreakdown, onToggleBreakdo
                 </div>
               ))}
               <div className="mt-2 pt-2 bg-surface-container-low px-2 py-1.5 rounded flex justify-between font-body-sm text-body-sm text-on-surface">
-                <span className="font-medium">Total monthly baseline:</span>
+                <span className="font-medium">Essentials per month:</span>
                 <span className="font-currency-sm text-currency-sm font-bold text-primary">{formatCurrency(fund.monthlyBaseline)} / mo</span>
               </div>
               <p className="font-label-sm text-[10px] text-on-surface-variant italic mt-1 leading-snug">
@@ -64,7 +64,7 @@ export default function EmergencyFundStep({ fund, showBreakdown, onToggleBreakdo
                 <Hourglass size={20} />
               </div>
               <div className="flex flex-col">
-                <span className="font-label-sm text-label-sm text-on-surface-variant uppercase">Current Safe Runway</span>
+                <span className="font-label-sm text-label-sm text-on-surface-variant uppercase">Your cash would last</span>
                 <span className="font-headline-sm text-headline-sm text-on-surface font-semibold">{fund.runway}</span>
               </div>
             </div>
@@ -111,7 +111,7 @@ export default function EmergencyFundStep({ fund, showBreakdown, onToggleBreakdo
               <CalendarDays size={20} />
             </div>
             <div className="flex flex-col">
-              <span className="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Forward Velocity Projection</span>
+              <span className="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">When it will be full</span>
               <p className="font-body-sm text-body-sm text-on-surface leading-snug">
                 At your average surplus of{' '}
                 <span className="font-currency-sm text-currency-sm font-semibold text-primary">{formatCurrency(fund.averageSurplus)}</span>, you will

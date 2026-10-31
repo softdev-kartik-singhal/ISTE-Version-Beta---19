@@ -75,10 +75,8 @@ export default function Privacy() {
                 <span className="w-1.5 h-1.5 rounded-full bg-outline-variant" />
                 <span className="text-secondary font-label-md text-label-md">Audit Trail #{data.auditTrail}</span>
               </div>
-              <h1 className="font-display-lg text-display-lg text-on-surface tracking-tight">Privacy &amp; Data Governance</h1>
-              <p className="font-body-lg text-body-lg text-secondary">
-                Zero data monetisation. Hardware-grade user sovereignty. Client-side ephemeral processing.
-              </p>
+              <h1 className="font-display-lg text-display-lg text-on-surface tracking-tight">Privacy &amp; Data</h1>
+              <p className="font-body-lg text-body-lg text-secondary">Your data is never sold; export or delete it any time.</p>
             </div>
             <div className="flex items-center gap-space-sm bg-surface-container-lowest p-space-sm rounded-xl shadow-sm">
               <div className="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary">

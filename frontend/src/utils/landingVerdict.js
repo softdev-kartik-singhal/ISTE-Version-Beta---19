@@ -1,20 +1,28 @@
 // Landing-page simulator maths: residual after a purchase, the verdict band, and the three scenarios.
+import { formatCurrency } from './formatCurrency';
+
+const COMFORTABLE_UP_TO = 60000; // covered even in the worst case
+const TYPICAL_UP_TO = 110000; // covered only when income is typical
 
 export function simulate(sim, amount) {
   const surplus = sim.income - (sim.committed + sim.baseline + sim.safetyFloor);
   const residual = surplus - amount;
 
   let verdict;
-  if (amount <= 60000) {
+  if (amount <= COMFORTABLE_UP_TO) {
     verdict = {
+      state: 'yes',
+      change: `It stays a comfortable yes for anything up to ${formatCurrency(COMFORTABLE_UP_TO)}.`,
       title: 'Safe Purchase: Fully Covered',
       titleClass: 'text-primary',
       detail: 'Buffer remains 100% intact even if expected freelance invoices delay by 3 weeks.',
       confidence: 96,
       confidenceLabel: '96% High Certainty',
     };
-  } else if (amount <= 110000) {
+  } else if (amount <= TYPICAL_UP_TO) {
     verdict = {
+      state: 'typical',
+      change: `${formatCurrency(COMFORTABLE_UP_TO)} or less would be a comfortable yes, or spread the ${formatCurrency(amount)} over two months.`,
       title: 'Conditionally Safe: Typical Income Required',
       titleClass: 'text-on-surface',
       detail: 'Comfortable with current pipeline. Requires clearing minimum 1 retainer invoice by Day 15.',
@@ -23,6 +31,8 @@ export function simulate(sim, amount) {
     };
   } else {
     verdict = {
+      state: 'no',
+      change: `${formatCurrency(TYPICAL_UP_TO)} or less would work if income is typical; ${formatCurrency(COMFORTABLE_UP_TO)} or less would be a comfortable yes.`,
       title: 'High Strain: Tight Cashflow Impact',
       titleClass: 'text-error',
       detail: 'Draws heavily on emergency reserve. Recommend staggering over 3 milestone installments.',

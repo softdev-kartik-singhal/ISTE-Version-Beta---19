@@ -45,7 +45,7 @@ export default function Landing() {
               </div>
               <h2 className="font-display-lg text-display-lg font-bold text-on-surface max-w-2xl mx-auto">Make major financial decisions with mathematical certainty</h2>
               <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl mx-auto">
-                No bank logins needed. Drop your statements, calibrate your real liquidity, and never second-guess a high-ticket expense again.
+                No bank logins needed. Drop your statements, see the cash you really have, and never second-guess a high-ticket expense again.
               </p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-space-md pt-2">
                 <Link

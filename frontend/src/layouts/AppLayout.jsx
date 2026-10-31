@@ -1,8 +1,9 @@
-// Shell for signed-in screens: sidebar + top bar, with the current page rendered beside them.
+// Shell for signed-in screens: sidebar (large screens) or bottom tab bar (phones), top bar, and the current page.
 import { useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import Sidebar from '../components/layout/Sidebar';
 import TopBar from '../components/layout/TopBar';
+import BottomTabBar from '../components/layout/BottomTabBar';
 import { useApi } from '../hooks/useApi';
 import { getSession, isSignedIn } from '../services/api';
 
@@ -20,11 +21,12 @@ function Shell() {
   return (
     <div className="bg-surface font-body-md text-body-md text-on-surface min-h-screen">
       <Sidebar session={session} />
-      <div className="pl-64">
+      <div className="lg:pl-64 pb-16 lg:pb-0">
         <TopBar session={session} account={account} onAccountChange={setAccount} />
         {/* Pages read the selected account via useOutletContext(). */}
-        <Outlet context={{ account }} />
+        <Outlet context={{ account, session }} />
       </div>
+      <BottomTabBar session={session} />
     </div>
   );
 }

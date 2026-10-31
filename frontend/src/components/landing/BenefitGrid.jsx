@@ -35,7 +35,7 @@ export default function BenefitGrid() {
             Designed for complex earners who refuse vague budgeting advice
           </h2>
           <p className="font-body-lg text-body-lg text-on-surface-variant mt-2">
-            Generic apps classify spends after money is gone. SmartGullak orchestrates multi-stream inflows to give deterministic answers in advance.
+            Generic apps classify spends after money is gone. SmartGullak adds up all your income sources to give clear answers in advance.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
