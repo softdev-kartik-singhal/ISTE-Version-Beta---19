@@ -24,6 +24,7 @@ def init_db(conn: sqlite3.Connection) -> None:
     add_tour_columns(conn)
     add_cash_columns(conn)
     add_demo_flag(conn)
+    refresh_merchants(conn)
     seed_rules(conn)
     conn.commit()
 
@@ -60,6 +61,24 @@ def add_demo_flag(conn):
         conn.execute("ALTER TABLE uploaded_files ADD COLUMN is_demo INTEGER NOT NULL DEFAULT 0")
     for path in DEMO_DIR.glob("*/*.csv"):
         conn.execute("UPDATE uploaded_files SET is_demo = 1 WHERE file_hash = ?", (hashlib.sha256(path.read_bytes()).hexdigest(),))
+
+
+def refresh_merchants(conn):
+    """Rows imported before the merchant name was read properly from HDFC 'UPI-NAME-VPA...' narrations (and masked POS card
+    numbers) hold the whole narration as their merchant. Recompute it for those rows, then rebuild the recurring list of
+    the users it touched. Rows whose merchant already matches are left alone, so this does nothing on a current database."""
+    from app.services.merchant import merchant_of  # local import: services import this module
+    from app.services.recurring import refresh_recurring
+    users = set()
+    rows = conn.execute("SELECT t.id, t.description, t.merchant, a.user_id FROM transactions t JOIN accounts a ON a.id = t.account_id"
+                        " WHERE t.source = 'statement' AND (t.description LIKE 'UPI-%' OR t.description LIKE 'POS %')").fetchall()
+    for r in rows:
+        merchant = merchant_of(r["description"])
+        if merchant != r["merchant"]:
+            conn.execute("UPDATE transactions SET merchant = ? WHERE id = ?", (merchant, r["id"]))
+            users.add(r["user_id"])
+    for user_id in users:
+        refresh_recurring(conn, user_id)
 
 
 def seed_rules(conn):

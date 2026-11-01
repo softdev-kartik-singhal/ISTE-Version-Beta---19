@@ -8,8 +8,8 @@ const CONCENTRATION_COLORS = ['bg-amber-600', 'bg-amber-400', 'bg-amber-200'];
 
 export default function CategoryDrawer({ detail, onClose }) {
   return (
-    <div className="xl:col-span-4 2xl:col-span-4 flex flex-col gap-space-md">
-      <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container p-space-md flex flex-col gap-space-md">
+    <div className="xl:col-span-4 2xl:col-span-4 flex flex-col gap-space-md min-w-0">
+      <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-surface-container p-space-md flex flex-col gap-space-md min-w-0">
         <div className="flex items-center justify-between pb-3 border-b border-surface-container">
           <div className="flex items-center gap-2">
             <span className="w-3.5 h-3.5 rounded bg-amber-500 shadow-sm" />
@@ -47,14 +47,14 @@ export default function CategoryDrawer({ detail, onClose }) {
           <div className="flex flex-col gap-2">
             {detail.drivers.map((d, i) => (
               <div key={d.name} className="p-2.5 rounded-lg bg-surface-container-low hover:bg-surface-container transition-colors flex flex-col gap-1">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded bg-amber-500/20 text-amber-900 flex items-center justify-center font-bold text-xs">{i + 1}</div>
-                    <span className="font-label-md text-label-md text-on-surface font-semibold">{d.name}</span>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-6 h-6 shrink-0 rounded bg-amber-500/20 text-amber-900 flex items-center justify-center font-bold text-xs">{i + 1}</div>
+                    <span className="min-w-0 break-words font-label-md text-label-md text-on-surface font-semibold" title={d.name}>{d.name}</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className={`font-currency-sm text-currency-sm ${d.amountClass}`}>{formatCurrency(d.delta, { sign: true })}</span>
-                    <span className={`px-1.5 py-0.2 rounded font-label-sm text-[10px] ${d.tagClass}`}>{d.tag}</span>
+                  <div className="flex shrink-0 flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-1.5">
+                    <span className={`whitespace-nowrap font-currency-sm text-currency-sm ${d.amountClass}`}>{formatCurrency(d.delta, { sign: true })}</span>
+                    <span className={`whitespace-nowrap px-1.5 py-0.2 rounded font-label-sm text-[10px] ${d.tagClass}`}>{d.tag}</span>
                   </div>
                 </div>
                 <p className="font-body-sm text-body-sm text-on-surface-variant text-[12px] pl-8">{d.detail}</p>
@@ -78,16 +78,18 @@ export default function CategoryDrawer({ detail, onClose }) {
               />
             ))}
           </div>
-          <div className="flex items-center justify-between text-[11px] font-currency-sm text-on-surface-variant px-1">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] font-currency-sm text-on-surface-variant px-1">
             {detail.concentration.parts.map((p, i) => (
-              <span key={p.name} className="flex items-center gap-1">
-                <span className={`w-2 h-2 rounded-full ${CONCENTRATION_COLORS[i]}`} /> {p.name} {p.percent}%
+              <span key={p.name} className="flex min-w-0 max-w-full items-center gap-1" title={`${p.name} ${p.percent}%`}>
+                <span className={`w-2 h-2 shrink-0 rounded-full ${CONCENTRATION_COLORS[i]}`} />
+                <span className="min-w-0 truncate">{p.name}</span>
+                <span className="shrink-0">{p.percent}%</span>
               </span>
             ))}
           </div>
           <div className="p-2.5 rounded-lg bg-surface-container-low text-on-surface text-[12px] flex items-start gap-2 mt-1">
             <Lightbulb size={16} className="text-amber-700 shrink-0 mt-0.5" />
-            <span>{detail.concentration.tip}</span>
+            <span className="min-w-0 break-words">{detail.concentration.tip}</span>
           </div>
         </div>
 

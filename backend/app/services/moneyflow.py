@@ -19,6 +19,14 @@ def build_graph(rows, top_n):
         if r["amount_paise"] < 0:
             merchants[r["merchant"]] += -r["amount_paise"]
     keep = {m for m, _ in sorted(merchants.items(), key=lambda kv: -kv[1])[:top_n]}
+    # Income is capped the same way: a month with a dozen small credits (a PDF statement full of UPI payments) would
+    # otherwise draw a dozen tiny nodes. The biggest sources stay; the rest become one "Other income" node.
+    sources = defaultdict(int)
+    for r in rows:
+        if r["amount_paise"] > 0:
+            sources[r["merchant"]] += r["amount_paise"]
+    ranked = sorted(sources.items(), key=lambda kv: -kv[1])
+    keep_sources = {m for m, _ in ranked[:top_n]} if len(ranked) > top_n + 1 else set(sources)  # never group just one source
     nodes, links = {}, defaultdict(int)
 
     def node(node_id, column, name, amount):
@@ -28,8 +36,9 @@ def build_graph(rows, top_n):
     for r in rows:
         amount, acct = abs(r["amount_paise"]), f"acct:{r['bank']}-{r['last4']}"
         if r["amount_paise"] > 0:
-            src = f"src:{r['merchant']}"
-            node(src, 0, r["merchant"], amount)
+            grouped = r["merchant"] not in keep_sources
+            src = "src:__other_income" if grouped else f"src:{r['merchant']}"
+            node(src, 0, "Other income" if grouped else r["merchant"], amount)
             links[(src, acct)] += amount
         else:
             cat = f"cat:{r['category']}"
