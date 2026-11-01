@@ -28,8 +28,11 @@ def save_about(conn, user_id, answers):
     conn.commit()
 
 
+RULES_VERSION = "2"  # bump when the prompt or the checks change, so answers made under the old ones are not served from the cache
+
+
 def profile_hash(profile):
-    return hashlib.sha256(json.dumps(profile, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+    return hashlib.sha256((RULES_VERSION + json.dumps(profile, sort_keys=True, ensure_ascii=False)).encode()).hexdigest()
 
 
 def cached(conn, key):

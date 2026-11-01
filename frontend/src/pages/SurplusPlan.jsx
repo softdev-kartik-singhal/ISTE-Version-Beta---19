@@ -1,5 +1,8 @@
-// Surplus Plan screen: emergency fund first, common options, and the monthly allocation simulator.
+// Surplus Plan, "The Runway": one story on a timeline of months, in five chapters.
+//   01 emergency fund first (Step 1)  02 if your income suddenly stopped  03 put the extra to work (Step 2)
+//   04 split your monthly surplus (Step 3)  05 suggestions for you
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ExternalLink, Info, ShieldCheck } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
 import { useToast } from '../hooks/useToast';
@@ -8,36 +11,61 @@ import { formatCurrency } from '../utils/formatCurrency';
 import Toast from '../components/ui/Toast';
 import { getSurplusPlan } from '../services/api';
 import PageState from '../components/ui/PageState';
-import EmergencyFundStep from '../components/surplus/EmergencyFundStep';
-import AllocationSimulator from '../components/surplus/AllocationSimulator';
-import SuggestionsCard from '../components/surplus/SuggestionsCard';
-import JobLossPlanner from '../components/surplus/JobLossPlanner';
-import WaysToUseMoney from '../components/surplus/WaysToUseMoney';
+import RunwayNav from '../components/runway/RunwayNav';
+import EmergencyChapter from '../components/runway/EmergencyChapter';
+import IncomeStopChapter from '../components/runway/IncomeStopChapter';
+import WaysChapter from '../components/runway/WaysChapter';
+import SplitChapter from '../components/runway/SplitChapter';
+import SuggestionsChapter from '../components/runway/SuggestionsChapter';
 import StewardshipFooter from '../components/surplus/StewardshipFooter';
+import '../components/runway/runway.css';
+
+const COMMIT_KEY = 'sg_surplus_commit';
+const nextMonthName = () => new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+
+function readCommit() {
+  try {
+    return JSON.parse(localStorage.getItem(COMMIT_KEY) || 'null');
+  } catch {
+    return null;
+  }
+}
+function writeCommit(value) {
+  try {
+    if (value) localStorage.setItem(COMMIT_KEY, JSON.stringify(value)); else localStorage.removeItem(COMMIT_KEY);
+  } catch {
+    /* storage unavailable: the commitment lasts until the page is closed */
+  }
+}
 
 export default function SurplusPlan() {
   const api = useApi(getSurplusPlan);
   const [showBreakdown, setShowBreakdown] = useState(false);
-  const [committed, setCommitted] = useState(false);
+  const [committed, setCommitted] = useState(readCommit); // remembered on this device
   const [toast, showToast] = useToast();
   if (!api.ready) return <PageState state={api} />;
   const data = api.data;
 
   function exportPlan(plan) {
-    downloadCsv('smartgullak-allocation-plan.csv', [
-      { bucket: 'Emergency Buffer', percent: plan.emergencyPct, monthly: plan.emergencyAmt, note: `ETA to target: ${plan.eta}` },
-      { bucket: 'Long-term Goals', percent: plan.goalsPct, monthly: plan.goalsAmt, note: `${plan.goalsAmt * 12} per year` },
+    downloadCsv(`smartgullak-allocation-plan-${new Date().toLocaleDateString('en-CA')}.csv`, [
+      { bucket: 'Emergency Buffer', percent: plan.emergencyPct, monthly: plan.emergencyAmt, per_year: plan.emergencyAmt * 12, note: `ETA to target: ${plan.eta}` },
+      { bucket: 'Long-term Goals', percent: plan.goalsPct, monthly: plan.goalsAmt, per_year: plan.goalsAmt * 12, note: `${plan.goalsAmt * 12} per year` },
     ]);
     showToast('Allocation plan exported as CSV');
   }
 
+  // Commit remembers this user's split for next month; pressing it again with the same split removes it.
   function commit(plan) {
-    setCommitted(!committed);
-    showToast(
-      committed
-        ? 'Commitment removed'
-        : `Next month: ${formatCurrency(plan.emergencyAmt)} to emergency buffer, ${formatCurrency(plan.goalsAmt)} to goals`,
-    );
+    if (committed && committed.emergencyPct === plan.emergencyPct) {
+      writeCommit(null);
+      setCommitted(null);
+      showToast('Commitment removed');
+      return;
+    }
+    const value = { emergencyPct: plan.emergencyPct, emergencyAmt: plan.emergencyAmt, goalsAmt: plan.goalsAmt, month: nextMonthName() };
+    writeCommit(value);
+    setCommitted(value);
+    showToast(`Next month: ${formatCurrency(plan.emergencyAmt)} to emergency buffer, ${formatCurrency(plan.goalsAmt)} to goals`);
   }
 
   function showMethodology() {
@@ -46,69 +74,44 @@ export default function SurplusPlan() {
   }
 
   return (
-    <main className="w-full pt-16 px-space-lg py-space-lg flex-1 bg-background">
-      <div className="flex flex-col w-full">
-        <div className="flex flex-col gap-space-md mb-space-xl">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="px-2 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-primary uppercase font-bold tracking-wider">
-                  Capital Architecture
-                </span>
-                <span className="font-currency-sm text-currency-sm text-on-surface-variant font-medium">| {data.fiscalYear}</span>
-              </div>
-              <h1 className="font-headline-lg text-headline-lg text-on-surface tracking-tight">Surplus Plan</h1>
-              <p className="font-body-md text-body-md text-on-surface-variant mt-0.5">
-                Deterministic framework to allocate liquid monthly cashflow into safety buffers and long-term milestones.
-              </p>
-            </div>
-            <div className="flex items-center gap-3 bg-surface-container-lowest px-4 py-2.5 rounded-xl shadow-sm">
-              <div className="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary shrink-0">
-                <ShieldCheck size={18} />
-              </div>
-              <div className="flex flex-col">
-                <span className="font-label-sm text-label-sm uppercase text-on-surface-variant">Framework Mode</span>
-                <span className="font-body-sm text-body-sm font-semibold text-on-surface">{data.frameworkMode}</span>
-              </div>
-            </div>
+    <main className="runway-page relative min-h-screen pt-16 pb-24 font-['Inter',system-ui,sans-serif] lg:pb-10">
+      <div className="mx-auto max-w-[1180px] px-4 sm:px-6 lg:px-8">
+        <header className="flex flex-col justify-between gap-4 py-8 sm:py-10 md:flex-row md:items-end">
+          <div>
+            <p className="mb-2 flex flex-wrap items-center gap-2 text-[13px]">
+              <span className="rounded-full bg-blue-100 px-2.5 py-0.5 font-bold uppercase tracking-wider text-[#1d4ed8]">Capital Architecture</span>
+              <span className="font-semibold text-slate-600">| {data.fiscalYear}</span>
+            </p>
+            <h1 className="text-[40px] font-extrabold leading-none tracking-tight text-[#0b2545] sm:text-[52px]">Surplus Plan</h1>
+            <p className="mt-3 max-w-2xl text-[16px] text-slate-600">Deterministic framework to allocate liquid monthly cashflow into safety buffers and long-term milestones.</p>
           </div>
-          <div className="flex items-start gap-3 p-4 bg-surface-container-low rounded-xl text-on-surface shadow-sm">
-            <Info size={20} className="text-primary shrink-0 mt-0.5" />
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 flex-1">
-              <p className="font-body-sm text-body-sm text-on-surface-variant">
-                <strong className="font-semibold text-on-surface">Educational guidance based on your own numbers</strong> — not investment advice.
-                SmartGullak does not recommend specific mutual fund schemes, stocks, or financial products.
-              </p>
-              <button
-                className="font-label-sm text-label-sm text-primary font-medium shrink-0 flex items-center gap-1 cursor-pointer hover:underline"
-                onClick={() => showToast('Compliance Charter: guidance only, no product recommendations, all maths runs on your own data')}
-              >
-                Compliance Charter <ExternalLink size={14} />
-              </button>
-            </div>
+          <div className="flex items-center gap-3 rounded-2xl bg-white px-4 py-2.5 shadow-sm ring-1 ring-slate-200">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-[#1d4ed8]"><ShieldCheck size={19} aria-hidden="true" /></span>
+            <span>
+              <span className="block text-[12px] font-semibold uppercase tracking-wide text-slate-500">Framework Mode</span>
+              <span className="block text-[15px] font-semibold text-[#0b2545]">{data.frameworkMode}</span>
+            </span>
+          </div>
+        </header>
+
+        <RunwayNav />
+
+        <EmergencyChapter fund={data.emergencyFund} showBreakdown={showBreakdown} onToggleBreakdown={() => setShowBreakdown(!showBreakdown)} />
+        <IncomeStopChapter />
+        <WaysChapter />
+        <SplitChapter allocation={data.allocation} committed={committed} onExport={exportPlan} onCommit={commit} />
+        <SuggestionsChapter />
+
+        <div className="mt-6 flex items-start gap-3 rounded-2xl bg-white/80 p-4 ring-1 ring-slate-200">
+          <Info size={20} className="mt-0.5 shrink-0 text-[#1d4ed8]" aria-hidden="true" />
+          <div className="flex flex-1 flex-col justify-between gap-2 md:flex-row md:items-center">
+            <p className="text-[14px] leading-relaxed text-slate-600">
+              <strong className="font-semibold text-slate-900">Educational guidance based on your own numbers</strong> — not investment advice. SmartGullak does not recommend specific mutual fund schemes, stocks, or financial products.
+            </p>
+            <Link to="/privacy" className="flex shrink-0 items-center gap-1 text-[14px] font-semibold text-[#1d4ed8] hover:underline">Compliance Charter <ExternalLink size={14} aria-hidden="true" /></Link>
           </div>
         </div>
-
-        <div className="flex flex-col gap-space-xl">
-          <EmergencyFundStep fund={data.emergencyFund} showBreakdown={showBreakdown} onToggleBreakdown={() => setShowBreakdown(!showBreakdown)} />
-
-          <JobLossPlanner />
-
-          <section className="flex flex-col gap-space-md">
-            <div className="flex items-center gap-space-sm">
-              <span className="px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md uppercase tracking-wider">Step 2</span>
-              <h2 className="font-headline-md text-headline-md text-on-surface tracking-tight">
-                Once your emergency fund is ready, common options people consider
-              </h2>
-            </div>
-            <WaysToUseMoney />
-          </section>
-
-          <AllocationSimulator allocation={data.allocation} committed={committed} onExport={exportPlan} onCommit={commit} />
-          <SuggestionsCard />
-          <p className="font-label-sm text-label-sm text-on-surface-variant">{data.disclaimer}</p>
-          <StewardshipFooter onMethodology={showMethodology} />
-        </div>
+        <StewardshipFooter onMethodology={showMethodology} />
       </div>
       <Toast message={toast} />
     </main>

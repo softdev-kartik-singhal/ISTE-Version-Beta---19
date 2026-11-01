@@ -1,0 +1,54 @@
+/* The Runway: one timeline of months. Everything animates transform/opacity, 600ms or less, and prefers-reduced-motion
+   turns all of it off. The faint horizontal grid behind the page echoes the timeline. */
+.runway-page {
+  background-color: #f6f8fc;
+  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 95px, rgba(11, 37, 69, 0.03) 95px, rgba(11, 37, 69, 0.03) 96px);
+}
+
+.jar-fill { transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1); }
+.strip-label { transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1), opacity 300ms ease; }
+.strip-scroll { scrollbar-width: thin; scroll-snap-type: x proximity; }
+.strip-tile { scroll-snap-align: start; }
+
+.rise-in { animation: rise-in 480ms ease-out both; animation-delay: var(--delay, 0ms); }
+@keyframes rise-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+.pop-in { animation: pop-in 420ms cubic-bezier(0.34, 1.56, 0.64, 1) both; animation-delay: var(--delay, 0ms); }
+@keyframes pop-in { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: none; } }
+
+/* The runway figure's marker glows softly (the glow fades in and out; opacity only). */
+.marker-glow { box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.18), 0 0 22px rgba(29, 78, 216, 0.55); }
+.marker-glow::after { content: ''; position: absolute; inset: -6px; border-radius: 9999px; box-shadow: 0 0 18px 4px rgba(96, 165, 250, 0.55); animation: glow-breathe 2.4s ease-in-out infinite; pointer-events: none; }
+@keyframes glow-breathe { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+
+/* Drawers: from the right on wide screens, up from the bottom on phones. */
+.drawer-in { animation: drawer-up 300ms ease-out both; }
+@keyframes drawer-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+@media (min-width: 640px) { .drawer-in { animation-name: drawer-left; } }
+@keyframes drawer-left { from { opacity: 0; transform: translateX(32px); } to { opacity: 1; transform: none; } }
+
+/* Growth tubes (chapter 03): the fill rises from the bottom. */
+.tube-fill { transition: transform 560ms cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* The change badge nudges when it updates. */
+.result-bump { animation: result-bump 320ms ease-out both; }
+@keyframes result-bump { 0% { transform: scale(0.92); } 60% { transform: scale(1.06); } 100% { transform: scale(1); } }
+
+/* A chip flips when it is switched: it turns edge-on and back. */
+.chip-flip { animation: chip-flip 340ms ease both; }
+@keyframes chip-flip { 0% { transform: rotateX(0); } 50% { transform: rotateX(90deg); } 100% { transform: rotateX(0); } }
+
+.details-grid { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 360ms ease; }
+.details-grid.is-open { grid-template-rows: 1fr; }
+.details-grid > div { overflow: hidden; min-height: 0; }
+
+.carousel { scroll-snap-type: x mandatory; scrollbar-width: none; }
+.carousel::-webkit-scrollbar { display: none; }
+.carousel > * { scroll-snap-align: start; }
+
+@media (prefers-reduced-motion: reduce) {
+  .jar-fill, .strip-label, .details-grid { transition: none; }
+  .rise-in, .pop-in, .chip-flip, .result-bump, .drawer-in, .marker-glow::after { animation: none; }
+  .tube-fill { transition: none; }
+  .strip-scroll, .carousel { scroll-behavior: auto; }
+}

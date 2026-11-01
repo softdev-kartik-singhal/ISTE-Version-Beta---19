@@ -43,7 +43,7 @@ TEXT = {
     "fixed deposit (under 1 year)": ("A short deposit keeps money safe for a goal that is close.", "Compare lock-in and premature withdrawal rules."),
     "fixed deposit (1–3 years)": ("A medium deposit suits a goal with a known date.", "Compare lock-in and premature withdrawal rules."),
     "fixed deposit (3+ years)": ("A longer deposit suits money you will not need for years.", "Compare lock-in and premature withdrawal rules."),
-    "term life insurance": ("People depend on your income and no life cover shows in your payments.", "Check the cover amount, term and exclusions."),
+    "term life insurance": ("No life cover shows in your payments.", "Check the cover amount, term and exclusions."),
     "health insurance (individual)": ("No health cover shows in your payments and a hospital bill could use up savings.", "Check waiting periods, room limits and exclusions."),
     "health insurance (family floater)": ("You have dependents and no health cover shows in your payments.", "Check waiting periods, room limits and exclusions."),
     "health insurance (top-up)": ("A top-up adds cover on top of what you already have.", "Check the deductible and waiting periods."),
@@ -62,6 +62,23 @@ def has_forbidden_text(item):
     return bool(BRAND.search(text) or PERCENT.search(text) or PROMISE.search(text))
 
 
+# Words that state a fact about the user, and the "About you" answer each one needs. If the user chose
+# "Prefer not to say" (the answer is missing), the text must not talk as if they had said it.
+CLAIMS = [
+    (re.compile(r"\b(depend\w*|dependants?|children|kids|spouse|your family)\b", re.I), lambda a: a.get("dependents") in ("1–2", "3+")),
+    (re.compile(r"\b(daughter|girl child)\b", re.I), lambda a: a.get("has_daughter") is True),
+    (re.compile(r"\b(employer|your company|workplace)\b", re.I), lambda a: "employer_health_cover" in a),
+    (re.compile(r"\b(comfortable|comfort with|risk appetite|risk tolerance|your appetite)\b", re.I), lambda a: "risk_comfort" in a),
+    (re.compile(r"\b(your age|young|older|retire\w*)\b", re.I), lambda a: "age_band" in a),
+]
+
+
+def claims_unknown_fact(item, about):
+    """True if the suggestion's reason states something about the user that they did not tell us."""
+    text = " ".join(str(item.get(f, "")) for f in ("why_it_fits", "what_to_check"))
+    return any(pattern.search(text) and not known(about) for pattern, known in CLAIMS)
+
+
 def clean_item(raw):
     """One AI suggestion -> a safe one, or None if it must be dropped."""
     if not isinstance(raw, dict) or raw.get("product_type") not in PRODUCTS:
@@ -74,10 +91,15 @@ def clean_item(raw):
             "what_to_check": raw["what_to_check"].strip()[:140], "risk_level": risk, "suits_goal_horizon": suits}
 
 
-def rule_item(product):
-    """A suggestion built from our own wording."""
+def rule_item(product, profile=None):
+    """A suggestion built from our own wording. The reason only mentions facts the user gave us or our own data."""
     risk, horizon, _ = PRODUCTS[product]
     why, check = TEXT[product]
+    if product == "term life insurance" and profile:
+        if profile.get("about_you", {}).get("dependents") in ("1–2", "3+"):
+            why = "You said people depend on your income, and no life cover shows in your payments."
+        elif profile.get("has_emi"):
+            why = "You pay an EMI that would still be due if your income stopped, and no life cover shows in your payments."
     return {"product_type": product, "priority": 0, "why_it_fits": why, "what_to_check": check, "risk_level": risk, "suits_goal_horizon": horizon}
 
 
@@ -94,9 +116,9 @@ def enforce_order(items, profile):
     rank = {"debt": 0, "emergency": 1, "cover": 2, "goal": 3}
     unique.sort(key=lambda i: rank[group(i)])  # stable: the AI's own order is kept inside each group
     if profile["high_cost_debt_signal"] and not any(group(i) == "debt" for i in unique):
-        unique.insert(0, rule_item("paying down high-cost debt first"))
+        unique.insert(0, rule_item("paying down high-cost debt first", profile))
     if profile["emergency_fund_status"] != "complete (3+ months)" and not any(group(i) == "emergency" for i in unique):
-        unique.insert(1 if profile["high_cost_debt_signal"] else 0, rule_item("savings account sweep"))
+        unique.insert(1 if profile["high_cost_debt_signal"] else 0, rule_item("savings account sweep", profile))
     unique = unique[:config.MAX_SUGGESTIONS]
     for n, i in enumerate(unique, 1):
         i["priority"] = n
@@ -108,7 +130,8 @@ def validate(ai_json, profile):
     raw = ai_json.get("suggestions") if isinstance(ai_json, dict) else None
     if not isinstance(raw, list):
         return []
-    items = [c for c in (clean_item(r) for r in raw[:config.MAX_SUGGESTIONS * 2]) if c]
+    about = profile.get("about_you", {})
+    items = [c for c in (clean_item(r) for r in raw[:config.MAX_SUGGESTIONS * 2]) if c and not claims_unknown_fact(c, about)]
     return enforce_order(items, profile) if items else []
 
 
@@ -132,7 +155,7 @@ def rule_based(profile):
         picks.append("term life insurance")
     if profile["monthly_surplus_band"] != config.SURPLUS_BAND_NEGATIVE:
         picks += goal_picks(profile, about)
-    return enforce_order([rule_item(p) for p in dict.fromkeys(picks)], profile)
+    return enforce_order([rule_item(p, profile) for p in dict.fromkeys(picks)], profile)
 
 
 def goal_picks(profile, about):

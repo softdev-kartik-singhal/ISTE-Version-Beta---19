@@ -6,7 +6,7 @@ import pytest
 
 from app import config
 from app.services import suggest_ai, suggestions
-from app.services.suggest_rules import PRODUCTS, rule_based, validate
+from app.services.suggest_rules import PRODUCTS, claims_unknown_fact, rule_based, rule_item, validate
 
 CLEAN = {"product_type": "recurring deposit", "priority": 1, "why_it_fits": "Your emergency fund is under 1 month.",
          "what_to_check": "Compare lock-in and premature withdrawal rules.", "risk_level": "low", "suits_goal_horizon": "under 1 year"}
@@ -149,3 +149,33 @@ def test_about_you_is_saved_per_user_and_validated(complete):
 
 def test_no_statements_means_no_suggestions(client):
     assert client.post("/api/suggestions", json={}).json()["insufficientHistory"] is True
+
+
+# ---------------------------------------------------------------- never assume what the user did not say
+def test_ai_text_that_assumes_unsaid_facts_is_dropped():
+    said_nothing = {**PROFILE, "about_you": {}}
+    for text in ("People depend on your income.", "Your family would need it.", "Your daughter's future is covered.",
+                 "Your employer may already cover you.", "You are comfortable with ups and downs.", "At your age, start early."):
+        assert validate({"suggestions": [{**CLEAN, "why_it_fits": text}]}, said_nothing) == [], text
+    told = {**PROFILE, "about_you": {"dependents": "1–2", "has_daughter": True, "employer_health_cover": False, "risk_comfort": "high", "age_band": "26–35"}}
+    for text in ("People depend on your income.", "Your daughter's future is covered.", "Your employer cover may not be enough.",
+                 "You are comfortable with ups and downs.", "At your age, start early."):
+        assert len(validate({"suggestions": [{**CLEAN, "why_it_fits": text}]}, told)) >= 1, text
+
+
+def test_rule_text_never_claims_dependents_the_user_did_not_give():
+    emi_only = {**PROFILE, "has_emi": True, "about_you": {}, "existing_cover_signals": {"has_life_insurance_premium": False, "has_health_insurance_premium": True}}
+    term = next(i for i in rule_based(emi_only) if i["product_type"] == "term life insurance")
+    assert "depend" not in term["why_it_fits"].lower() and "EMI" in term["why_it_fits"]
+    with_dependents = {**emi_only, "about_you": {"dependents": "1–2"}}
+    term = next(i for i in rule_based(with_dependents) if i["product_type"] == "term life insurance")
+    assert "You said people depend on your income" in term["why_it_fits"]
+
+
+def test_every_rule_text_is_free_of_unsaid_facts():
+    said_nothing = {**PROFILE, "about_you": {}}
+    for product in PRODUCTS:
+        item = rule_item(product, said_nothing)
+        if product in ("Sukanya Samriddhi", "debt/liquid fund", "index fund SIP", "NPS", "health insurance (family floater)"):
+            continue  # these are only ever picked when the user gave the matching answer
+        assert not claims_unknown_fact(item, {}), product

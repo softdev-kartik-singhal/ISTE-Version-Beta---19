@@ -1,44 +1,25 @@
-// Surplus Plan footer: stewardship standards, compliance chips and policy links.
+// Surplus Plan footer: the stewardship line, what the numbers are based on, and policy links.
 import { Link } from 'react-router-dom';
-import { BadgeCheck, LockKeyhole, Shield, Wallet } from 'lucide-react';
+import { LockKeyhole, Wallet } from 'lucide-react';
 
 export default function StewardshipFooter({ onMethodology }) {
   return (
-    <footer className="mt-space-md p-space-lg bg-surface-container-lowest rounded-xl shadow-sm flex flex-col gap-space-md">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-space-md">
+    <footer className="mt-6 flex flex-col gap-5 border-t border-slate-300 pt-6">
+      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-surface-container-low flex items-center justify-center text-on-surface-variant">
-            <Wallet size={20} />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-label-md text-label-md text-on-surface font-bold">SmartGullak Financial Stewardship Standards</span>
-            <span className="font-body-sm text-body-sm text-on-surface-variant">
-              For personal investment advice, consult a SEBI-registered investment adviser (RIA).
-            </span>
-          </div>
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-slate-600 ring-1 ring-slate-200"><Wallet size={20} aria-hidden="true" /></span>
+          <span>
+            <span className="block text-[15px] font-bold text-slate-900">SmartGullak Financial Stewardship Standards</span>
+            <span className="block text-[14px] text-slate-600">For personal investment advice, consult a SEBI-registered investment adviser (RIA).</span>
+          </span>
         </div>
-        <div className="flex flex-wrap items-center gap-3 text-on-surface-variant font-label-sm text-label-sm">
-          <div className="flex items-center gap-1 px-2.5 py-1 rounded bg-surface-container-low">
-            <Shield size={14} className="text-primary" />
-            <span>RBI Data Localization Compliant</span>
-          </div>
-          <div className="flex items-center gap-1 px-2.5 py-1 rounded bg-surface-container-low">
-            <BadgeCheck size={14} className="text-primary" />
-            <span>Zero Product Placement</span>
-          </div>
-          <div className="flex items-center gap-1 px-2.5 py-1 rounded bg-surface-container-low">
-            <LockKeyhole size={14} className="text-primary" />
-            <span>Deterministic Local Calculations</span>
-          </div>
-        </div>
+        <p className="flex w-fit items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[13px] text-slate-700 ring-1 ring-slate-200"><LockKeyhole size={14} className="text-[#1d4ed8]" aria-hidden="true" /> Deterministic Local Calculations</p>
       </div>
-      <div className="pt-space-md bg-surface-container-low/50 -mx-space-lg -mb-space-lg px-space-lg py-3 rounded-b-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-on-surface-variant font-label-sm text-label-sm">
-        <span>© 2025 SmartGullak Inc. Multi-Stream Liquidity Architecture. All numbers computed against connected accounts.</span>
+      <div className="flex flex-col justify-between gap-2 text-[13px] text-slate-600 sm:flex-row sm:items-center">
+        <span>© 2026 SmartGullak. All numbers are calculated from the statements you uploaded.</span>
         <div className="flex items-center gap-4">
-          <Link className="hover:text-primary transition-colors" to="/privacy">Privacy Policy</Link>
-          <button className="hover:text-primary transition-colors" onClick={onMethodology}>
-            Methodology
-          </button>
+          <Link className="hover:text-[#1d4ed8]" to="/privacy">Privacy Policy</Link>
+          <button type="button" className="hover:text-[#1d4ed8]" onClick={onMethodology}>Methodology</button>
         </div>
       </div>
     </footer>

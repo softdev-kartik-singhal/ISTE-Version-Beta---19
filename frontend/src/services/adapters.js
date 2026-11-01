@@ -241,12 +241,13 @@ export function toGoalPreview(p) {
 
 export function toSurplusPlan(p) {
   const f = p.emergencyFund;
-  const asOf = date(p.asOf);
-  const fiscalStart = asOf.getMonth() >= 3 ? asOf.getFullYear() : asOf.getFullYear() - 1; // Indian financial year starts in April
+  const today = new Date();
+  const fiscalStart = today.getMonth() >= 3 ? today.getFullYear() : today.getFullYear() - 1; // Indian financial year starts in April
   const months = p.eta.slowestMonths;
-  const done = new Date(asOf.getFullYear(), asOf.getMonth() + (months ?? 0), 1);
+  const done = new Date(today.getFullYear(), today.getMonth() + (months ?? 0), 1); // counted from today, not from the last statement
   return {
     fiscalYear: `FY ${fiscalStart}-${String(fiscalStart + 1).slice(2)}`,
+    asOf: day(p.asOf),
     frameworkMode: p.framework,
     disclaimer: p.disclaimer,
     emergencyFund: {

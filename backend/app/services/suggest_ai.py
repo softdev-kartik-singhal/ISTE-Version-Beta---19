@@ -25,6 +25,8 @@ Rules:
 - Order: first any high-cost debt, then the emergency fund, then insurance cover, then goal-based saving and investing.
 - Suggest Sukanya Samriddhi only if about_you.has_daughter is true.
 - why_it_fits: 1-2 short plain sentences that refer only to labels in the profile.
+- Use only facts that are in the profile. If about_you is missing, or lacks a field, the user chose not to say: never assume
+  or mention it (for example dependents, a daughter, employer health cover, age or comfort with risk).
 - what_to_check: one short line, for example "Compare lock-in and premature withdrawal rules".
 
 Reply with strict JSON only, in this shape, with at most {config.MAX_SUGGESTIONS} suggestions:
