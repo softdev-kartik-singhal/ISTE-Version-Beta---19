@@ -1,4 +1,4 @@
-// A small tip that slides in at the top of Ask, Trends or Goals the first time a user opens that page. Shown once per user.
+// A small tip that slides in at the top of Ask or Goals the first time a user opens that page. Shown once per user.
 import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import { useTour } from './tourContext';

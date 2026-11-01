@@ -1,7 +1,7 @@
 // Fixed left navigation for all app screens (grouped INSIGHTS / DATA version from the Dashboard design).
 import {
-  ArrowLeftRight, BellRing, ChartLine, CircleHelp, Flag, LayoutDashboard, LogOut, PiggyBank, ReceiptText, Route, Shield, Sparkles,
-  TrendingUp, Wallet,
+  ArrowLeftRight, BellRing, CircleHelp, Flag, LayoutDashboard, LogOut, PiggyBank, ReceiptText, Route, Shield, Sparkles,
+  Wallet,
 } from 'lucide-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -18,7 +18,6 @@ const SECTIONS = [
     links: [
       { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
       { to: '/ask', icon: Sparkles, label: 'Ask' },
-      { to: '/trends', icon: TrendingUp, label: 'Trends & Surplus' },
       { to: '/money-flow', icon: ArrowLeftRight, label: 'Money Flow' },
       { to: '/goals', icon: Flag, label: 'Goals' },
       { to: '/surplus-plan', icon: PiggyBank, label: 'Surplus Plan' },
@@ -30,7 +29,6 @@ const SECTIONS = [
       { to: '/statements', icon: ReceiptText, label: 'Statements', tour: 'nav-statements' },
       { to: '/transactions', icon: Wallet, label: 'Transactions' },
       { to: '/flags', icon: BellRing, label: 'Flags', badgeKey: 'flagCount' },
-      { to: '/track-record', icon: ChartLine, label: 'Track Record' },
       { to: '/privacy', icon: Shield, label: 'Privacy & Data' },
     ],
   },

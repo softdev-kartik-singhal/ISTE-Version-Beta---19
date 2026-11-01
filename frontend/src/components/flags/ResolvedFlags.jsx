@@ -1,6 +1,5 @@
 // Collapsible "Resolved Flags" section listing recently resolved anomalies.
-import { Link } from 'react-router-dom';
-import { Archive, ArrowRight, BadgeAlert, CarTaxiFront, ChevronDown, CircleCheck, Copy, Dumbbell, TrendingUp } from 'lucide-react';
+import { Archive, BadgeAlert, CarTaxiFront, ChevronDown, CircleCheck, Copy, Dumbbell, TrendingUp } from 'lucide-react';
 import { formatCurrency } from '../../utils/formatCurrency';
 
 const ICONS = { taxi: CarTaxiFront, fitness: Dumbbell, archive: Archive, duplicate: Copy, large: TrendingUp, 'new-merchant': BadgeAlert };
@@ -53,16 +52,7 @@ export default function ResolvedFlags({ resolved, open, onToggle }) {
               );
             })}
           </div>
-          <div className="pt-2 flex items-center justify-between">
-            <span className="font-label-sm text-label-sm text-secondary">Resolutions automatically update the &quot;Can I afford...?&quot; safe ceiling algorithm.</span>
-            <Link
-              to="/track-record"
-              className="px-4 py-2 rounded-lg bg-surface-container-high text-primary font-label-md text-label-md font-semibold hover:bg-surface-container transition-all flex items-center gap-1"
-            >
-              <span>View full resolution history</span>
-              <ArrowRight size={16} />
-            </Link>
-          </div>
+          <p className="pt-2 font-label-sm text-label-sm text-secondary">Resolutions automatically update the &quot;Can I afford...?&quot; safe ceiling algorithm.</p>
         </div>
       )}
     </div>

@@ -12,7 +12,7 @@ export default function WhereMoneyWent({ spending }) {
   const open = (slice) => navigate('/transactions', { state: slice.all ? {} : { category: slice.name } });
 
   return (
-    <section className="home-card home-in p-5 sm:p-6 flex flex-col" style={{ '--delay': '480ms' }} aria-labelledby="where-went">
+    <section data-tour="spending-cards" className="home-card home-in p-5 sm:p-6 flex flex-col" style={{ '--delay': '480ms' }} aria-labelledby="where-went">
       <h2 id="where-went" className="text-[18px] font-semibold text-[#0b2545]">Where your money went in {spending.month}</h2>
       <div className="mt-4 grid sm:grid-cols-[200px_1fr] gap-6 items-center">
         <div className="relative w-[200px] h-[200px] mx-auto">

@@ -4,8 +4,8 @@ import { Check } from 'lucide-react';
 import Reveal from './Reveal';
 
 const PLANS = [
-  { name: 'Free', price: '₹0', period: '', features: ['Up to 2 accounts', 'Home and trends', 'Affordability answers'], cta: 'Get started free', highlight: false },
-  { name: 'Premium', price: '₹99', period: '/month', features: ['Unlimited accounts', 'What-if changes', 'Goals', 'Money flow', 'Track record', 'Export your data'], cta: 'Get Premium', highlight: true },
+  { name: 'Free', price: '₹0', period: '', features: ['Up to 2 accounts', 'Home dashboard', 'Affordability answers'], cta: 'Get started free', highlight: false },
+  { name: 'Premium', price: '₹99', period: '/month', features: ['Unlimited accounts', 'What-if changes', 'Goals', 'Money flow', 'Export your data'], cta: 'Get Premium', highlight: true },
 ];
 
 export default function Pricing({ onContact }) {

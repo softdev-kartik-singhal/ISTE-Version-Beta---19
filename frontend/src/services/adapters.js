@@ -144,55 +144,10 @@ export function toFlags(f) {
   };
 }
 
-// ---------- Trends & Surplus ----------
+// ---------- Shared ----------
 
+// "+4.2%" (used by Money Flow).
 const pctText = (p) => `${p > 0 ? '+' : ''}${p.toFixed(1)}%`;
-const VARIANCE = {
-  flat: (c) => ({ variance: `${pctText(c.changePct ?? 0)} Neutral`, varianceClass: 'text-secondary font-medium', sparkColor: '#495f82', iconClass: 'bg-surface-container text-primary' }),
-  up: (c) => ({ variance: c.changePct == null ? 'New' : `↑ ${pctText(c.changePct)} Higher`, varianceClass: 'text-tertiary-container font-semibold', sparkColor: '#a73400', iconClass: 'bg-secondary-container/50 text-primary' }),
-  down: (c) => ({ variance: `↓ ${pctText(c.changePct)} Lower`, varianceClass: 'text-primary font-semibold', sparkColor: '#0037b0', iconClass: 'bg-surface-container text-primary' }),
-};
-
-export function toTrends(t, plan, accounts) {
-  const months = t.months;
-  const last3 = months.slice(-3);
-  const monthRow = (m) => ({
-    label: `${monthShort(m.month)} '${m.month.slice(2, 4)}`, inflow: r(m.inflowPaise), outflow: r(m.outflowPaise), surplus: r(m.surplusPaise),
-    ...(m.surplusPaise < 0 ? { note: `Deficit: -${formatCurrency(Math.abs(r(m.surplusPaise)))}` } : {}),
-  });
-  const avg = (rows) => rows.reduce((s, m) => s + m.surplusPaise, 0) / Math.max(1, rows.length);
-  const prior = months.slice(-6, -3);
-  const change = prior.length === 3 && avg(prior) !== 0 ? pctText(((avg(last3) - avg(prior)) / Math.abs(avg(prior))) * 100) : '—';
-  const range = (rows) => `${monthShort(rows[0].month)} – ${monthShort(rows[rows.length - 1].month)} ${rows[rows.length - 1].month.slice(0, 4)}`;
-  const positive = months.filter((m) => m.surplusPaise > 0).length;
-  const cover = plan.insufficientHistory ? null : plan.emergencyFund;
-  return {
-    periods: [`Last ${months.length} Months: ${range(months)}`, `Last 3 Months: ${range(last3)}`],
-    summary: {
-      average: { amount: r(t.summary.averageSurplusPaise), change },
-      best: { month: monthLabel(t.summary.best.month), amount: r(t.summary.best.surplusPaise), reason: t.summary.best.reason },
-      toughest: { month: monthLabel(t.summary.toughest.month), amount: r(t.summary.toughest.surplusPaise), reason: t.summary.toughest.reason },
-    },
-    cashflow: {
-      totalInflow: r(months.reduce((s, m) => s + m.inflowPaise, 0)), totalOutflow: r(months.reduce((s, m) => s + m.outflowPaise, 0)),
-      netSurplus: r(months.reduce((s, m) => s + m.surplusPaise, 0)), months: months.map(monthRow),
-    },
-    categoryMonth: monthLabel(t.categoryMonth),
-    categories: t.categories.slice(0, 8).map((c) => {
-      const kind = c.direction === 'new' ? 'up' : c.direction;
-      return { name: c.name, examples: c.merchants.map(title).join(', '), icon: catIcon(c.name), thisMonth: r(c.thisMonthPaise), median: r(c.medianPaise), direction: kind, sparkline: c.sparklinePaise.slice(-6).map(r), ...VARIANCE[kind](c) };
-    }),
-    findings: t.findings.map((text, i) =>
-      i === 0
-        ? { icon: 'info', iconClass: 'text-primary', title: text.replace(/\.$/, ''), body: [`${positive} of ${months.length} months ended with money left over.`], progress: { percent: (positive / months.length) * 100, label: `${positive}/${months.length} months` } }
-        : { icon: 'info', iconClass: 'text-primary', title: text, body: [] },
-    ),
-    runway: cover
-      ? { months: `${cover.monthsCovered ?? 0} Months`, detail: `Your cash covers ${formatCurrency(r(cover.monthlyEssentialsPaise))} a month of essentials (rent, EMI, bills, groceries, travel) for that long.` }
-      : { months: '—', detail: 'Needs more statement history.' },
-    ownAccounts: accounts,
-  };
-}
 
 // ---------- Money Flow ----------
 
@@ -306,59 +261,6 @@ export function toSurplusPlan(p) {
     allocation: {
       monthlySurplus: r(p.surplus.typicalPaise), remainingEmergency: r(f.shortfallPaise), targetLabel: formatCurrency(r(f.targetPaise)), defaultSplit: p.allocation.splitPct,
       presets: p.allocation.presets.map((x) => ({ split: x.splitPct, label: x.splitPct === 100 ? '100% Emergency Floor' : `${x.splitPct}% Emergency / ${100 - x.splitPct}% Goals` })),
-    },
-  };
-}
-
-// ---------- Track Record ----------
-
-const short = (hash) => `${hash.slice(0, 6)}…${hash.slice(-4)}`;
-
-export function toTrackRecord(tr, log, verify, accuracy) {
-  const m = tr.months, s = tr.summary;
-  const hits = m.filter((x) => x.hit).length;
-  const entries = log.filter((e) => e.kind === 'forecast').map((f) => ({ f, a: log.find((e) => e.kind === 'actual' && e.target_month === f.target_month) })).filter((x) => x.a);
-  const ledgerRow = ({ f, a }) => {
-    const hit = a.actual_paise >= f.worst_paise && a.actual_paise <= f.best_paise;
-    return { timestamp: day(f.made_on), question: `Surplus forecast for ${monthLabel(f.target_month)}`, verdict: hit ? 'In range' : a.actual_paise > f.best_paise ? 'Above range' : 'Below range', verdictType: hit ? 'safe' : a.actual_paise >= f.worst_paise ? 'conditional' : 'risk', projected: r(f.typical_paise), actual: r(a.actual_paise), actualClass: hit ? 'text-primary font-semibold' : 'text-tertiary font-semibold', hash: short(f.entry_hash) };
-  };
-  const rows = entries.map(ledgerRow).reverse();
-  const peak = Math.max(1, ...m.map((x) => Math.max(x.bestPaise, x.actualPaise, 0)));
-  const L = tr.learning;
-  const labelled = accuracy.labelled > 0;
-  const good = 'bg-surface-container text-primary';
-  return {
-    version: 'hash-chained log',
-    integrity: { block: String(log.length), entries: log.length, valid: verify.valid, firstBroken: verify.firstBrokenLink, headHash: verify.headHash || '' },
-    kpis: [
-      { label: 'Forecast Accuracy', icon: 'target', value: `${Math.round(s.hitRate * 100)}%`, valueClass: 'text-on-surface', chip: `${hits} of ${m.length} in range`, chipClass: good, note: 'Actual surplus landed between the worst and best case' },
-      { label: 'Average Miss', icon: 'down', value: formatCurrency(r(s.averageMissPaise)), valueClass: 'text-on-surface', chip: 'vs typical case', chipClass: good, note: 'Average distance from the typical forecast' },
-      { label: 'Bias', icon: 'brain', value: formatCurrency(r(s.biasPaise), { sign: true }), valueClass: s.biasPaise < 0 ? 'text-error' : 'text-on-surface', chip: s.biasPaise < 0 ? 'Too optimistic' : 'Too cautious', chipClass: good, note: 'Negative means reality came in lower than forecast' },
-      { label: 'Worst Case Held', icon: 'link', value: `${Math.round(s.worstCaseHeldRate * 100)}%`, valueClass: 'text-on-surface', chip: `${m.filter((x) => x.worstCaseHeld).length} of ${m.length}`, chipClass: good, note: 'Months that were no worse than the worst case' },
-    ],
-    finding: {
-      headline: `Of our last ${m.length} forecasts, ${hits} landed inside the range.`,
-      detail: tr.enoughToJudge ? 'Each month was forecast using only the months before it, then compared with what really happened.' : 'Fewer than 3 months have been judged, so treat these percentages as a first look, not a verdict.',
-      facts: [
-        { label: 'Log status', value: verify.valid ? 'Intact' : 'Broken', valueClass: verify.valid ? 'text-primary' : 'text-error', note: `${log.length} entries in the hash chain` },
-        { label: 'Method', value: 'Earlier data only', valueClass: 'text-on-surface', note: 'No month sees its own future' },
-      ],
-    },
-    scaleMax: Math.ceil(peak / 10000) * 100,
-    forecasts: m.map((x) => ({
-      month: monthLabel(x.month), query: x.source === 'backtest' ? 'Backtest: forecast from earlier data only' : 'Live forecast',
-      low: Math.max(0, r(x.worstPaise)), high: Math.max(0, r(x.bestPaise)), actual: Math.max(0, r(x.actualPaise)),
-      outcome: x.hit ? 'Within range' : `Out of range: actual ${formatCurrency(r(x.actualPaise))}`,
-      note: `Forecast ${formatCurrency(r(x.worstPaise))} to ${formatCurrency(r(x.bestPaise))}, typical ${formatCurrency(r(x.typicalPaise))}; actual ${formatCurrency(r(x.actualPaise))}.`,
-    })),
-    ledger: { total: log.length, entries: rows.slice(0, 5), older: rows.slice(5) },
-    learning: {
-      baseline: labelled ? accuracy.before.accuracy * 100 : null, tuned: labelled ? accuracy.after.accuracy * 100 : null,
-      note: labelled
-        ? `Measured on the demo statements' true labels: ${accuracy.correctionsNeeded} merchant corrections lift categorisation accuracy.`
-        : `You have made ${L.corrections} correction${L.corrections === 1 ? '' : 's'}; ${L.merchantsRemembered} merchant${L.merchantsRemembered === 1 ? ' is' : 's are'} now remembered for future uploads.`,
-      corrections: L.corrections, merchantsRemembered: L.merchantsRemembered, rowsRecategorised: L.rowsRecategorised,
-      overrides: labelled ? accuracy.steps.slice(0, 3).map((st) => ({ icon: 'basket', merchant: title(st.merchant), rule: `Corrected to ${st.correctedTo}`, status: `${st.rowsFixed} rows fixed` })) : [],
     },
   };
 }

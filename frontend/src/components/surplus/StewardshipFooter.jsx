@@ -36,7 +36,6 @@ export default function StewardshipFooter({ onMethodology }) {
         <span>© 2025 SmartGullak Inc. Multi-Stream Liquidity Architecture. All numbers computed against connected accounts.</span>
         <div className="flex items-center gap-4">
           <Link className="hover:text-primary transition-colors" to="/privacy">Privacy Policy</Link>
-          <Link className="hover:text-primary transition-colors" to="/track-record">Audit Disclosures</Link>
           <button className="hover:text-primary transition-colors" onClick={onMethodology}>
             Methodology
           </button>

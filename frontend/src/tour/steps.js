@@ -13,7 +13,7 @@ export const STEPS = [
   { id: 'ask', target: 'ask-submit', route: '/ask', side: 'bottom', wait: 'click', before: 'typeQuestion', text: 'Press the blue button to see the answer.' },
   { id: 'confirm', target: 'ask-confirm', route: '/ask', side: 'top', wait: 'click', text: 'Check the amount and month, then confirm.' },
   { id: 'how', target: 'how-calc', route: '/ask', side: 'top', effect: 'stagger', text: 'Every step of the calculation is shown here.' },
-  { id: 'spending', target: 'spending-cards', route: '/trends', side: 'top', effect: 'stagger', text: 'See where your money went.' },
+  { id: 'spending', target: 'spending-cards', route: '/dashboard', side: 'top', text: 'See where your money went.' },
   { id: 'plan', target: 'plan-goals', route: '/goals', side: 'bottom', effect: 'fill', text: "Set goals and see what to do with what's left." },
   { id: 'more', target: 'nav-more', side: 'right', text: 'Statements, things to check, and privacy settings live here.' },
 ];

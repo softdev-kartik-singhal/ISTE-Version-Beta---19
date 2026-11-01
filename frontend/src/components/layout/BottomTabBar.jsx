@@ -1,13 +1,12 @@
-// Phone navigation (below 1024px, where the sidebar is hidden): Home, Ask, Trends, Goals and a "More" sheet.
+// Phone navigation (below 1024px, where the sidebar is hidden): Home, Ask, Goals and a "More" sheet.
 import { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeftRight, BellRing, ChartLine, Flag, LayoutDashboard, LogOut, Menu, PiggyBank, ReceiptText, Shield, Sparkles, TrendingUp, Wallet, X } from 'lucide-react';
+import { ArrowLeftRight, BellRing, Flag, LayoutDashboard, LogOut, Menu, PiggyBank, ReceiptText, Shield, Sparkles, Wallet, X } from 'lucide-react';
 import { logout } from '../../services/api';
 
 const TABS = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Home' },
   { to: '/ask', icon: Sparkles, label: 'Ask' },
-  { to: '/trends', icon: TrendingUp, label: 'Trends' },
   { to: '/goals', icon: Flag, label: 'Goals' },
 ];
 const MORE = [
@@ -16,7 +15,6 @@ const MORE = [
   { to: '/statements', icon: ReceiptText, label: 'Statements' },
   { to: '/transactions', icon: Wallet, label: 'Transactions' },
   { to: '/flags', icon: BellRing, label: 'Flags', badgeKey: 'flagCount' },
-  { to: '/track-record', icon: ChartLine, label: 'Track Record' },
   { to: '/privacy', icon: Shield, label: 'Privacy & Data' },
 ];
 const TAB = 'flex-1 flex flex-col items-center justify-center gap-0.5 py-2 text-[11px]';

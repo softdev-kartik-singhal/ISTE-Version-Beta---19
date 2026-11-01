@@ -8,7 +8,7 @@ const QUESTIONS = [
   { q: 'Do you need my bank password?', a: 'No. You download statements from your bank yourself and upload them. SmartGullak never asks for your net-banking login.' },
   { q: 'Which banks work?', a: 'Right now HDFC (CSV and PDF statements) and Kotak (CSV statements).' },
   { q: 'Is this investment advice?', a: 'No. SmartGullak does arithmetic on your own statements and suggests types of products to learn about. It does not recommend specific products. Talk to a qualified adviser before investing.' },
-  { q: 'How accurate is it?', a: 'Answers are estimates from your past statements, shown as a range for low, normal and high income months. The Track Record page shows how past forecasts compared with what really happened.' },
+  { q: 'How accurate is it?', a: 'Answers are estimates from your past statements, shown as a range for low, normal and high income months.' },
 ];
 
 function Item({ q, a, open, onToggle }) {

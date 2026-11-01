@@ -1,6 +1,6 @@
 // Data access layer: every screen reads and writes through here, and only here, using the signed-in user's session token.
 // Backend answers are reshaped for the screens by adapters.js.
-import { monthLabel, suggestions, toFlags, toGoalPreview, toGoals, toMoneyFlow, toSafeguards, toStatements, toSurplusPlan, toTrackRecord, toTransactions, toTrends } from './adapters';
+import { suggestions, toFlags, toGoalPreview, toGoals, toMoneyFlow, toSafeguards, toStatements, toSurplusPlan, toTransactions } from './adapters';
 import { toHome } from './homeView';
 import { toChangeView } from './askView';
 import { toSurvival } from './survivalView';
@@ -55,7 +55,7 @@ export function setAccountFilter(id) {
   invalidate();
 }
 
-// The server endpoints that can be narrowed to one account (?account=<id>). Statements, privacy and the track record
+// The server endpoints that can be narrowed to one account (?account=<id>). Statements and privacy
 // are about everything you uploaded, so they are not in this list.
 const NARROWABLE = new Set([
   '/api/session', '/api/dashboard', '/api/trends', '/api/money-flow', '/api/surplus-plan', '/api/survival', '/api/ways-to-use-money',
@@ -269,12 +269,6 @@ export async function decideFlag(flagId, decision) {
   invalidate();
 }
 
-export async function getTrends() {
-  const [t, session] = await Promise.all([request('/api/trends'), request('/api/session')]);
-  if (t.insufficientHistory) return notReady('Trends compare each month with your previous three, so they start after 4 complete months of statements.');
-  return toTrends(t, await request('/api/surplus-plan'), session.accounts);
-}
-
 // compare: 'avg3' (3-month median) or 'prev' (last month). category: a category name to open in the drawer.
 export async function getMoneyFlow(month, compare, topN, category) {
   const cmp = compare === 'prev' ? 'prev' : 'median';
@@ -323,7 +317,7 @@ export async function askWhatIf(amountRupees, targetMonth, cancel, emiRupees) {
   return res.status === 'answered' ? toChangeView(res) : null;
 }
 
-// ---------- goals, surplus plan, track record ----------
+// ---------- goals and surplus plan ----------
 
 export async function getGoals() {
   const g = await request('/api/goals');
@@ -374,24 +368,6 @@ export async function getWaysToUseMoney(fdRate, rdRate) {
   if (w.insufficientHistory) return notReady('This needs at least one complete month of statements.');
   return toWays(w);
 }
-
-// The first visit builds the track record by forecasting each past month from earlier data only (safe to repeat).
-export async function getTrackRecord() {
-  if (!(await request('/api/session')).hasData) return { __state: 'empty' };
-  let tr = await request('/api/track-record');
-  if (!tr.months.length) {
-    const built = await request('/api/track-record/backtest', { method: 'POST' });
-    tr = await request('/api/track-record');
-    if (!tr.months.length) {
-      const reasons = [...new Set(built.skipped.map((x) => `${monthLabel(x.month)}: ${x.reason}`))];
-      return { __state: 'insufficient', messages: reasons.slice(0, 3) };
-    }
-  }
-  const [log, verify, accuracy] = await Promise.all([request('/api/forecast-log'), request('/api/forecast-log/verify'), request('/api/categorisation-accuracy')]);
-  return toTrackRecord(tr, log.entries, verify, accuracy);
-}
-
-export const verifyLedger = () => request('/api/forecast-log/verify');
 
 // ---------- landing page ----------
 
